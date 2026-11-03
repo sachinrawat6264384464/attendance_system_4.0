@@ -25,8 +25,8 @@ export default function Navbar() {
     { title: 'Home', href: '/' },
     { title: 'About us', href: '/academics' },
     { title: 'Why Dandelion Kidz?', href: '/#why-us' },
-    { title: 'Programs', href: '/#programs' },
-    { title: 'Facilities', href: '/#facilities' },
+    { title: 'Gallery', href: '/gallery' },
+    { title: 'Facilities', href: '/facilities' },
     { title: 'Faculty', href: '/faculty' },
   ];
 
