@@ -1,0 +1,573 @@
+'use client';
+
+import React, { useEffect, useState } from 'react';
+import { apiClient } from '@/lib/api';
+import { useAuth } from '@/lib/auth-context';
+import {
+  CalendarCheck,
+  FileCheck,
+  Clock,
+  Check,
+  X,
+  AlertCircle,
+  PlusCircle,
+  Users,
+  Send,
+  BookOpen,
+} from 'lucide-react';
+
+interface StudentRosterItem {
+  id: string; // enrollment id
+  rollNumber: string;
+  student: {
+    id: string; // student profile id
+    admissionNumber: string;
+    user: {
+      firstName: string;
+      lastName: string;
+    };
+  };
+}
+
+export default function TeacherDashboardPage() {
+  const { user } = useAuth();
+
+  // Active view: 'attendance' or 'assignments'
+  const [activeTab, setActiveTab] = useState<'attendance' | 'assignments'>('attendance');
+
+  // Attendance states
+  const [classes, setClasses] = useState<any[]>([]);
+  const [subjects, setSubjects] = useState<any[]>([]);
+  const [academicYears, setAcademicYears] = useState<any[]>([]);
+
+  const [selectedClassId, setSelectedClassId] = useState('');
+  const [selectedSectionId, setSelectedSectionId] = useState('');
+  const [selectedSubjectId, setSelectedSubjectId] = useState('');
+  const [selectedPeriod, setSelectedPeriod] = useState(1);
+  const [attendanceDate, setAttendanceDate] = useState(new Date().toISOString().split('T')[0]);
+
+  const [roster, setRoster] = useState<StudentRosterItem[]>([]);
+  const [attendanceMap, setAttendanceMap] = useState<Record<string, 'PRESENT' | 'ABSENT' | 'LATE'>>({});
+  const [submittingAttendance, setSubmittingAttendance] = useState(false);
+  const [attendanceStatusMsg, setAttendanceStatusMsg] = useState<string | null>(null);
+
+  // Assignment states
+  const [assignments, setAssignments] = useState<any[]>([]);
+  const [showCreateAssignment, setShowCreateAssignment] = useState(false);
+  const [assignmentStatusMsg, setAssignmentStatusMsg] = useState<string | null>(null);
+  const [assignmentForm, setAssignmentForm] = useState({
+    title: '',
+    description: '',
+    instructions: '',
+    dueDate: new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 16),
+    maxMarks: 100,
+  });
+
+  useEffect(() => {
+    async function loadMetadata() {
+      try {
+        const [classesRes, subjectsRes, yearsRes, assignmentsRes] = await Promise.all([
+          apiClient<any[]>('/academics/classes').catch(() => null),
+          apiClient<any[]>('/academics/subjects').catch(() => null),
+          apiClient<any[]>('/academics/years').catch(() => null),
+          apiClient<any[]>('/assignments').catch(() => null),
+        ]);
+
+        if (classesRes?.data) {
+          setClasses(classesRes.data);
+          if (classesRes.data[0]) {
+            setSelectedClassId(classesRes.data[0].id);
+            if (classesRes.data[0].sections?.[0]) {
+              setSelectedSectionId(classesRes.data[0].sections[0].id);
+            }
+          }
+        }
+        if (subjectsRes?.data) {
+          setSubjects(subjectsRes.data);
+          if (subjectsRes.data[0]) setSelectedSubjectId(subjectsRes.data[0].id);
+        }
+        if (yearsRes?.data) setAcademicYears(yearsRes.data);
+        if (assignmentsRes?.data) setAssignments(assignmentsRes.data);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    loadMetadata();
+  }, []);
+
+  // Fetch enrolled students when class & section change
+  useEffect(() => {
+    if (!selectedClassId || !selectedSectionId) return;
+
+    async function loadStudents() {
+      try {
+        const res = await apiClient<{ data: StudentRosterItem[] }>(
+          `/users/students?classId=${selectedClassId}&sectionId=${selectedSectionId}`,
+        );
+        if (res.data?.data) {
+          setRoster(res.data.data);
+          // Default all to PRESENT
+          const initialMap: Record<string, 'PRESENT' | 'ABSENT' | 'LATE'> = {};
+          res.data.data.forEach((item) => {
+            initialMap[item.student.id] = 'PRESENT';
+          });
+          setAttendanceMap(initialMap);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    loadStudents();
+  }, [selectedClassId, selectedSectionId]);
+
+  const handleToggleStatus = (studentProfileId: string) => {
+    setAttendanceMap((prev) => {
+      const current = prev[studentProfileId] || 'PRESENT';
+      const next = current === 'PRESENT' ? 'ABSENT' : current === 'ABSENT' ? 'LATE' : 'PRESENT';
+      return { ...prev, [studentProfileId]: next };
+    });
+  };
+
+  const handleMarkAll = (status: 'PRESENT' | 'ABSENT') => {
+    const updated: Record<string, 'PRESENT' | 'ABSENT' | 'LATE'> = {};
+    roster.forEach((r) => {
+      updated[r.student.id] = status;
+    });
+    setAttendanceMap(updated);
+  };
+
+  const handleSubmitAttendance = async () => {
+    const currentYear = academicYears.find((y) => y.isCurrent) || academicYears[0];
+    if (!currentYear) {
+      setAttendanceStatusMsg('Error: No active academic year found.');
+      return;
+    }
+
+    setSubmittingAttendance(true);
+    setAttendanceStatusMsg(null);
+
+    const records = roster.map((item) => ({
+      studentId: item.student.id,
+      status: attendanceMap[item.student.id] || 'PRESENT',
+    }));
+
+    try {
+      await apiClient('/attendance/submit', {
+        method: 'POST',
+        body: JSON.stringify({
+          academicYearId: currentYear.id,
+          classId: selectedClassId,
+          sectionId: selectedSectionId,
+          subjectId: selectedSubjectId,
+          date: attendanceDate,
+          periodNumber: Number(selectedPeriod),
+          records,
+        }),
+      });
+
+      setAttendanceStatusMsg('Attendance submitted and finalized successfully. Record is locked.');
+    } catch (err: any) {
+      setAttendanceStatusMsg(`Error: ${err.message}`);
+    } finally {
+      setSubmittingAttendance(false);
+    }
+  };
+
+  const handleCreateAssignment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const currentYear = academicYears.find((y) => y.isCurrent) || academicYears[0];
+    if (!currentYear) return;
+
+    try {
+      await apiClient('/assignments', {
+        method: 'POST',
+        body: JSON.stringify({
+          ...assignmentForm,
+          classId: selectedClassId,
+          sectionId: selectedSectionId,
+          subjectId: selectedSubjectId,
+          academicYearId: currentYear.id,
+        }),
+      });
+      setShowCreateAssignment(false);
+      setAssignmentStatusMsg('Assignment published to students successfully!');
+      // Reload assignments
+      const res = await apiClient<any[]>('/assignments');
+      if (res.data) setAssignments(res.data);
+    } catch (err: any) {
+      setAssignmentStatusMsg(`Error: ${err.message}`);
+    }
+  };
+
+  const currentClassObj = classes.find((c) => c.id === selectedClassId);
+
+  return (
+    <div className="space-y-8 max-w-7xl mx-auto">
+      {/* Title */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Teacher Workspace</h1>
+          <p className="text-xs text-slate-500 mt-1">
+            Period-level attendance marking, course assignments, and student submission evaluations.
+          </p>
+        </div>
+
+        {/* Tab switchers */}
+        <div className="flex bg-slate-200/80 p-1 rounded-xl text-xs font-semibold">
+          <button
+            onClick={() => setActiveTab('attendance')}
+            className={`px-4 py-2 rounded-lg transition ${
+              activeTab === 'attendance'
+                ? 'bg-white text-indigo-600 shadow-sm'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            Mark Period Attendance
+          </button>
+          <button
+            onClick={() => setActiveTab('assignments')}
+            className={`px-4 py-2 rounded-lg transition ${
+              activeTab === 'assignments'
+                ? 'bg-white text-indigo-600 shadow-sm'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            Assignments & Coursework
+          </button>
+        </div>
+      </div>
+
+      {attendanceStatusMsg && (
+        <div className="p-4 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-semibold flex items-center justify-between">
+          <span>{attendanceStatusMsg}</span>
+          <button onClick={() => setAttendanceStatusMsg(null)} className="text-indigo-400">×</button>
+        </div>
+      )}
+
+      {assignmentStatusMsg && (
+        <div className="p-4 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-semibold flex items-center justify-between">
+          <span>{assignmentStatusMsg}</span>
+          <button onClick={() => setAssignmentStatusMsg(null)} className="text-indigo-400">×</button>
+        </div>
+      )}
+
+      {/* ---------------- ATTENDANCE TAB ---------------- */}
+      {activeTab === 'attendance' && (
+        <div className="space-y-6">
+          {/* Controls Bar */}
+          <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm grid grid-cols-1 sm:grid-cols-5 gap-4">
+            <div>
+              <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">Class</label>
+              <select
+                value={selectedClassId}
+                onChange={(e) => {
+                  setSelectedClassId(e.target.value);
+                  const cls = classes.find((c) => c.id === e.target.value);
+                  if (cls?.sections?.[0]) setSelectedSectionId(cls.sections[0].id);
+                }}
+                className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-indigo-500 bg-white"
+              >
+                {classes.map((c) => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">Section</label>
+              <select
+                value={selectedSectionId}
+                onChange={(e) => setSelectedSectionId(e.target.value)}
+                className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-indigo-500 bg-white"
+              >
+                {currentClassObj?.sections?.map((s: any) => (
+                  <option key={s.id} value={s.id}>{s.name}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">Subject</label>
+              <select
+                value={selectedSubjectId}
+                onChange={(e) => setSelectedSubjectId(e.target.value)}
+                className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-indigo-500 bg-white"
+              >
+                {subjects.map((sub) => (
+                  <option key={sub.id} value={sub.id}>{sub.name} ({sub.code})</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">Period</label>
+              <select
+                value={selectedPeriod}
+                onChange={(e) => setSelectedPeriod(Number(e.target.value))}
+                className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-indigo-500 bg-white"
+              >
+                {[1, 2, 3, 4, 5, 6, 7, 8].map((p) => (
+                  <option key={p} value={p}>Period {p}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">Date</label>
+              <input
+                type="date"
+                value={attendanceDate}
+                onChange={(e) => setAttendanceDate(e.target.value)}
+                className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
+          </div>
+
+          {/* Student Roster Pad */}
+          <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+            <div className="p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h3 className="font-bold text-slate-900 text-base">Enrolled Students Attendance Pad</h3>
+                <p className="text-xs text-slate-500">
+                  Click on student status badge to toggle between PRESENT, ABSENT, and LATE
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleMarkAll('PRESENT')}
+                  className="px-3 py-1.5 rounded-lg border border-slate-200 text-slate-700 text-xs font-semibold hover:bg-slate-50"
+                >
+                  Mark All Present
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleMarkAll('ABSENT')}
+                  className="px-3 py-1.5 rounded-lg border border-slate-200 text-slate-700 text-xs font-semibold hover:bg-slate-50"
+                >
+                  Mark All Absent
+                </button>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs text-slate-600">
+                <thead className="bg-slate-50 text-[11px] font-bold text-slate-700 uppercase tracking-wider border-b border-slate-100">
+                  <tr>
+                    <th className="px-6 py-3.5">Roll No.</th>
+                    <th className="px-6 py-3.5">Student Name</th>
+                    <th className="px-6 py-3.5">Admission Number</th>
+                    <th className="px-6 py-3.5 text-right">Attendance Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 font-medium">
+                  {roster.length === 0 ? (
+                    <tr>
+                      <td colSpan={4} className="px-6 py-10 text-center text-slate-400">
+                        No students enrolled in this section. Enroll students via the Coordinator portal.
+                      </td>
+                    </tr>
+                  ) : (
+                    roster.map((item) => {
+                      const status = attendanceMap[item.student.id] || 'PRESENT';
+                      const isPresent = status === 'PRESENT';
+                      const isAbsent = status === 'ABSENT';
+                      const isLate = status === 'LATE';
+
+                      return (
+                        <tr key={item.id} className="hover:bg-slate-50/50">
+                          <td className="px-6 py-4 font-mono font-bold text-slate-800">
+                            {item.rollNumber || '—'}
+                          </td>
+                          <td className="px-6 py-4 font-bold text-slate-900">
+                            {item.student.user.firstName} {item.student.user.lastName}
+                          </td>
+                          <td className="px-6 py-4 font-mono text-slate-500">
+                            {item.student.admissionNumber}
+                          </td>
+                          <td className="px-6 py-4 text-right">
+                            <button
+                              type="button"
+                              onClick={() => handleToggleStatus(item.student.id)}
+                              className={`px-4 py-1.5 rounded-xl font-bold text-xs inline-flex items-center gap-1.5 shadow-sm transition ${
+                                isPresent
+                                  ? 'bg-emerald-500 text-white hover:bg-emerald-600'
+                                  : isAbsent
+                                  ? 'bg-rose-500 text-white hover:bg-rose-600'
+                                  : 'bg-amber-500 text-white hover:bg-amber-600'
+                              }`}
+                            >
+                              {isPresent && <Check className="w-3.5 h-3.5" />}
+                              {isAbsent && <X className="w-3.5 h-3.5" />}
+                              {isLate && <Clock className="w-3.5 h-3.5" />}
+                              <span>{status}</span>
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {roster.length > 0 && (
+              <div className="p-6 bg-slate-50/80 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="text-xs text-slate-500">
+                  Finalizing will lock this record. Any subsequent modification requires an audited Principal approval request.
+                </div>
+                <button
+                  onClick={handleSubmitAttendance}
+                  disabled={submittingAttendance}
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs rounded-xl shadow-sm transition disabled:opacity-50"
+                >
+                  <Send className="w-4 h-4" />
+                  {submittingAttendance ? 'Finalizing Session...' : 'Submit & Finalize Attendance'}
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ---------------- ASSIGNMENTS TAB ---------------- */}
+      {activeTab === 'assignments' && (
+        <div className="space-y-6">
+          <div className="flex justify-between items-center">
+            <h2 className="text-lg font-bold text-slate-900">Active Coursework Assignments</h2>
+            <button
+              onClick={() => setShowCreateAssignment(!showCreateAssignment)}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold shadow-sm transition"
+            >
+              <PlusCircle className="w-4 h-4" />
+              Create Assignment
+            </button>
+          </div>
+
+          {showCreateAssignment && (
+            <div className="bg-white p-6 sm:p-8 rounded-2xl border border-indigo-200 shadow-md">
+              <h3 className="text-base font-bold text-slate-900 mb-4 pb-2 border-b border-slate-100">
+                New Coursework Assignment
+              </h3>
+              <form onSubmit={handleCreateAssignment} className="space-y-4">
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">Title *</label>
+                  <input
+                    type="text"
+                    required
+                    value={assignmentForm.title}
+                    onChange={(e) => setAssignmentForm({ ...assignmentForm, title: e.target.value })}
+                    placeholder="e.g. Chapter 4: Quadratic Equations Problem Set"
+                    className="w-full px-3.5 py-2 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-indigo-500"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">Due Date & Time *</label>
+                    <input
+                      type="datetime-local"
+                      required
+                      value={assignmentForm.dueDate}
+                      onChange={(e) => setAssignmentForm({ ...assignmentForm, dueDate: e.target.value })}
+                      className="w-full px-3.5 py-2 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-indigo-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">Max Marks</label>
+                    <input
+                      type="number"
+                      required
+                      value={assignmentForm.maxMarks}
+                      onChange={(e) => setAssignmentForm({ ...assignmentForm, maxMarks: Number(e.target.value) })}
+                      className="w-full px-3.5 py-2 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-indigo-500"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">Description *</label>
+                  <textarea
+                    rows={3}
+                    required
+                    value={assignmentForm.description}
+                    onChange={(e) => setAssignmentForm({ ...assignmentForm, description: e.target.value })}
+                    placeholder="Describe problem details, chapters covered, etc..."
+                    className="w-full px-3.5 py-2 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-indigo-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">Instructions</label>
+                  <input
+                    type="text"
+                    value={assignmentForm.instructions}
+                    onChange={(e) => setAssignmentForm({ ...assignmentForm, instructions: e.target.value })}
+                    placeholder="e.g. Upload scanned PDF. Show all derivation steps."
+                    className="w-full px-3.5 py-2 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-indigo-500"
+                  />
+                </div>
+
+                <div className="flex justify-end gap-3 pt-3">
+                  <button
+                    type="button"
+                    onClick={() => setShowCreateAssignment(false)}
+                    className="px-4 py-2 border border-slate-200 text-slate-600 rounded-lg text-xs font-semibold hover:bg-slate-50"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-5 py-2 bg-indigo-600 text-white rounded-lg text-xs font-semibold hover:bg-indigo-700 shadow-sm"
+                  >
+                    Publish Assignment
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
+
+          {/* Assignments List Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {assignments.length === 0 ? (
+              <div className="col-span-2 p-10 bg-white rounded-2xl border border-slate-200 text-center text-slate-400 text-xs">
+                No assignments created yet. Click &quot;Create Assignment&quot; to publish coursework.
+              </div>
+            ) : (
+              assignments.map((item) => (
+                <div key={item.id} className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 uppercase">
+                        {item.subject?.name} • {item.class?.name}-{item.section?.name}
+                      </span>
+                      <h4 className="font-bold text-slate-900 text-base mt-2">{item.title}</h4>
+                    </div>
+                    <span className="text-xs font-bold text-slate-600 bg-slate-100 px-2 py-1 rounded-md">
+                      {item.maxMarks} Marks
+                    </span>
+                  </div>
+
+                  <p className="text-xs text-slate-600 line-clamp-2">{item.description}</p>
+
+                  <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                    <span className="flex items-center gap-1 text-slate-700">
+                      <Clock className="w-3.5 h-3.5 text-indigo-500" />
+                      Due: {new Date(item.dueDate).toLocaleDateString()}
+                    </span>
+                    <span className="font-semibold text-indigo-600">
+                      {item.submissions?.length || 0} Submissions
+                    </span>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
