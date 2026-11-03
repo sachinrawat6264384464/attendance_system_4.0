@@ -23,18 +23,91 @@ export default function GalleryPage() {
 
   const categories = [
     'All',
-    'Play & Ball Pit',
+    'Play & Sensory',
+    'Celebrations',
     'Puppet Theatre',
-    'Campus Entrance',
+    'Campus & Dining',
     'Learning Corners',
     'Outdoor Playground',
   ];
 
   const galleryItems: GalleryItem[] = [
     {
+      id: 'jamboree',
+      title: 'Jamboree Annual Day Stage Celebration',
+      category: 'Celebrations',
+      image: '/images/gallery-1.jpg',
+      description:
+        'Our vibrant annual cultural extravaganza celebrating our young achievers with music, drama, and heartfelt applause.',
+      tagColor: 'bg-[#1B365D]',
+    },
+    {
+      id: 'night-festival',
+      title: 'Illuminated Campus Evening Carnival',
+      category: 'Celebrations',
+      image: '/images/gallery-2.jpg',
+      description:
+        'Magical fairyland evening with colorful canopies, fairy lights, and joyful bonding between parents, children, and teachers.',
+      tagColor: 'bg-[#E91E63]',
+    },
+    {
+      id: 'sensory-science',
+      title: 'Botanical & Color Sensory Chemistry',
+      category: 'Play & Sensory',
+      image: '/images/gallery-3.jpg',
+      description:
+        'Hands-on natural science exploration with botanical infusions, colorful water jars, and olfactory discovery.',
+      tagColor: 'bg-[#76A136]',
+    },
+    {
+      id: 'community-dining',
+      title: 'Community Meal Dining & Food Gratitude',
+      category: 'Campus & Dining',
+      image: '/images/gallery-4.jpg',
+      description:
+        'Shared wholesome dining sessions fostering table etiquette, conscious nutrition, mindful eating habits, and camaraderie.',
+      tagColor: 'bg-[#E87722]',
+    },
+    {
+      id: 'sand-pit',
+      title: 'Sensory Sand Pit & Fine Motor Play',
+      category: 'Play & Sensory',
+      image: '/images/gallery-5.jpg',
+      description:
+        'Tactile outdoor sand exploration where children build fine motor grip, spatial awareness, and imaginative castles.',
+      tagColor: 'bg-[#00695C]',
+    },
+    {
+      id: 'theatrical-singing',
+      title: 'Theatrical Stage & Cultural Role-Play',
+      category: 'Celebrations',
+      image: '/images/gallery-6.jpg',
+      description:
+        'Fostering stage confidence, vocal projection, and traditional cultural awareness with joyful musical performances.',
+      tagColor: 'bg-[#7B1FA2]',
+    },
+    {
+      id: 'mentor-felicitation',
+      title: 'Mentor Felicitation & Academic Excellence',
+      category: 'Celebrations',
+      image: '/images/gallery-7.jpg',
+      description:
+        'Honoring our certified early childhood educators and Montessorians for nurturing young minds with care.',
+      tagColor: 'bg-[#1B365D]',
+    },
+    {
+      id: 'community-gathering',
+      title: 'Parents & Educators Community Gathering',
+      category: 'Celebrations',
+      image: '/images/gallery-8.jpg',
+      description:
+        'Strong parent-school collaboration creating a supportive, transparent ecosystem for every child’s holistic growth.',
+      tagColor: 'bg-[#76A136]',
+    },
+    {
       id: 'ball-pit',
       title: 'Sensory Ball Pit & Soft Play Area',
-      category: 'Play & Ball Pit',
+      category: 'Play & Sensory',
       image: '/images/hero-playroom.jpg',
       description:
         'A vibrant, padded sensory exploration arena with non-toxic colorful balls, rocking animal trainers, and joyful wall murals.',
@@ -43,7 +116,7 @@ export default function GalleryPage() {
     {
       id: 'welcome-arch',
       title: 'Dandelion Kidz Campus Entrance & Welcome Arch',
-      category: 'Campus Entrance',
+      category: 'Campus & Dining',
       image: '/images/welcome-entrance.jpg',
       description:
         'Colorful circular balloon canopy welcoming our little stars each morning into a secure and joyful learning sanctuary.',
@@ -66,24 +139,6 @@ export default function GalleryPage() {
       description:
         'Child-safe turf, ladder bridges, and swings designed to refine gross motor agility, balance, and cooperative play.',
       tagColor: 'bg-[#E91E63]',
-    },
-    {
-      id: 'programs-classroom',
-      title: 'Reggio-Inspired Early Learning Corners',
-      category: 'Learning Corners',
-      image: '/images/welcome-entrance.jpg',
-      description:
-        '7+ dedicated discovery zones featuring natural materials, manipulative blocks, sensory trays, and tactile learning tools.',
-      tagColor: 'bg-[#7B1FA2]',
-    },
-    {
-      id: 'creative-activities',
-      title: 'Joyful Childhood Milestones',
-      category: 'Play & Ball Pit',
-      image: '/images/hero-playroom.jpg',
-      description:
-        'Celebrating every child’s unique journey with hands-on sensory art, music circles, and caring early childhood guidance.',
-      tagColor: 'bg-[#00695C]',
     },
   ];
 
