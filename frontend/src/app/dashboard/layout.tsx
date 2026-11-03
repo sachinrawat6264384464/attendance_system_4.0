@@ -4,15 +4,12 @@ import React, { useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
+import DandelionLogo from '@/components/DandelionLogo';
 import {
-  GraduationCap,
-  LayoutDashboard,
   CalendarCheck,
-  FileText,
   Users,
   LogOut,
   Shield,
-  Clock,
   BookOpen,
 } from 'lucide-react';
 
@@ -29,9 +26,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   if (isLoading || !user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+      <div className="min-h-screen flex items-center justify-center bg-[#FAFDF7]">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-4 border-[#76A136] border-t-transparent rounded-full animate-spin" />
           <p className="text-xs text-slate-500 font-medium">Loading session...</p>
         </div>
       </div>
@@ -60,7 +57,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       visible: user.roles.includes('TEACHER') || user.roles.includes('PRINCIPAL'),
     },
     {
-      title: 'Student Portal',
+      title: 'Student & Parent Portal',
       href: '/dashboard/student',
       icon: BookOpen,
       visible: user.roles.includes('STUDENT') || user.roles.includes('PRINCIPAL'),
@@ -68,31 +65,28 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   ];
 
   return (
-    <div className="min-h-screen flex bg-slate-100/70">
+    <div className="min-h-screen flex bg-[#FAFDF7]">
       {/* Sidebar */}
-      <aside className="w-64 bg-slate-900 text-slate-300 flex flex-col shrink-0 hidden md:flex border-r border-slate-800">
-        <div className="p-6 border-b border-slate-800">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-md shadow-indigo-500/20">
-              <GraduationCap className="w-5 h-5" />
-            </div>
-            <div>
-              <span className="font-bold text-white text-base block tracking-tight">Apex Academy</span>
-              <span className="text-[10px] text-indigo-400 font-semibold uppercase tracking-wider block">
-                Single-Institution
-              </span>
-            </div>
+      <aside className="w-64 bg-[#1B365D] text-slate-300 flex flex-col shrink-0 hidden md:flex border-r border-[#152a48]">
+        <div className="p-5 border-b border-white/10 bg-white/5">
+          <Link href="/" className="block">
+            <span className="font-extrabold text-white text-base block tracking-tight">
+              DANDELION <span className="text-[#8CB843]">KIDZ</span>
+            </span>
+            <span className="text-[10px] text-[#8CB843] font-semibold uppercase tracking-wider block">
+              Academic Platform
+            </span>
           </Link>
         </div>
 
         {/* User Card */}
-        <div className="p-4 mx-4 mt-4 rounded-xl bg-slate-800/60 border border-slate-800">
+        <div className="p-4 mx-4 mt-4 rounded-2xl bg-white/5 border border-white/10">
           <div className="text-xs font-bold text-white truncate">
             {user.firstName} {user.lastName}
           </div>
-          <div className="text-[11px] text-slate-400 truncate">{user.email}</div>
+          <div className="text-[11px] text-slate-300 truncate">{user.email}</div>
           <div className="mt-2.5">
-            <span className="inline-block px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 font-semibold text-[10px] uppercase tracking-wide">
+            <span className="inline-block px-2.5 py-0.5 rounded-full bg-[#76A136]/30 text-[#8CB843] font-bold text-[10px] uppercase tracking-wide">
               {primaryRole}
             </span>
           </div>
@@ -111,8 +105,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   href={item.href}
                   className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition ${
                     isActive
-                      ? 'bg-indigo-600 text-white shadow-sm'
-                      : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                      ? 'bg-[#76A136] text-white shadow-sm'
+                      : 'text-slate-300 hover:text-white hover:bg-white/10'
                   }`}
                 >
                   <Icon className="w-4 h-4 shrink-0" />
@@ -123,10 +117,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </nav>
 
         {/* Logout */}
-        <div className="p-4 border-t border-slate-800">
+        <div className="p-4 border-t border-white/10">
           <button
             onClick={() => logout()}
-            className="w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition"
+            className="w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-medium text-slate-300 hover:text-rose-300 hover:bg-white/5 transition"
           >
             <LogOut className="w-4 h-4" />
             <span>Sign Out</span>
@@ -137,13 +131,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
         {/* Top Navbar */}
-        <header className="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between sticky top-0 z-30">
+        <header className="h-16 bg-white border-b border-slate-200/80 px-6 flex items-center justify-between sticky top-0 z-30">
           <div className="flex items-center gap-3">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-              Academic Console
+            <span className="text-xs font-bold text-[#1B365D] uppercase tracking-wider">
+              Dandelion Kidz Console
             </span>
             <span className="text-slate-300">•</span>
-            <span className="text-xs font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md">
+            <span className="text-xs font-bold text-[#76A136] bg-[#F0F7E8] px-2.5 py-0.5 rounded-full border border-[#76A136]/20">
               Session 2026-2027
             </span>
           </div>
@@ -151,7 +145,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div className="flex items-center gap-4">
             <Link
               href="/"
-              className="text-xs font-medium text-slate-500 hover:text-slate-900 transition hidden sm:inline"
+              className="text-xs font-bold text-[#1B365D] hover:text-[#76A136] transition hidden sm:inline"
             >
               Public Website
             </Link>
@@ -171,4 +165,3 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     </div>
   );
 }
-
