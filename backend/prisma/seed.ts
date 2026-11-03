@@ -1,7 +1,14 @@
+import 'dotenv/config';
 import { PrismaClient, RoleType, AttendanceStatus, SessionStatus } from '@prisma/client';
 import * as argon2 from 'argon2';
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: process.env.DATABASE_URL || 'postgresql://neondb_owner:npg_BVX8kIyUqlO0@ep-cold-sky-b53itt32-pooler.c-7.us-east-2.aws.neon.tech/neondb?sslmode=require&connect_timeout=30',
+    },
+  },
+});
 
 async function main() {
   console.log('🌱 Starting Apex Academy Database Seeding (Non-SaaS Dedicated Institution)...');
