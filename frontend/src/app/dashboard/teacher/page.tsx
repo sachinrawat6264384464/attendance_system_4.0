@@ -2,18 +2,12 @@
 
 import React, { useEffect, useState } from 'react';
 import { apiClient } from '@/lib/api';
-import { useAuth } from '@/lib/auth-context';
 import {
-  CalendarCheck,
-  FileCheck,
   Clock,
   Check,
   X,
-  AlertCircle,
   PlusCircle,
-  Users,
   Send,
-  BookOpen,
 } from 'lucide-react';
 
 interface StudentRosterItem {
@@ -29,22 +23,56 @@ interface StudentRosterItem {
   };
 }
 
-export default function TeacherDashboardPage() {
-  const { user } = useAuth();
+interface SectionItem {
+  id: string;
+  name: string;
+}
 
+interface ClassItem {
+  id: string;
+  name: string;
+  sections?: SectionItem[];
+}
+
+interface SubjectItem {
+  id: string;
+  name: string;
+  code: string;
+}
+
+interface AcademicYearItem {
+  id: string;
+  name: string;
+  isCurrent: boolean;
+}
+
+interface AssignmentItem {
+  id: string;
+  title: string;
+  description: string;
+  instructions?: string;
+  dueDate: string;
+  maxMarks: number;
+  subject?: { name: string };
+  class?: { name: string };
+  section?: { name: string };
+  submissions?: Array<{ id: string }>;
+}
+
+export default function TeacherDashboardPage() {
   // Active view: 'attendance' or 'assignments'
   const [activeTab, setActiveTab] = useState<'attendance' | 'assignments'>('attendance');
 
   // Attendance states
-  const [classes, setClasses] = useState<any[]>([]);
-  const [subjects, setSubjects] = useState<any[]>([]);
-  const [academicYears, setAcademicYears] = useState<any[]>([]);
+  const [classes, setClasses] = useState<ClassItem[]>([]);
+  const [subjects, setSubjects] = useState<SubjectItem[]>([]);
+  const [academicYears, setAcademicYears] = useState<AcademicYearItem[]>([]);
 
   const [selectedClassId, setSelectedClassId] = useState('');
   const [selectedSectionId, setSelectedSectionId] = useState('');
   const [selectedSubjectId, setSelectedSubjectId] = useState('');
   const [selectedPeriod, setSelectedPeriod] = useState(1);
-  const [attendanceDate, setAttendanceDate] = useState(new Date().toISOString().split('T')[0]);
+  const [attendanceDate, setAttendanceDate] = useState('');
 
   const [roster, setRoster] = useState<StudentRosterItem[]>([]);
   const [attendanceMap, setAttendanceMap] = useState<Record<string, 'PRESENT' | 'ABSENT' | 'LATE'>>({});
@@ -52,25 +80,32 @@ export default function TeacherDashboardPage() {
   const [attendanceStatusMsg, setAttendanceStatusMsg] = useState<string | null>(null);
 
   // Assignment states
-  const [assignments, setAssignments] = useState<any[]>([]);
+  const [assignments, setAssignments] = useState<AssignmentItem[]>([]);
   const [showCreateAssignment, setShowCreateAssignment] = useState(false);
   const [assignmentStatusMsg, setAssignmentStatusMsg] = useState<string | null>(null);
   const [assignmentForm, setAssignmentForm] = useState({
     title: '',
     description: '',
     instructions: '',
-    dueDate: new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 16),
+    dueDate: '',
     maxMarks: 100,
   });
+
+  useEffect(() => {
+    const today = new Date().toISOString().split('T')[0];
+    const nextWeek = new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 16);
+    setAttendanceDate(today);
+    setAssignmentForm((prev) => ({ ...prev, dueDate: nextWeek }));
+  }, []);
 
   useEffect(() => {
     async function loadMetadata() {
       try {
         const [classesRes, subjectsRes, yearsRes, assignmentsRes] = await Promise.all([
-          apiClient<any[]>('/academics/classes').catch(() => null),
-          apiClient<any[]>('/academics/subjects').catch(() => null),
-          apiClient<any[]>('/academics/years').catch(() => null),
-          apiClient<any[]>('/assignments').catch(() => null),
+          apiClient<ClassItem[]>('/academics/classes').catch(() => null),
+          apiClient<SubjectItem[]>('/academics/subjects').catch(() => null),
+          apiClient<AcademicYearItem[]>('/academics/years').catch(() => null),
+          apiClient<AssignmentItem[]>('/assignments').catch(() => null),
         ]);
 
         if (classesRes?.data) {
@@ -166,8 +201,9 @@ export default function TeacherDashboardPage() {
       });
 
       setAttendanceStatusMsg('Attendance submitted and finalized successfully. Record is locked.');
-    } catch (err: any) {
-      setAttendanceStatusMsg(`Error: ${err.message}`);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Submission failed';
+      setAttendanceStatusMsg(`Error: ${message}`);
     } finally {
       setSubmittingAttendance(false);
     }
@@ -192,10 +228,11 @@ export default function TeacherDashboardPage() {
       setShowCreateAssignment(false);
       setAssignmentStatusMsg('Assignment published to students successfully!');
       // Reload assignments
-      const res = await apiClient<any[]>('/assignments');
+      const res = await apiClient<AssignmentItem[]>('/assignments');
       if (res.data) setAssignments(res.data);
-    } catch (err: any) {
-      setAssignmentStatusMsg(`Error: ${err.message}`);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Creation failed';
+      setAssignmentStatusMsg(`Error: ${message}`);
     }
   };
 
@@ -216,21 +253,19 @@ export default function TeacherDashboardPage() {
         <div className="flex bg-slate-200/80 p-1 rounded-xl text-xs font-semibold">
           <button
             onClick={() => setActiveTab('attendance')}
-            className={`px-4 py-2 rounded-lg transition ${
-              activeTab === 'attendance'
+            className={`px-4 py-2 rounded-lg transition ${activeTab === 'attendance'
                 ? 'bg-white text-indigo-600 shadow-sm'
                 : 'text-slate-600 hover:text-slate-900'
-            }`}
+              }`}
           >
             Mark Period Attendance
           </button>
           <button
             onClick={() => setActiveTab('assignments')}
-            className={`px-4 py-2 rounded-lg transition ${
-              activeTab === 'assignments'
+            className={`px-4 py-2 rounded-lg transition ${activeTab === 'assignments'
                 ? 'bg-white text-indigo-600 shadow-sm'
                 : 'text-slate-600 hover:text-slate-900'
-            }`}
+              }`}
           >
             Assignments & Coursework
           </button>
@@ -241,13 +276,6 @@ export default function TeacherDashboardPage() {
         <div className="p-4 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-semibold flex items-center justify-between">
           <span>{attendanceStatusMsg}</span>
           <button onClick={() => setAttendanceStatusMsg(null)} className="text-indigo-400">×</button>
-        </div>
-      )}
-
-      {assignmentStatusMsg && (
-        <div className="p-4 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-semibold flex items-center justify-between">
-          <span>{assignmentStatusMsg}</span>
-          <button onClick={() => setAssignmentStatusMsg(null)} className="text-indigo-400">×</button>
         </div>
       )}
 
@@ -280,7 +308,7 @@ export default function TeacherDashboardPage() {
                 onChange={(e) => setSelectedSectionId(e.target.value)}
                 className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-indigo-500 bg-white"
               >
-                {currentClassObj?.sections?.map((s: any) => (
+                {currentClassObj?.sections?.map((s) => (
                   <option key={s.id} value={s.id}>{s.name}</option>
                 ))}
               </select>
@@ -390,13 +418,12 @@ export default function TeacherDashboardPage() {
                             <button
                               type="button"
                               onClick={() => handleToggleStatus(item.student.id)}
-                              className={`px-4 py-1.5 rounded-xl font-bold text-xs inline-flex items-center gap-1.5 shadow-sm transition ${
-                                isPresent
+                              className={`px-4 py-1.5 rounded-xl font-bold text-xs inline-flex items-center gap-1.5 shadow-sm transition ${isPresent
                                   ? 'bg-emerald-500 text-white hover:bg-emerald-600'
                                   : isAbsent
-                                  ? 'bg-rose-500 text-white hover:bg-rose-600'
-                                  : 'bg-amber-500 text-white hover:bg-amber-600'
-                              }`}
+                                    ? 'bg-rose-500 text-white hover:bg-rose-600'
+                                    : 'bg-amber-500 text-white hover:bg-amber-600'
+                                }`}
                             >
                               {isPresent && <Check className="w-3.5 h-3.5" />}
                               {isAbsent && <X className="w-3.5 h-3.5" />}
@@ -570,4 +597,3 @@ export default function TeacherDashboardPage() {
     </div>
   );
 }
-
