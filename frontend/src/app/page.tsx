@@ -179,6 +179,8 @@ export default function HomePage() {
             alt="Dandelion Kidz Classroom Sanctuary"
             fill
             priority
+            loading="eager"
+            sizes="100vw"
             className="object-cover object-center transition-all duration-700"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/15 to-transparent flex items-end">
@@ -240,6 +242,7 @@ export default function HomePage() {
                   src="/images/welcome-entrance.jpg"
                   alt="Dandelion Kidz Campus Entrance"
                   fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover"
                 />
               </div>
@@ -397,6 +400,7 @@ export default function HomePage() {
                   src="/images/franchisee-playground.jpg"
                   alt="Dandelion Kidz Children Playground"
                   fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-contain"
                 />
               </div>
@@ -483,6 +487,7 @@ export default function HomePage() {
                       src={prog.image}
                       alt={prog.title}
                       fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       className="object-cover"
                     />
                   </div>
@@ -577,6 +582,7 @@ export default function HomePage() {
                   src={img.src}
                   alt={img.title}
                   fill
+                  sizes="(max-width: 640px) 50vw, 25vw"
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-2 text-center">
@@ -611,6 +617,7 @@ export default function HomePage() {
                 src={lightboxPhoto.src}
                 alt={lightboxPhoto.title}
                 fill
+                sizes="(max-width: 768px) 100vw, 700px"
                 className="object-contain"
               />
             </div>

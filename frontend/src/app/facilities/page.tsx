@@ -151,6 +151,7 @@ export default function FacilitiesPage() {
                     src={fac.image}
                     alt={fac.title}
                     fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
                     className="object-cover"
                   />
                   <div className="absolute top-4 left-4">

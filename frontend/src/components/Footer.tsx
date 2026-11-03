@@ -179,6 +179,7 @@ export default function Footer() {
             src="/images/footer-kids-walking.png"
             alt="Children Walking in Nature at Dandelion Kidz"
             fill
+            sizes="(max-width: 1200px) 100vw, 1152px"
             className="object-contain object-bottom"
           />
         </div>
