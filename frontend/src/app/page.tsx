@@ -352,21 +352,32 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ---------------- 4. FRANCHISEE MODEL (Positioned Above Programs) ---------------- */}
+      {/* ---------------- 4. FRANCHISEE MODEL (Exact Matching Image 2) ---------------- */}
       <section id="franchise" className="py-16 sm:py-24 bg-white relative overflow-hidden">
-        {/* Curving Dandelion Seed Vine Trajectory SVG */}
-        <div className="w-full absolute top-8 left-0 right-0 opacity-20 pointer-events-none hidden md:block">
-          <svg viewBox="0 0 1200 120" className="w-full h-24 stroke-[#1B365D]" fill="none">
-            <path
-              d="M0,60 Q300,10 600,60 T1200,60"
-              strokeWidth="2"
-              strokeDasharray="6 6"
-            />
+        {/* Floating Dandelion Seeds in Top Corners */}
+        <div className="absolute top-10 left-8 sm:left-16 pointer-events-none opacity-40">
+          <svg width="40" height="40" viewBox="0 0 100 100" fill="none" stroke="#1B365D" strokeWidth="2">
+            <line x1="80" y1="80" x2="30" y2="30" />
+            <circle cx="30" cy="30" r="3" fill="#1B365D" />
+            <line x1="30" y1="30" x2="10" y2="20" />
+            <line x1="30" y1="30" x2="20" y2="10" />
+            <line x1="30" y1="30" x2="10" y2="35" />
+            <line x1="30" y1="30" x2="35" y2="10" />
+          </svg>
+        </div>
+        <div className="absolute top-8 right-12 sm:right-24 pointer-events-none opacity-40">
+          <svg width="48" height="48" viewBox="0 0 100 100" fill="none" stroke="#1B365D" strokeWidth="2">
+            <line x1="20" y1="80" x2="70" y2="30" />
+            <circle cx="70" cy="30" r="3" fill="#1B365D" />
+            <line x1="70" y1="30" x2="90" y2="20" />
+            <line x1="70" y1="30" x2="80" y2="10" />
+            <line x1="70" y1="30" x2="90" y2="35" />
+            <line x1="70" y1="30" x2="65" y2="10" />
           </svg>
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             {/* Left Content */}
             <div className="space-y-5">
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight">
@@ -385,7 +396,7 @@ export default function HomePage() {
               <div className="pt-2">
                 <Link
                   href="/admissions"
-                  className="px-8 py-3 bg-[#1B365D] hover:bg-[#152a48] text-white font-bold text-xs uppercase tracking-wider rounded-full shadow-md transition inline-flex items-center gap-2"
+                  className="px-8 py-3 bg-[#1B365D] hover:bg-[#152a48] text-white font-bold text-xs uppercase tracking-wider rounded-full shadow-md transition inline-flex items-center gap-2 hover:scale-105"
                 >
                   Explore Now
                   <ArrowRight className="w-4 h-4" />
@@ -393,12 +404,12 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Right Playground Slide Cartoon */}
-            <div className="relative rounded-3xl overflow-hidden bg-gradient-to-tr from-[#F0F7E8] to-white p-6 border border-slate-100 flex items-center justify-center">
-              <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden">
+            {/* Right: ONLY the Playground Slide with Children (Clean, Transparent, No Box) */}
+            <div className="relative flex items-center justify-center">
+              <div className="relative w-full max-w-lg h-72 sm:h-80 md:h-96">
                 <Image
-                  src="/images/franchisee-playground.jpg"
-                  alt="Dandelion Kidz Children Playground"
+                  src="/images/playground-slide-clean.png"
+                  alt="Dandelion Kidz Children Playground Slide"
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-contain"
@@ -408,25 +419,33 @@ export default function HomePage() {
           </div>
 
           {/* Dandelion Vine with Stem & Floating Seeds at bottom of Franchisee */}
-          <div className="mt-12 pt-6 relative flex items-center justify-center">
-            <svg viewBox="0 0 1000 80" className="w-full max-w-4xl h-16 stroke-[#1B365D] fill-none">
+          <div className="mt-8 pt-4 relative flex items-center justify-center">
+            <svg viewBox="0 0 1000 90" className="w-full max-w-5xl h-20 stroke-[#1B365D] fill-none">
               <path
-                d="M 50,40 Q 250,80 500,40 T 900,40"
-                strokeWidth="1.5"
+                d="M 30,50 Q 200,90 450,55 T 880,50"
+                strokeWidth="2"
                 strokeDasharray="4 4"
               />
-              {/* Floating Dandelion puffs */}
-              <circle cx="150" cy="50" r="3" fill="#76A136" />
-              <line x1="150" y1="50" x2="160" y2="40" stroke="#76A136" strokeWidth="1" />
-              <circle cx="350" cy="30" r="3" fill="#76A136" />
-              <line x1="350" y1="30" x2="360" y2="20" stroke="#76A136" strokeWidth="1" />
-              <circle cx="600" cy="50" r="3" fill="#76A136" />
-              <line x1="600" y1="50" x2="610" y2="40" stroke="#76A136" strokeWidth="1" />
-              <circle cx="750" cy="30" r="3" fill="#76A136" />
-              <line x1="750" y1="30" x2="760" y2="20" stroke="#76A136" strokeWidth="1" />
-              {/* Big Dandelion flower on right */}
-              <circle cx="900" cy="40" r="5" fill="#1B365D" />
-              <circle cx="900" cy="40" r="16" stroke="#1B365D" strokeWidth="1" strokeDasharray="2 2" />
+              {/* Floating Dandelion puffs along the vine */}
+              <circle cx="120" cy="62" r="3" fill="#76A136" />
+              <line x1="120" y1="62" x2="128" y2="48" stroke="#76A136" strokeWidth="1.5" />
+
+              <circle cx="280" cy="72" r="3" fill="#76A136" />
+              <line x1="280" y1="72" x2="288" y2="58" stroke="#76A136" strokeWidth="1.5" />
+
+              <circle cx="480" cy="54" r="3" fill="#76A136" />
+              <line x1="480" y1="54" x2="488" y2="40" stroke="#76A136" strokeWidth="1.5" />
+
+              <circle cx="680" cy="58" r="3" fill="#76A136" />
+              <line x1="680" y1="58" x2="688" y2="44" stroke="#76A136" strokeWidth="1.5" />
+
+              <circle cx="790" cy="52" r="3" fill="#76A136" />
+              <line x1="790" y1="52" x2="798" y2="38" stroke="#76A136" strokeWidth="1.5" />
+
+              {/* Big Dandelion flower on the right */}
+              <circle cx="890" cy="50" r="5" fill="#1B365D" />
+              <circle cx="890" cy="50" r="16" stroke="#1B365D" strokeWidth="1.5" strokeDasharray="3 3" />
+              <circle cx="890" cy="50" r="26" stroke="#1B365D" strokeWidth="1" strokeDasharray="2 3" opacity="0.6" />
             </svg>
           </div>
         </div>
