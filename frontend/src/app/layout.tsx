@@ -6,9 +6,9 @@ import { AuthProvider } from '@/lib/auth-context';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Apex Academy - School Management & Academic Tracking Platform',
+  title: 'Dandelion Kidz - School Management & Academic Tracking Platform',
   description:
-    'Comprehensive single-institution educational management system for students, faculty, and administration.',
+    'Dedicated educational management platform for Dandelion Kidz Pre School, students, faculty, and administration.',
 };
 
 export default function RootLayout({
@@ -17,8 +17,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${inter.className} min-h-screen bg-slate-50 text-slate-900 antialiased`}>
+    <html lang="en" suppressHydrationWarning>
+      <body
+        suppressHydrationWarning
+        className={`${inter.className} min-h-screen bg-slate-50 text-slate-900 antialiased`}
+      >
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
