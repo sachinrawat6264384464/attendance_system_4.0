@@ -10,670 +10,515 @@ import {
   GraduationCap,
   Sparkles,
   ArrowRight,
-  ChevronLeft,
-  ChevronRight,
-  Rocket,
+  Phone,
+  MapPin,
   CheckCircle2,
-  Eye,
-  X,
+  BookOpen,
+  Award,
+  ShieldCheck,
+  Users,
+  Compass,
+  Trophy,
+  Smile,
+  CalendarCheck,
+  Clock,
+  Layers,
 } from 'lucide-react';
 
 export default function HomePage() {
-  const [activeSlide, setActiveSlide] = useState(0);
-  const [lightboxPhoto, setLightboxPhoto] = useState<{ src: string; title: string } | null>(null);
-
-  const heroSlides = [
+  const whyChoosePoints = [
     {
-      image: '/images/hero-playroom.jpg',
-      title: 'Vibrant Play & Sensory Learning Sanctuary',
-      subtitle: 'Nurturing curiosity through experiential play, puppet theatre, and sensory corners.',
+      title: 'English Medium Education',
+      description: 'Comprehensive English medium curriculum focusing on strong foundational literacy, numeracy, and fluent communication.',
+      icon: BookOpen,
+      color: 'bg-blue-600',
+      lightBg: 'bg-blue-50',
+      border: 'border-blue-200',
     },
     {
-      image: '/images/welcome-entrance.jpg',
-      title: 'A Safe Haven Where Learning Occurs Effortlessly',
-      subtitle: 'Where every child is celebrated, building trust, independence, and joy.',
-    },
-  ];
-
-  const differentiators = [
-    {
-      title: 'Nature - Based Learning',
-      headerBg: 'bg-[#1B365D]',
-      borderColor: 'border-[#1B365D]',
-      description:
-        'Reggio-inspired classroom activities focus on interacting with natural elements that eliminates forced learning for a child.',
+      title: 'Qualified & Experienced Teachers',
+      description: 'Dedicated faculty committed to patient mentorship, conceptual clarity, and personal attention for every learner.',
+      icon: Users,
+      color: 'bg-emerald-600',
+      lightBg: 'bg-emerald-50',
+      border: 'border-emerald-200',
     },
     {
-      title: '7+ Learning Corners',
-      headerBg: 'bg-[#76A136]',
-      borderColor: 'border-[#76A136]',
-      description:
-        'Thoughtfully designed for providing exclusive learning experience where a child evolves at their own pace.',
+      title: 'Smart Classes & Modern Teaching',
+      description: 'Interactive audio-visual smart classroom technology making complex concepts easy, engaging, and memorable.',
+      icon: Sparkles,
+      color: 'bg-purple-600',
+      lightBg: 'bg-purple-50',
+      border: 'border-purple-200',
     },
     {
-      title: 'Social & Bonding Activities',
-      headerBg: 'bg-[#E87722]',
-      borderColor: 'border-[#E87722]',
-      description:
-        'Playful activities that imbibe friendship, empathy, and natural socializing instincts in a supportive environment.',
+      title: 'Special Focus on English Speaking',
+      description: 'Daily phonics, conversation drills, storytelling, and public speaking clubs to build lifelong confidence in English.',
+      icon: Compass,
+      color: 'bg-amber-600',
+      lightBg: 'bg-amber-50',
+      border: 'border-amber-200',
     },
     {
-      title: '6+ Trips & Walks',
-      headerBg: 'bg-[#E91E63]',
-      borderColor: 'border-[#E91E63]',
-      description:
-        'Sensory-rich excursions to botanical gardens, local farms, fire stations, and nature trails that build experiential understanding.',
+      title: 'Sports & Cultural Activities',
+      description: 'Robust sports programs, annual sports day, dance, drama, art, and music nurturing both physical stamina and creative expression.',
+      icon: Trophy,
+      color: 'bg-rose-600',
+      lightBg: 'bg-rose-50',
+      border: 'border-rose-200',
     },
     {
-      title: 'Community Meal',
-      headerBg: 'bg-[#7B1FA2]',
-      borderColor: 'border-[#7B1FA2]',
-      description:
-        'Wholesome shared dining experiences teaching table etiquette, food gratitude, mindful eating, and sharing.',
+      title: 'Discipline & Moral Values',
+      description: 'Inculcating Indian cultural ethos, mutual respect, civic sense, and ethical integrity as core building blocks of character.',
+      icon: Award,
+      color: 'bg-indigo-600',
+      lightBg: 'bg-indigo-50',
+      border: 'border-indigo-200',
     },
     {
-      title: 'Parents Partnership',
-      headerBg: 'bg-[#00695C]',
-      borderColor: 'border-[#00695C]',
-      description:
-        'Collaborative workshops, milestone tracking, and daily digital portal insights keeping parents closely involved.',
-    },
-  ];
-
-  const programs = [
-    {
-      id: 'todd-care',
-      title: 'Todd Care',
-      age: '1 to 2 years',
-      duration: '2 Hours',
-      color: '#1B365D',
-      bgCard: 'bg-[#EBF3FA]',
-      dotColor: 'bg-[#1B365D]',
-      image: '/images/hero-playroom.jpg',
-      description:
-        'A nurturing space where toddlers ease into early separation, build trust, and explore the world around them through their senses.',
+      title: 'Safe and Friendly Environment',
+      description: 'CCTV monitored campus, child-safe infrastructure, loving caretakers, and high sanitation standards providing complete peace of mind.',
+      icon: ShieldCheck,
+      color: 'bg-teal-600',
+      lightBg: 'bg-teal-50',
+      border: 'border-teal-200',
     },
     {
-      id: 'playhouse',
-      title: 'Playhouse',
-      age: '2 to 3 years',
-      duration: '3 Hours',
-      color: '#76A136',
-      bgCard: 'bg-[#F0F7E8]',
-      dotColor: 'bg-[#76A136]',
-      image: '/images/welcome-entrance.jpg',
-      description:
-        'A transition space from toddler to preschooler, focused on self-expression, imagination, and early independence.',
-    },
-    {
-      id: 'nursery',
-      title: 'Nursery',
-      age: '3 to 4 years',
-      duration: '3 Hours',
-      color: '#E87722',
-      bgCard: 'bg-[#FDF1E6]',
-      dotColor: 'bg-[#E87722]',
-      image: '/images/hero-playroom.jpg',
-      description:
-        'A foundation year focusing on conceptual understanding, creativity, language development, and cognitive exploration.',
-    },
-    {
-      id: 'jr-kg',
-      title: 'Jr. Kg.',
-      age: '4 to 5 years',
-      duration: '3.5 Hours',
-      color: '#E91E63',
-      bgCard: 'bg-[#FCE8EF]',
-      dotColor: 'bg-[#E91E63]',
-      image: '/images/welcome-entrance.jpg',
-      description:
-        'Cultivating early literacy, mathematical reasoning, social bonding, and self-confidence through structured play.',
-    },
-    {
-      id: 'sr-kg',
-      title: 'Sr. Kg.',
-      age: '5 to 6 years',
-      duration: '3.5 Hours',
-      color: '#2A7B9B',
-      bgCard: 'bg-[#EAF4F7]',
-      dotColor: 'bg-[#2A7B9B]',
-      image: '/images/hero-playroom.jpg',
-      description:
-        'Comprehensive school-readiness curriculum aligned with NEP 2020, focusing on critical thinking and communication.',
-    },
-    {
-      id: 'day-care',
-      title: 'Day Care',
-      age: '1 to 10 years',
-      duration: 'Full Day / Flexible',
-      color: '#7B1FA2',
-      bgCard: 'bg-[#F4ECF8]',
-      dotColor: 'bg-[#7B1FA2]',
-      image: '/images/welcome-entrance.jpg',
-      description:
-        'Secure extended care with wholesome nutrition, nap routines, guided evening hobby activities, and warm supervision.',
+      title: 'Quality Education for a Better Tomorrow',
+      description: 'Holistic growth from Playgroup to 8th class, empowering students to lead, innovate, and succeed in higher secondary pursuits.',
+      icon: GraduationCap,
+      color: 'bg-[#D32F2F]',
+      lightBg: 'bg-red-50',
+      border: 'border-red-200',
     },
   ];
 
-  const galleryImages = [
-    { id: 1, src: '/images/gallery-1.jpg', title: 'Jamboree Stage Celebration' },
-    { id: 2, src: '/images/gallery-2.jpg', title: 'Campus Evening Festival & Light Canopy' },
-    { id: 3, src: '/images/gallery-3.jpg', title: 'Sensory Botanical Chemistry Glasses' },
-    { id: 4, src: '/images/gallery-4.jpg', title: 'Children Community Meal Table' },
-    { id: 5, src: '/images/gallery-5.jpg', title: 'Outdoor Sensory Sand Pit Play' },
-    { id: 6, src: '/images/gallery-6.jpg', title: 'Theatrical Stage Presentation' },
-    { id: 7, src: '/images/gallery-7.jpg', title: 'Mentors Felicitation Ceremony' },
-    { id: 8, src: '/images/gallery-8.jpg', title: 'Parents & Community Annual Day Gathering' },
+  const classWings = [
+    {
+      wing: 'Pre-Primary Wing',
+      badge: 'Early Childhood Care',
+      classes: 'PG, Nursery, LKG, UKG',
+      color: 'from-amber-500 to-orange-600',
+      bgColor: 'bg-amber-50',
+      borderColor: 'border-amber-200',
+      features: ['Sensory Play & Phonics', 'Motor Skill Development', 'Rhymes & Storytelling', 'Nurturing Playrooms'],
+    },
+    {
+      wing: 'Primary Wing',
+      badge: 'Foundational Stage',
+      classes: 'Class 1st to 5th',
+      color: 'from-blue-600 to-indigo-700',
+      bgColor: 'bg-blue-50',
+      borderColor: 'border-blue-200',
+      features: ['Mathematical Logic', 'Environmental Science', 'Hindi & English Grammar', 'Smart Classroom Learning'],
+    },
+    {
+      wing: 'Middle Wing',
+      badge: 'Preparatory & Experiential',
+      classes: 'Class 6th to 8th',
+      color: 'from-emerald-600 to-teal-700',
+      bgColor: 'bg-emerald-50',
+      borderColor: 'border-emerald-200',
+      features: ['Science Lab & Computers', 'Analytical Problem Solving', 'Social Sciences & Civics', 'Sports & Leadership'],
+    },
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FCFDFD] text-slate-800">
+    <div className="min-h-screen bg-[#FDFEFE] text-slate-900 font-sans">
       <Navbar />
-      <FloatingContact />
 
-      {/* ---------------- 1. HERO SLIDER SECTION (Cleaned - No Dummy Navbar) ---------------- */}
-      <section className="relative w-full overflow-hidden bg-slate-900">
-        <div className="relative h-[380px] sm:h-[480px] md:h-[560px] w-full">
-          <Image
-            src={heroSlides[activeSlide].image}
-            alt="Dandelion Kidz Classroom Sanctuary"
-            fill
-            priority
-            loading="eager"
-            sizes="100vw"
-            className="object-cover object-center transition-all duration-700"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/15 to-transparent flex items-end">
-            <div className="max-w-7xl mx-auto px-6 pb-20 sm:pb-24 text-white text-center w-full">
-              <span className="inline-block px-4 py-1.5 rounded-full bg-white/20 backdrop-blur text-white text-xs font-bold uppercase tracking-widest mb-3">
-                Pre School • Day Care • Activity Center
-              </span>
-              <h1 className="text-2xl sm:text-4xl md:text-5xl font-extrabold tracking-tight drop-shadow-md">
-                {heroSlides[activeSlide].title}
-              </h1>
-              <p className="mt-3 text-sm sm:text-base text-slate-200 max-w-2xl mx-auto drop-shadow-sm hidden sm:block">
-                {heroSlides[activeSlide].subtitle}
-              </p>
-            </div>
-          </div>
-
-          {/* Carousel Arrows */}
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20">
-            <button
-              onClick={() => setActiveSlide((prev) => (prev === 0 ? heroSlides.length - 1 : prev - 1))}
-              className="w-10 h-10 rounded-full bg-white/95 hover:bg-white text-[#1B365D] shadow-md flex items-center justify-center transition hover:scale-105"
-              aria-label="Previous Slide"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <button
-              onClick={() => setActiveSlide((prev) => (prev === heroSlides.length - 1 ? 0 : prev + 1))}
-              className="w-10 h-10 rounded-full bg-white/95 hover:bg-white text-[#1B365D] shadow-md flex items-center justify-center transition hover:scale-105"
-              aria-label="Next Slide"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-
-        {/* Wavy Cloud Bottom Divider */}
-        <div className="w-full overflow-hidden leading-none -mt-8 sm:-mt-12 relative z-10">
-          <svg
-            className="relative block w-full h-12 sm:h-20 text-[#FCFDFD]"
-            viewBox="0 0 1200 120"
-            preserveAspectRatio="none"
-          >
-            <path
-              d="M0,0 C150,90 350,-40 500,45 C650,130 900,10 1200,50 L1200,120 L0,120 Z"
-              fill="currentColor"
-            />
-          </svg>
-        </div>
-      </section>
-
-      {/* ---------------- 2. WELCOME TO DANDELION KIDZ ---------------- */}
-      <section className="py-12 sm:py-20 relative overflow-hidden bg-[#FCFDFD]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Left Clean Entrance Image with Balloon Accents */}
-            <div className="relative">
-              <div className="relative rounded-3xl overflow-hidden shadow-xl border-4 border-white aspect-[4/3] bg-slate-100">
-                <Image
-                  src="/images/welcome-entrance.jpg"
-                  alt="Dandelion Kidz Campus Entrance"
-                  fill
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  className="object-cover"
-                />
-              </div>
-
-              {/* Floating Balloon Accents */}
-              <div className="absolute -top-6 right-6 flex -space-x-2">
-                <span className="w-7 h-9 rounded-full bg-red-500 shadow-md inline-block transform -rotate-6" />
-                <span className="w-8 h-10 rounded-full bg-amber-400 shadow-md inline-block transform rotate-6" />
-                <span className="w-7 h-9 rounded-full bg-blue-500 shadow-md inline-block transform -rotate-3" />
-                <span className="w-7 h-9 rounded-full bg-emerald-500 shadow-md inline-block transform rotate-12" />
-              </div>
-            </div>
-
-            {/* Right Content */}
-            <div className="space-y-5">
-              <div className="inline-flex items-center gap-2 text-[#76A136]">
-                <GraduationCap className="w-7 h-7" />
-              </div>
-
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">
-                <span className="text-[#1B365D]">Welcome to </span>
-                <span className="text-[#76A136]">Dandelion Kidz</span>
-              </h2>
-
-              <div className="text-sm sm:text-base font-bold text-slate-700 tracking-wide uppercase">
-                Pre School | Day Care | Activity Center
-              </div>
-
-              <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
-                At Dandelion Kidz, we make conscious efforts to provide children with their safe place, filled with freedom to make mistakes and explore. Our aim is to create an environment where learning occurs effortlessly, which results in natural curiosity, joyful confidence, and genuine social empathy.
-              </p>
-
-              <div className="grid grid-cols-2 gap-4 pt-2">
-                <div className="flex items-center gap-2.5 text-xs sm:text-sm font-semibold text-slate-700">
-                  <CheckCircle2 className="w-4 h-4 text-[#76A136] shrink-0" />
-                  <span>Reggio-Inspired Play</span>
-                </div>
-                <div className="flex items-center gap-2.5 text-xs sm:text-sm font-semibold text-slate-700">
-                  <CheckCircle2 className="w-4 h-4 text-[#76A136] shrink-0" />
-                  <span>7+ Sensory Learning Corners</span>
-                </div>
-                <div className="flex items-center gap-2.5 text-xs sm:text-sm font-semibold text-slate-700">
-                  <CheckCircle2 className="w-4 h-4 text-[#76A136] shrink-0" />
-                  <span>5C Curriculum Methodology</span>
-                </div>
-                <div className="flex items-center gap-2.5 text-xs sm:text-sm font-semibold text-slate-700">
-                  <CheckCircle2 className="w-4 h-4 text-[#76A136] shrink-0" />
-                  <span>Live Parent Communication</span>
-                </div>
-              </div>
-
-              <div className="pt-4 flex flex-wrap gap-4">
-                <Link
-                  href="/admissions"
-                  className="px-6 py-3 bg-[#1B365D] hover:bg-[#152a48] text-white font-bold text-xs uppercase tracking-wider rounded-full shadow-md transition"
-                >
-                  Schedule A Campus Visit
-                </Link>
-                <Link
-                  href="/academics"
-                  className="px-6 py-3 bg-[#F0F7E8] hover:bg-[#e4f0d8] text-[#76A136] font-bold text-xs uppercase tracking-wider rounded-full border border-[#76A136]/30 transition"
-                >
-                  Read Our Philosophy
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ---------------- 3. HOW ARE WE DIFFERENT ? ---------------- */}
-      <section id="why-us" className="py-16 sm:py-24 bg-white relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header with Rocket & Balloon */}
-          <div className="flex items-center justify-center gap-4 mb-16 text-center">
-            <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 -rotate-45">
-              <Rocket className="w-6 h-6 text-indigo-600" />
-            </div>
-
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight">
-              <span className="text-[#1B365D]">How Are </span>
-              <span className="text-[#76A136]">We Different ?</span>
-            </h2>
-
-            <div className="w-6 h-8 rounded-full bg-blue-600 shadow-md inline-block transform rotate-12 shrink-0" />
-          </div>
-
-          {/* 6 Feature Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {differentiators.map((item) => (
-              <div
-                key={item.title}
-                className={`bg-white rounded-3xl border-2 ${item.borderColor} p-6 shadow-sm hover:shadow-lg transition-all flex flex-col items-center text-center relative pt-8`}
-              >
-                <div
-                  className={`absolute -top-5 px-6 py-2 rounded-full text-white font-bold text-xs tracking-wider shadow-sm ${item.headerBg}`}
-                >
-                  {item.title}
-                </div>
-
-                <p className="text-xs sm:text-sm text-slate-600 mt-3 leading-relaxed">
-                  {item.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ---------------- 4. FRANCHISEE MODEL (Exact Matching Image 2) ---------------- */}
-      <section id="franchise" className="py-16 sm:py-24 bg-white relative overflow-hidden">
-        {/* Floating Dandelion Seeds in Top Corners */}
-        <div className="absolute top-10 left-8 sm:left-16 pointer-events-none opacity-40">
-          <svg width="40" height="40" viewBox="0 0 100 100" fill="none" stroke="#1B365D" strokeWidth="2">
-            <line x1="80" y1="80" x2="30" y2="30" />
-            <circle cx="30" cy="30" r="3" fill="#1B365D" />
-            <line x1="30" y1="30" x2="10" y2="20" />
-            <line x1="30" y1="30" x2="20" y2="10" />
-            <line x1="30" y1="30" x2="10" y2="35" />
-            <line x1="30" y1="30" x2="35" y2="10" />
-          </svg>
-        </div>
-        <div className="absolute top-8 right-12 sm:right-24 pointer-events-none opacity-40">
-          <svg width="48" height="48" viewBox="0 0 100 100" fill="none" stroke="#1B365D" strokeWidth="2">
-            <line x1="20" y1="80" x2="70" y2="30" />
-            <circle cx="70" cy="30" r="3" fill="#1B365D" />
-            <line x1="70" y1="30" x2="90" y2="20" />
-            <line x1="70" y1="30" x2="80" y2="10" />
-            <line x1="70" y1="30" x2="90" y2="35" />
-            <line x1="70" y1="30" x2="65" y2="10" />
-          </svg>
-        </div>
+      {/* ---------------- 1. HERO SECTION ---------------- */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#EEF4FF] via-[#F8FAFC] to-white pt-8 pb-16 sm:pb-24">
+        {/* Decorative Background Elements */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-200/40 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-amber-200/30 rounded-full blur-3xl pointer-events-none -ml-20 -mb-20" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-            {/* Left Content */}
-            <div className="space-y-5">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight">
-                <span className="text-[#1B365D]">Franchisee </span>
-                <span className="text-[#76A136]">Model</span>
-              </h2>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            {/* Left Content (7 Cols) */}
+            <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
+              {/* Badge strip */}
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border-2 border-rose-200 text-[#D32F2F] text-xs font-black uppercase tracking-wider shadow-sm">
+                <Sparkles className="w-4 h-4 text-amber-500 animate-spin-slow" />
+                <span>Admission Open • Session 2027–28 • Limited Seats</span>
+              </div>
 
-              <p className="text-base sm:text-lg font-bold text-[#76A136]">
-                Planning to start a pre-school? Talk to our experts!
+              {/* Main Heading */}
+              <div>
+                <span className="text-sm sm:text-base font-extrabold text-[#D32F2F] tracking-widest uppercase block mb-1">
+                  Learn... Grow... Achieve...
+                </span>
+                <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-[#0D2056] tracking-tight leading-[1.1]">
+                  OM PUBLIC <span className="text-[#D32F2F]">SCHOOL</span>
+                  <span className="inline-block ml-3 px-3.5 py-1 bg-[#D32F2F] text-[#FFD600] rounded-2xl text-2xl sm:text-3xl font-black uppercase shadow-md align-middle transform -rotate-1">
+                    DABRA
+                  </span>
+                </h1>
+                <p className="mt-3 text-lg sm:text-xl font-bold text-[#0D2056]/80 italic">
+                  &ldquo;Quality Education for a Better Tomorrow&rdquo;
+                </p>
+              </div>
+
+              {/* Tagline / Subtitle */}
+              <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-xl mx-auto lg:mx-0">
+                Welcome to <strong>Om Public School, Dabra (District Gwalior, M.P.)</strong>. We provide holistic, English Medium education from <strong>Playgroup (PG) to 8th Standard</strong>, empowering children with academic excellence, strong communication skills, and noble moral values.
               </p>
 
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-lg">
-                Start your own Dandelion-kidz pre-school and make a difference in society by nurturing futures, facilitating success and helping children achieve happy milestones.
-              </p>
+              {/* Highlight Highlights Box */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-1 max-w-lg mx-auto lg:mx-0">
+                <div className="p-3 rounded-2xl bg-white border-2 border-blue-200 shadow-xs text-center">
+                  <div className="text-xs font-bold text-slate-500">Classes</div>
+                  <div className="text-base font-black text-[#0D2056]">PG to 8th</div>
+                </div>
+                <div className="p-3 rounded-2xl bg-white border-2 border-rose-200 shadow-xs text-center">
+                  <div className="text-xs font-bold text-slate-500">Medium</div>
+                  <div className="text-base font-black text-[#D32F2F]">English Medium</div>
+                </div>
+                <div className="p-3 rounded-2xl bg-white border-2 border-emerald-200 shadow-xs text-center col-span-2 sm:col-span-1">
+                  <div className="text-xs font-bold text-slate-500">Curriculum</div>
+                  <div className="text-base font-black text-emerald-700">Modern & Value-Based</div>
+                </div>
+              </div>
 
-              <div className="pt-2">
+              {/* CTA Buttons */}
+              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
                 <Link
                   href="/admissions"
-                  className="px-8 py-3 bg-[#1B365D] hover:bg-[#152a48] text-white font-bold text-xs uppercase tracking-wider rounded-full shadow-md transition inline-flex items-center gap-2 hover:scale-105"
+                  className="px-8 py-4 bg-[#D32F2F] hover:bg-[#b71c1c] text-white font-black text-sm uppercase tracking-wider rounded-full shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5 flex items-center gap-2 group"
                 >
-                  Explore Now
-                  <ArrowRight className="w-4 h-4" />
+                  <span>Apply for Admission</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </Link>
+
+                <a
+                  href="tel:+917999083379"
+                  className="px-7 py-4 bg-white hover:bg-slate-50 text-[#0D2056] border-2 border-[#0D2056] font-extrabold text-sm rounded-full shadow-sm hover:shadow transition flex items-center gap-2"
+                >
+                  <Phone className="w-4 h-4 text-[#D32F2F]" />
+                  <span>Call: 7999083379</span>
+                </a>
+
+                <Link
+                  href="/login"
+                  className="px-6 py-4 bg-[#0D2056] hover:bg-[#081538] text-white font-bold text-xs uppercase tracking-wider rounded-full shadow-sm transition"
+                >
+                  Portal Login
                 </Link>
               </div>
-            </div>
 
-            {/* Right: ONLY the Playground Slide with Children (Clean, Transparent, No Box) */}
-            <div className="relative flex items-center justify-center">
-              <div className="relative w-full max-w-lg h-72 sm:h-80 md:h-96">
-                <Image
-                  src="/images/kids-slide-illustration.png"
-                  alt="Dandelion Kidz Children Playground Slide"
-                  fill
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  className="object-contain"
-                />
+              {/* Campus Address quick indicator */}
+              <div className="flex items-center justify-center lg:justify-start gap-2 text-xs text-slate-500 pt-1 font-semibold">
+                <MapPin className="w-4 h-4 text-rose-500 shrink-0" />
+                <span>Deedar Colony, Dabra, District Gwalior (M.P.)</span>
               </div>
             </div>
-          </div>
 
-          {/* Dandelion Vine with Stem & Floating Seeds at bottom of Franchisee */}
-          <div className="mt-8 pt-4 relative flex items-center justify-center">
-            <svg viewBox="0 0 1000 90" className="w-full max-w-5xl h-20 stroke-[#1B365D] fill-none">
-              <path
-                d="M 30,50 Q 200,90 450,55 T 880,50"
-                strokeWidth="2"
-                strokeDasharray="4 4"
-              />
-              {/* Floating Dandelion puffs along the vine */}
-              <circle cx="120" cy="62" r="3" fill="#76A136" />
-              <line x1="120" y1="62" x2="128" y2="48" stroke="#76A136" strokeWidth="1.5" />
+            {/* Right Poster Graphic (5 Cols) */}
+            <div className="lg:col-span-5 flex justify-center">
+              <div className="relative w-full max-w-md bg-white p-3 rounded-3xl shadow-2xl border-4 border-[#0D2056] overflow-hidden group">
+                {/* Poster Frame */}
+                <div className="relative aspect-[975/1024] w-full rounded-2xl overflow-hidden">
+                  <Image
+                    src="/images/om-public-school-poster.jpg"
+                    alt="Om Public School Dabra Official Admission Banner Session 2027-28"
+                    fill
+                    priority
+                    sizes="(max-width: 768px) 100vw, 40vw"
+                    className="object-contain transform group-hover:scale-[1.02] transition-transform duration-300"
+                  />
+                </div>
 
-              <circle cx="280" cy="72" r="3" fill="#76A136" />
-              <line x1="280" y1="72" x2="288" y2="58" stroke="#76A136" strokeWidth="1.5" />
-
-              <circle cx="480" cy="54" r="3" fill="#76A136" />
-              <line x1="480" y1="54" x2="488" y2="40" stroke="#76A136" strokeWidth="1.5" />
-
-              <circle cx="680" cy="58" r="3" fill="#76A136" />
-              <line x1="680" y1="58" x2="688" y2="44" stroke="#76A136" strokeWidth="1.5" />
-
-              <circle cx="790" cy="52" r="3" fill="#76A136" />
-              <line x1="790" y1="52" x2="798" y2="38" stroke="#76A136" strokeWidth="1.5" />
-
-              {/* Big Dandelion flower on the right */}
-              <circle cx="890" cy="50" r="5" fill="#1B365D" />
-              <circle cx="890" cy="50" r="16" stroke="#1B365D" strokeWidth="1.5" strokeDasharray="3 3" />
-              <circle cx="890" cy="50" r="26" stroke="#1B365D" strokeWidth="1" strokeDasharray="2 3" opacity="0.6" />
-            </svg>
+                {/* Floating Admission Badge */}
+                <div className="absolute top-6 right-6 bg-[#D32F2F] text-[#FFD600] px-3.5 py-1.5 rounded-full font-black text-xs uppercase tracking-wider shadow-lg border-2 border-white animate-bounce">
+                  Limited Seats!
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ---------------- 5. OUR PROGRAMS AT A GLANCE (Wavy Transition) ---------------- */}
-      <section id="programs" className="py-16 sm:py-24 bg-[#FAFDF7] relative border-t border-slate-100">
+      {/* ---------------- 2. WHY CHOOSE OM PUBLIC SCHOOL? ---------------- */}
+      <section id="why-us" className="py-16 sm:py-24 bg-white relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header with Cartoon Baby Faces on Left & Cloud Stars on Right */}
-          <div className="relative text-center max-w-2xl mx-auto mb-16 space-y-2">
-            {/* Cute Baby Faces Accent on Left */}
-            <div className="absolute -top-6 -left-12 hidden md:block">
-              <svg width="48" height="48" viewBox="0 0 100 100" fill="none" stroke="#A0AEC0" strokeWidth="2">
-                <circle cx="40" cy="40" r="24" />
-                <circle cx="34" cy="36" r="2.5" fill="#A0AEC0" />
-                <circle cx="46" cy="36" r="2.5" fill="#A0AEC0" />
-                <path d="M36 46 Q40 52 44 46" />
-                <circle cx="65" cy="55" r="20" />
-                <circle cx="60" cy="52" r="2" fill="#A0AEC0" />
-                <circle cx="70" cy="52" r="2" fill="#A0AEC0" />
-                <path d="M62 60 Q65 65 68 60" />
-              </svg>
+          {/* Section Header */}
+          <div className="text-center max-w-3xl mx-auto space-y-3 mb-14">
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-black uppercase tracking-wider">
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              <span>Official Institutional Features</span>
             </div>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#0D2056] tracking-tight">
+              Why Choose <span className="text-[#D32F2F]">Om Public School?</span>
+            </h2>
+            <p className="text-sm sm:text-base text-slate-600 font-medium">
+              We provide a disciplined, nurturing, and modern English medium learning environment that lays a solid foundation for your child&apos;s lifelong success.
+            </p>
+          </div>
 
-            {/* Cloud & Stars Accent on Right */}
-            <div className="absolute -top-6 -right-12 hidden md:block">
-              <svg width="60" height="40" viewBox="0 0 120 80" fill="none" stroke="#A0AEC0" strokeWidth="2">
-                <path d="M20 50 C10 50 10 30 25 30 C25 15 45 10 55 20 C65 10 85 15 85 30 C100 30 100 50 90 50 Z" />
-                <circle cx="25" cy="18" r="1.5" fill="#FFD13B" stroke="none" />
-                <circle cx="85" cy="15" r="1.5" fill="#FFD13B" stroke="none" />
-              </svg>
-            </div>
+          {/* 8 Feature Cards Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {whyChoosePoints.map((item, idx) => {
+              const Icon = item.icon;
+              return (
+                <div
+                  key={idx}
+                  className={`p-6 rounded-3xl border-2 ${item.border} ${item.lightBg} hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between`}
+                >
+                  <div className="space-y-4">
+                    <div className={`w-12 h-12 rounded-2xl ${item.color} text-white flex items-center justify-center shadow-md`}>
+                      <Icon className="w-6 h-6" />
+                    </div>
+                    <h3 className="text-base font-black text-slate-900 leading-snug">
+                      {item.title}
+                    </h3>
+                    <p className="text-xs text-slate-600 leading-relaxed">
+                      {item.description}
+                    </p>
+                  </div>
+                  <div className="pt-4 flex items-center gap-1.5 text-[#0D2056] text-xs font-bold">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                    <span>Verified Standard</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
 
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight">
-              <span className="text-[#1B365D]">Our Programs </span>
-              <span className="text-[#76A136]">at a Glance...</span>
+      {/* ---------------- 3. ACADEMIC WINGS (PG TO 8TH) ---------------- */}
+      <section className="py-16 sm:py-20 bg-gradient-to-b from-[#F8FAFC] to-[#EEF4FF] border-y border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-12 space-y-2">
+            <span className="text-xs font-black text-[#D32F2F] uppercase tracking-wider">
+              Comprehensive Schooling Structure
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-black text-[#0D2056] tracking-tight">
+              Academic Wings: <span className="text-[#D32F2F]">Classes PG to 8th</span>
             </h2>
             <p className="text-xs sm:text-sm text-slate-600">
-              Our programs are designed to help children acquire social skills and become future ready citizens.
+              Age-appropriate pedagogy designed to spark curiosity, build mastery, and instill confidence.
             </p>
           </div>
 
-          {/* 6 House-Gabled Program Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {programs.map((prog) => (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {classWings.map((wing, i) => (
               <div
-                key={prog.id}
-                className={`${prog.bgCard} rounded-3xl p-6 sm:p-7 shadow-sm border border-slate-200/60 flex flex-col justify-between hover:-translate-y-1 transition duration-300 relative overflow-hidden`}
+                key={i}
+                className={`bg-white rounded-3xl p-7 border-2 ${wing.borderColor} shadow-md hover:shadow-xl transition`}
               >
-                <div>
-                  <h3 className="text-xl sm:text-2xl font-extrabold text-center mb-4" style={{ color: prog.color }}>
-                    {prog.title}
-                  </h3>
+                <div className="inline-block px-3 py-1 rounded-full bg-slate-100 text-slate-700 font-bold text-[11px] uppercase tracking-wider mb-3">
+                  {wing.badge}
+                </div>
+                <h3 className="text-xl font-black text-[#0D2056]">{wing.wing}</h3>
+                <div className="text-lg font-black text-[#D32F2F] mt-1 mb-4">
+                  {wing.classes}
+                </div>
 
-                  {/* Photo with rounded borders */}
-                  <div className="relative h-44 w-full rounded-2xl overflow-hidden shadow-inner mb-5">
-                    <Image
-                      src={prog.image}
-                      alt={prog.title}
-                      fill
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      className="object-cover"
+                <div className="space-y-2.5 pt-3 border-t border-slate-100">
+                  {wing.features.map((feat, fi) => (
+                    <div key={fi} className="flex items-center gap-2 text-xs text-slate-700 font-semibold">
+                      <div className="w-1.5 h-1.5 rounded-full bg-[#D32F2F]" />
+                      <span>{feat}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="pt-6">
+                  <Link
+                    href="/admissions"
+                    className="w-full inline-block text-center py-2.5 px-4 rounded-xl bg-[#0D2056] hover:bg-[#D32F2F] text-white font-bold text-xs uppercase tracking-wider transition"
+                  >
+                    Enquire for {wing.wing}
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ---------------- 4. ADMISSION OPEN 2027-28 CALLOUT BANNER ---------------- */}
+      <section className="py-16 bg-[#0D2056] text-white relative overflow-hidden">
+        {/* Background Decorative Rings */}
+        <div className="absolute -left-20 -bottom-20 w-80 h-80 rounded-full border-8 border-white/5 pointer-events-none" />
+        <div className="absolute -right-20 -top-20 w-80 h-80 rounded-full border-8 border-white/5 pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="bg-gradient-to-r from-[#D32F2F] via-[#b71c1c] to-[#0D2056] rounded-3xl p-8 sm:p-12 shadow-2xl border-4 border-amber-300 flex flex-col lg:flex-row items-center justify-between gap-8">
+            <div className="space-y-3 text-center lg:text-left">
+              <span className="px-3.5 py-1 rounded-full bg-[#FFD600] text-[#0D2056] text-xs font-black uppercase tracking-wider inline-block">
+                Limited Seats Available!
+              </span>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight">
+                ADMISSION OPEN <span className="text-[#FFD600]">SESSION 2027–28</span>
+              </h2>
+              <p className="text-sm sm:text-base text-white/90 max-w-xl font-medium">
+                Enroll your child today at <strong>Om Public School, Dabra</strong>. Secure a bright, disciplined, and successful future with our smart classrooms and caring teachers.
+              </p>
+              <div className="pt-2 flex items-center justify-center lg:justify-start gap-4 text-xs font-bold text-amber-200">
+                <span>✓ Classes: PG to 8th</span>
+                <span>•</span>
+                <span>✓ English Medium</span>
+                <span>•</span>
+                <span>✓ Deedar Colony, Dabra</span>
+              </div>
+            </div>
+
+            <div className="shrink-0 flex flex-col sm:flex-row items-center gap-3">
+              <Link
+                href="/admissions"
+                className="px-8 py-4 bg-[#FFD600] hover:bg-[#ffca28] text-[#0D2056] font-black text-sm uppercase tracking-wider rounded-full shadow-xl transition transform hover:scale-105"
+              >
+                Apply Online Now
+              </Link>
+              <a
+                href="tel:+917999083379"
+                className="px-6 py-4 bg-white/10 hover:bg-white/20 text-white border-2 border-white/40 font-bold text-xs uppercase tracking-wider rounded-full transition flex items-center gap-2"
+              >
+                <Phone className="w-4 h-4 text-[#FFD600]" />
+                <span>Call: 7999083379</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ---------------- 5. CAMPUS LOCATION & CONTACT ---------------- */}
+      <section className="py-16 sm:py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+            {/* Campus Details Card */}
+            <div className="space-y-6">
+              <div>
+                <span className="text-xs font-black text-[#D32F2F] uppercase tracking-wider">
+                  Visit Our Campus
+                </span>
+                <h2 className="text-3xl sm:text-4xl font-black text-[#0D2056] tracking-tight mt-1">
+                  Om Public School, Dabra
+                </h2>
+                <p className="text-sm text-slate-600 mt-2">
+                  We welcome parents and guardians to visit our school campus, meet our leadership team, and witness our modern smart classrooms firsthand.
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex items-start gap-3.5 p-4 rounded-2xl bg-slate-50 border border-slate-200">
+                  <div className="w-10 h-10 rounded-xl bg-rose-100 text-[#D32F2F] flex items-center justify-center shrink-0">
+                    <MapPin className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="font-extrabold text-slate-900 text-sm">Official Address</h4>
+                    <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">
+                      Deedar Colony, Dabra, District Gwalior (Madhya Pradesh)
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3.5 p-4 rounded-2xl bg-slate-50 border border-slate-200">
+                  <div className="w-10 h-10 rounded-xl bg-blue-100 text-[#0D2056] flex items-center justify-center shrink-0">
+                    <Phone className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="font-extrabold text-slate-900 text-sm">Admissions Contact Numbers</h4>
+                    <p className="text-xs text-slate-700 font-bold mt-0.5">
+                      <a href="tel:+917999083379" className="hover:text-[#D32F2F]">7999083379</a>,{' '}
+                      <a href="tel:+919516469021" className="hover:text-[#D32F2F]">9516469021</a>
+                    </p>
+                    <p className="text-[11px] text-slate-500 mt-0.5">Available Monday to Saturday: 8:00 AM – 2:30 PM</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3.5 p-4 rounded-2xl bg-slate-50 border border-slate-200">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0">
+                    <Clock className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="font-extrabold text-slate-900 text-sm">School Office Timings</h4>
+                    <p className="text-xs text-slate-600 mt-0.5">
+                      Monday to Saturday : 08:00 AM to 02:30 PM (Sunday Closed)
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Admission Enquiry Form */}
+            <div className="bg-[#EEF4FF] p-8 rounded-3xl border-2 border-blue-200 shadow-lg space-y-5">
+              <div>
+                <h3 className="text-xl font-black text-[#0D2056]">Online Admission Enquiry</h3>
+                <p className="text-xs text-slate-600 mt-1">
+                  Fill in your details and our admission counselor will call you back promptly.
+                </p>
+              </div>
+
+              <form action="/admissions" method="GET" className="space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Parent&apos;s Name *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Enter parent or guardian full name"
+                    className="w-full px-4 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-slate-900 font-semibold text-xs focus:border-[#0D2056] focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Mobile Contact Phone *</label>
+                  <input
+                    type="tel"
+                    required
+                    placeholder="e.g. 7999083379"
+                    className="w-full px-4 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-slate-900 font-semibold text-xs focus:border-[#0D2056] focus:outline-none"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Seeking Class *</label>
+                    <select
+                      className="w-full px-3 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-slate-900 font-semibold text-xs focus:border-[#0D2056] focus:outline-none"
+                    >
+                      <option>Playgroup (PG)</option>
+                      <option>Nursery</option>
+                      <option>LKG</option>
+                      <option>UKG</option>
+                      <option>Class 1st</option>
+                      <option>Class 2nd</option>
+                      <option>Class 3rd</option>
+                      <option>Class 4th</option>
+                      <option>Class 5th</option>
+                      <option>Class 6th</option>
+                      <option>Class 7th</option>
+                      <option>Class 8th</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Academic Session</label>
+                    <input
+                      type="text"
+                      readOnly
+                      value="2027–28"
+                      className="w-full px-3 py-2.5 rounded-xl border-2 border-slate-200 bg-slate-100 text-slate-700 font-bold text-xs"
                     />
                   </div>
-
-                  <p className="text-xs sm:text-sm text-slate-700 leading-relaxed text-center min-h-[64px]">
-                    {prog.description}
-                  </p>
                 </div>
 
-                {/* Age & Timing Footer */}
-                <div className="pt-6 text-center border-t border-black/5 mt-4">
-                  <div className="text-xs font-bold text-slate-800">{prog.age}</div>
-                  <div className="text-[11px] font-semibold text-slate-500">{prog.duration}</div>
-
-                  {/* Center Dot Indicator */}
-                  <div className="mt-3 flex justify-center">
-                    <span className={`w-4 h-4 rounded-full ${prog.dotColor} inline-block`} />
-                  </div>
-                </div>
-              </div>
-            ))}
+                <button
+                  type="submit"
+                  className="w-full py-3.5 bg-[#D32F2F] hover:bg-[#b71c1c] text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-md transition"
+                >
+                  Proceed to Full Admission Application →
+                </button>
+              </form>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ---------------- 6. OUR GALLERY (Matching Image 3) ---------------- */}
-      <section id="gallery" className="py-16 sm:py-24 bg-white relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header with Shooting Star & Caterpillar */}
-          <div className="relative mb-12">
-            {/* Shooting Star with Rainbow Tail on Left */}
-            <div className="absolute left-2 sm:left-6 -top-2 flex items-center">
-              <svg width="42" height="42" viewBox="0 0 100 100" fill="none">
-                {/* Rainbow Tail */}
-                <path d="M50 30 Q70 20 85 30" stroke="#E91E63" strokeWidth="3" fill="none" />
-                <path d="M48 34 Q68 24 83 34" stroke="#FF9800" strokeWidth="3" fill="none" />
-                <path d="M46 38 Q66 28 81 38" stroke="#76A136" strokeWidth="3" fill="none" />
-                <path d="M44 42 Q64 32 79 42" stroke="#2196F3" strokeWidth="3" fill="none" />
-                {/* Star Face */}
-                <polygon points="30,10 36,25 52,25 39,35 44,50 30,40 16,50 21,35 8,25 24,25" fill="#EBF4FB" stroke="#90CAF9" strokeWidth="2" />
-                <circle cx="26" cy="27" r="1.5" fill="#1B365D" />
-                <circle cx="34" cy="27" r="1.5" fill="#1B365D" />
-                <path d="M28 32 Q30 35 32 32" stroke="#1B365D" strokeWidth="1" fill="none" />
-              </svg>
-            </div>
-
-            {/* Title & Subtitle */}
-            <div className="text-center max-w-xl mx-auto space-y-2">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight">
-                <span className="text-[#1B365D]">Our </span>
-                <span className="text-[#76A136]">Gallery</span>
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-600">
-                A curated collection of our finest moments, creative expressions, and visual stories.
-              </p>
-            </div>
-
-            {/* View All Button & Cute Caterpillar on Right */}
-            <div className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 flex items-center gap-3">
-              <Link
-                href="/gallery"
-                className="px-5 py-2 bg-[#1B365D] hover:bg-[#152a48] text-white text-xs font-bold rounded-full shadow transition"
-              >
-                View all
-              </Link>
-              {/* Cute Green Caterpillar */}
-              <div className="hidden md:block">
-                <svg width="44" height="24" viewBox="0 0 100 50">
-                  <circle cx="20" cy="30" r="12" fill="#76A136" />
-                  <circle cx="38" cy="28" r="11" fill="#8EA63A" />
-                  <circle cx="56" cy="28" r="11" fill="#76A136" />
-                  <circle cx="74" cy="30" r="12" fill="#8EA63A" />
-                  {/* Caterpillar Eyes */}
-                  <circle cx="16" cy="26" r="3" fill="white" />
-                  <circle cx="16" cy="26" r="1.5" fill="#1B365D" />
-                  <circle cx="24" cy="26" r="3" fill="white" />
-                  <circle cx="24" cy="26" r="1.5" fill="#1B365D" />
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          {/* 8 Photo Grid (4 Columns x 2 Rows) */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
-            {galleryImages.map((img) => (
-              <div
-                key={img.id}
-                onClick={() => setLightboxPhoto(img)}
-                className="group relative h-40 sm:h-48 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer bg-slate-100"
-              >
-                <Image
-                  src={img.src}
-                  alt={img.title}
-                  fill
-                  sizes="(max-width: 640px) 50vw, 25vw"
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-2 text-center">
-                  <span className="w-10 h-10 rounded-full bg-white/90 text-[#1B365D] flex items-center justify-center shadow">
-                    <Eye className="w-5 h-5" />
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Lightbox Modal */}
-      {lightboxPhoto && (
-        <div
-          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-4"
-          onClick={() => setLightboxPhoto(null)}
-        >
-          <div
-            className="bg-white rounded-3xl overflow-hidden max-w-2xl w-full shadow-2xl relative"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              onClick={() => setLightboxPhoto(null)}
-              className="absolute top-4 right-4 z-10 w-9 h-9 rounded-full bg-black/50 text-white hover:bg-black flex items-center justify-center transition"
-            >
-              <X className="w-5 h-5" />
-            </button>
-            <div className="relative h-72 sm:h-96 w-full bg-slate-900">
-              <Image
-                src={lightboxPhoto.src}
-                alt={lightboxPhoto.title}
-                fill
-                sizes="(max-width: 768px) 100vw, 700px"
-                className="object-contain"
-              />
-            </div>
-            <div className="p-6">
-              <h3 className="text-lg font-bold text-[#1B365D]">
-                {lightboxPhoto.title}
-              </h3>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ---------------- 7. INTEGRATED PORTAL BANNER ---------------- */}
-      <section className="py-12 bg-gradient-to-r from-[#1B365D] to-[#254673] text-white relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="space-y-1 text-center md:text-left">
-            <h3 className="text-xl sm:text-2xl font-extrabold tracking-tight">
-              Integrated Staff & Parent Digital Portal
-            </h3>
-            <p className="text-xs sm:text-sm text-slate-200">
-              Access live period-wise attendance, daily activity tracking, coursework, and teacher notes.
-            </p>
-          </div>
-
-          <div className="flex gap-3">
-            <Link
-              href="/login"
-              className="px-6 py-3 bg-[#76A136] hover:bg-[#688f30] text-white text-xs font-bold uppercase tracking-wider rounded-full shadow-lg transition"
-            >
-              Sign In to Portal
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ---------------- 8. DANDELION KIDZ OFFICIAL FOOTER (Image 2) ---------------- */}
       <Footer />
+      <FloatingContact />
     </div>
   );
 }

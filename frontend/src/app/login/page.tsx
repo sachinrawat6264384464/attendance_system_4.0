@@ -206,8 +206,8 @@ export default function LoginPage() {
         </div>
 
         <div className="text-center mt-6">
-          <Link href="/" className="text-xs text-[#76A136] font-bold hover:underline inline-flex items-center gap-1">
-            ← Back to Dandelion Kidz Website
+          <Link href="/" className="text-xs text-[#0D2056] font-extrabold hover:text-[#D32F2F] hover:underline inline-flex items-center gap-1">
+            ← Back to Om Public School Dabra Website
           </Link>
         </div>
       </div>

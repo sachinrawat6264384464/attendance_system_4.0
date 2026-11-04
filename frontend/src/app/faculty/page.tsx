@@ -23,43 +23,51 @@ interface FacultyMember {
   };
 }
 
-const dandelionEducators: FacultyMember[] = [
+const omSchoolEducators: FacultyMember[] = [
   {
     id: 'f-1',
-    employeeId: 'DK-ECCE-01',
-    qualification: 'Diploma in Early Childhood Care (ECCE)',
-    specialization: 'Sensory Development & Toddler Transition',
-    user: { firstName: 'Bhavna', lastName: 'Vora' },
-    department: { name: 'Todd Care & Playhouse Wing', code: 'TODD' },
+    employeeId: 'EMP-T-101',
+    qualification: 'M.A. Child Psychology, B.Ed.',
+    specialization: 'Early Literacy & Phonics English',
+    user: { firstName: 'Priya', lastName: 'Shah' },
+    department: { name: 'English Medium Wing', code: 'ENG' },
   },
   {
     id: 'f-2',
-    employeeId: 'DK-REGGIO-02',
-    qualification: 'Certified Reggio Emilia Practitioner, B.Ed.',
-    specialization: 'Nature-Based Exploration & Sensory Play',
-    user: { firstName: 'Kavita', lastName: 'Joshi' },
-    department: { name: 'Nursery Learning Center', code: 'NURS' },
+    employeeId: 'EMP-T-102',
+    qualification: 'M.Sc. Mathematics, B.Ed.',
+    specialization: 'Foundational Mathematics & Logic',
+    user: { firstName: 'Anjali', lastName: 'Sharma' },
+    department: { name: 'Mathematics Department', code: 'MATH' },
   },
   {
     id: 'f-3',
-    employeeId: 'DK-MONT-03',
-    qualification: 'International Montessori Diploma',
-    specialization: 'Phonetics, Early Math & Social Habits',
-    user: { firstName: 'Ritu', lastName: 'Shah' },
-    department: { name: 'Junior & Senior KG Wing', code: 'KG' },
+    employeeId: 'EMP-T-103',
+    qualification: 'B.Sc. Environmental Studies, B.Ed.',
+    specialization: 'Science & Environmental Discovery',
+    user: { firstName: 'Kavita', lastName: 'Mehta' },
+    department: { name: 'General Science Wing', code: 'SCI' },
   },
   {
     id: 'f-4',
-    employeeId: 'DK-ACT-04',
-    qualification: 'Master of Fine Arts (MFA), Child Nutritionist',
-    specialization: 'Puppet Theatre, Clay Modeling & Creative Arts',
-    user: { firstName: 'Meera', lastName: 'Patel' },
-    department: { name: 'Activity & Day Care Center', code: 'DAYCARE' },
+    employeeId: 'EMP-T-104',
+    qualification: 'B.F.A. Fine Arts, D.El.Ed.',
+    specialization: 'Creative Arts, Puppetry & Drama',
+    user: { firstName: 'Rohan', lastName: 'Verma' },
+    department: { name: 'Arts & Cultural Wing', code: 'ARTS' },
+  },
+  {
+    id: 'f-5',
+    employeeId: 'EMP-T-105',
+    qualification: 'B.P.Ed. Physical Education',
+    specialization: 'Sports, Physical Agility & Yoga',
+    user: { firstName: 'Sunil', lastName: 'Patel' },
+    department: { name: 'Sports & Physical Health', code: 'SPORTS' },
   },
 ];
 
 export default function FacultyPage() {
-  const [faculty, setFaculty] = useState<FacultyMember[]>(dandelionEducators);
+  const [faculty, setFaculty] = useState<FacultyMember[]>(omSchoolEducators);
 
   useEffect(() => {
     async function loadFaculty() {
@@ -69,7 +77,7 @@ export default function FacultyPage() {
           setFaculty(res.data);
         }
       } catch {
-        // fallback
+        // fallback to omSchoolEducators
       }
     }
     loadFaculty();
@@ -80,55 +88,55 @@ export default function FacultyPage() {
       <Navbar />
       <FloatingContact />
 
-      <div className="bg-[#FAFDF7] py-12 sm:py-16 border-b border-slate-100 text-center">
+      <div className="bg-gradient-to-r from-[#0D2056] via-[#1a3885] to-[#0D2056] py-12 sm:py-16 text-white text-center border-b-4 border-[#D32F2F]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 max-w-2xl">
-          <span className="text-xs font-bold text-[#76A136] uppercase tracking-widest block mb-2">
-            Loving Mentors & Caregivers
-          </span>
-          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight">
-            <span className="text-[#1B365D]">Our Early Childhood </span>
-            <span className="text-[#76A136]">Educators</span>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#D32F2F] text-amber-300 text-xs font-black uppercase tracking-wider mb-2">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Qualified & Experienced Teachers</span>
+          </div>
+          <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white">
+            Our Dedicated <span className="text-amber-300">Educators</span>
           </h1>
-          <p className="mt-3 text-xs sm:text-sm text-slate-600">
-            Passionate teachers trained in early neurological development, empathetic listening, and Reggio Emilia methods.
+          <p className="mt-3 text-xs sm:text-sm text-slate-200">
+            Passionate teachers committed to student mentorship, English conversational confidence, and conceptual mastery at Om Public School Dabra.
           </p>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 flex-1">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {faculty.map((member) => (
             <div
               key={member.id}
-              className="bg-white rounded-3xl border border-slate-200/80 p-6 shadow-xs hover:shadow-md transition text-center flex flex-col items-center"
+              className="bg-white rounded-3xl border-2 border-slate-200 p-7 shadow-sm hover:shadow-lg transition text-center flex flex-col items-center"
             >
-              <div className="w-20 h-20 rounded-full bg-[#F0F7E8] border-2 border-[#76A136]/30 flex items-center justify-center text-[#76A136] mb-4 shadow-inner">
+              <div className="w-20 h-20 rounded-full bg-blue-50 border-2 border-[#0D2056]/30 flex items-center justify-center text-[#0D2056] mb-4 shadow-inner">
                 <User className="w-10 h-10" />
               </div>
 
-              <h3 className="font-extrabold text-base text-[#1B365D]">
+              <h3 className="font-black text-lg text-[#0D2056]">
                 {member.user.firstName} {member.user.lastName}
               </h3>
-              <p className="text-xs text-[#76A136] font-bold mt-0.5">
-                {member.department?.name || 'Child Care Educator'}
+              <p className="text-xs text-[#D32F2F] font-black mt-0.5">
+                {member.department?.name || 'Faculty Member'}
               </p>
 
               <div className="w-full border-t border-slate-100 my-4" />
 
-              <div className="text-xs text-slate-500 space-y-1.5 text-left w-full">
-                <div className="flex items-start gap-1.5 text-slate-700">
-                  <GraduationCap className="w-3.5 h-3.5 text-[#76A136] shrink-0 mt-0.5" />
+              <div className="text-xs text-slate-600 space-y-2 text-left w-full">
+                <div className="flex items-start gap-2 text-slate-800 font-semibold">
+                  <GraduationCap className="w-4 h-4 text-[#0D2056] shrink-0 mt-0.5" />
                   <span className="leading-tight">{member.qualification || 'Educator'}</span>
                 </div>
                 {member.specialization && (
-                  <div className="flex items-start gap-1.5 text-slate-600">
-                    <Heart className="w-3.5 h-3.5 text-[#E87722] shrink-0 mt-0.5" />
+                  <div className="flex items-start gap-2 text-slate-600 font-medium">
+                    <Heart className="w-4 h-4 text-[#D32F2F] shrink-0 mt-0.5" />
                     <span className="leading-tight">{member.specialization}</span>
                   </div>
                 )}
-                <div className="flex items-center gap-1.5 text-slate-400 text-[11px] pt-1">
-                  <Award className="w-3 h-3 text-slate-400 shrink-0" />
-                  <span>Faculty ID: {member.employeeId}</span>
+                <div className="flex items-center gap-2 text-slate-400 text-[11px] pt-1">
+                  <Award className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                  <span className="font-mono">Faculty ID: {member.employeeId}</span>
                 </div>
               </div>
             </div>

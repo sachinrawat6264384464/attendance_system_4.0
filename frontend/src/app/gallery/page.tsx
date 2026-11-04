@@ -33,6 +33,24 @@ export default function GalleryPage() {
 
   const galleryItems: GalleryItem[] = [
     {
+      id: 'om-poster-official',
+      title: 'Om Public School Dabra - Session 2027-28 Admission Open',
+      category: 'Celebrations',
+      image: '/images/om-public-school-poster.jpg',
+      description:
+        'Official admission campaign poster for Om Public School Dabra featuring modern building and bright young learners.',
+      tagColor: 'bg-[#D32F2F]',
+    },
+    {
+      id: 'om-building-modern',
+      title: 'Modern Campus Building & Main Entrance',
+      category: 'Campus & Dining',
+      image: '/images/om-school-building.jpg',
+      description:
+        'Spacious, multi-storey campus at Deedar Colony, Dabra with ventilated smart classrooms and secure boundary.',
+      tagColor: 'bg-[#0D2056]',
+    },
+    {
       id: 'jamboree',
       title: 'Jamboree Annual Day Stage Celebration',
       category: 'Celebrations',

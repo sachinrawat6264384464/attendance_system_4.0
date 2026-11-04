@@ -70,11 +70,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <aside className="w-64 bg-[#1B365D] text-slate-300 flex flex-col shrink-0 hidden md:flex border-r border-[#152a48]">
         <div className="p-5 border-b border-white/10 bg-white/5">
           <Link href="/" className="block">
-            <span className="font-extrabold text-white text-base block tracking-tight">
-              DANDELION <span className="text-[#8CB843]">KIDZ</span>
+            <span className="font-black text-white text-base block tracking-tight">
+              OM PUBLIC <span className="text-[#FFD600]">SCHOOL</span>
             </span>
-            <span className="text-[10px] text-[#8CB843] font-semibold uppercase tracking-wider block">
-              Academic Platform
+            <span className="text-[10px] text-[#FFD600] font-black uppercase tracking-wider block">
+              Dabra • Academic Platform
             </span>
           </Link>
         </div>
@@ -133,8 +133,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* Top Navbar */}
         <header className="h-16 bg-white border-b border-slate-200/80 px-6 flex items-center justify-between sticky top-0 z-30">
           <div className="flex items-center gap-3">
-            <span className="text-xs font-bold text-[#1B365D] uppercase tracking-wider">
-              Dandelion Kidz Console
+            <span className="text-xs font-black text-[#0D2056] uppercase tracking-wider">
+              Om Public School Console
             </span>
             <span className="text-slate-300">•</span>
             <span className="text-xs font-bold text-[#76A136] bg-[#F0F7E8] px-2.5 py-0.5 rounded-full border border-[#76A136]/20">

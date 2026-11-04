@@ -2,66 +2,82 @@
 
 import React from 'react';
 
-export default function DandelionLogo({ className = 'h-14', showSubtitle = true }: { className?: string; showSubtitle?: boolean }) {
+interface LogoProps {
+  className?: string;
+  showSubtitle?: boolean;
+  variant?: 'light' | 'dark';
+}
+
+export default function DandelionLogo({
+  className = 'h-14',
+  showSubtitle = true,
+  variant = 'dark',
+}: LogoProps) {
+  const isLight = variant === 'light';
+
   return (
-    <div className={`flex items-center gap-3 ${className}`}>
-      {/* Visual Logo Emblem */}
-      <div className="relative w-12 h-12 shrink-0 flex items-center justify-center">
-        <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-sm">
-          {/* Stem & Leaves */}
-          <path
-            d="M50 85 C48 70, 48 55, 50 40"
-            stroke="#76A136"
-            strokeWidth="3.5"
-            strokeLinecap="round"
-            fill="none"
-          />
-          <path
-            d="M50 72 C38 68, 28 75, 24 82 C34 84, 44 80, 50 72 Z"
-            fill="#76A136"
-          />
-          <path
-            d="M50 65 C62 60, 72 66, 76 74 C66 77, 56 72, 50 65 Z"
-            fill="#8CB843"
-          />
+    <div className={`flex items-center gap-3 select-none ${className}`}>
+      {/* Official Emblem */}
+      <div className="relative w-12 h-12 shrink-0 flex items-center justify-center drop-shadow-sm">
+        <svg viewBox="0 0 120 120" className="w-full h-full">
+          {/* Outer Golden Sunburst Ring */}
+          <circle cx="60" cy="60" r="56" fill="#FBC02D" stroke="#D32F2F" strokeWidth="3" />
+          
+          {/* Deep Royal Blue Circle */}
+          <circle cx="60" cy="60" r="48" fill="#0D2056" />
 
-          {/* Child Silhouette */}
-          <circle cx="36" cy="38" r="7" fill="#1B365D" />
-          <path
-            d="M32 46 C28 52, 28 65, 32 75 C36 75, 42 75, 45 68 C43 60, 40 52, 38 46 Z"
-            fill="#1B365D"
-          />
-          <path
-            d="M38 50 C44 46, 48 42, 50 38"
-            stroke="#1B365D"
-            strokeWidth="3"
-            strokeLinecap="round"
-          />
+          {/* Golden Inner Ring */}
+          <circle cx="60" cy="60" r="42" fill="none" stroke="#FFD600" strokeWidth="2" strokeDasharray="3 3" />
 
-          {/* Dandelion Flower Seeds */}
-          <circle cx="58" cy="32" r="3.5" fill="#1B365D" />
-          <line x1="58" y1="32" x2="68" y2="24" stroke="#76A136" strokeWidth="1.5" />
-          <line x1="58" y1="32" x2="72" y2="32" stroke="#76A136" strokeWidth="1.5" />
-          <line x1="58" y1="32" x2="66" y2="42" stroke="#76A136" strokeWidth="1.5" />
-          <line x1="58" y1="32" x2="52" y2="20" stroke="#76A136" strokeWidth="1.5" />
-          <line x1="58" y1="32" x2="58" y2="18" stroke="#76A136" strokeWidth="1.5" />
+          {/* Central Sacred 'Om' ॐ Symbol in Gold */}
+          <text
+            x="60"
+            y="56"
+            textAnchor="middle"
+            fontSize="30"
+            fontWeight="bold"
+            fill="#FFD600"
+            fontFamily="Arial, sans-serif"
+          >
+            ॐ
+          </text>
 
-          {/* Flying seeds */}
-          <circle cx="78" cy="20" r="1.5" fill="#1B365D" />
-          <line x1="78" y1="20" x2="84" y2="15" stroke="#76A136" strokeWidth="1" />
-          <circle cx="86" cy="28" r="1.5" fill="#1B365D" />
-          <line x1="86" y1="28" x2="92" y2="25" stroke="#76A136" strokeWidth="1" />
+          {/* Open Academic Book Base in White & Gold */}
+          <path
+            d="M 38,70 Q 60,65 60,78 Q 60,65 82,70 L 82,82 Q 60,76 60,86 Q 60,76 38,82 Z"
+            fill="#FFFFFF"
+            stroke="#D32F2F"
+            strokeWidth="1.5"
+          />
+          <line x1="60" y1="78" x2="60" y2="86" stroke="#0D2056" strokeWidth="1.5" />
+
+          {/* Stars */}
+          <circle cx="32" cy="60" r="2" fill="#FFD600" />
+          <circle cx="88" cy="60" r="2" fill="#FFD600" />
         </svg>
       </div>
 
-      {/* Typography */}
+      {/* Official Typography */}
       <div className="leading-tight">
-        <span className="font-extrabold text-lg sm:text-xl text-[#1B365D] tracking-tight block uppercase">
-          DANDELION <span className="text-[#76A136]">KIDZ</span>
-        </span>
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <span
+            className={`font-black text-lg sm:text-xl tracking-tight block uppercase ${
+              isLight ? 'text-white' : 'text-[#0D2056]'
+            }`}
+          >
+            OM PUBLIC <span className="text-[#D32F2F]">SCHOOL</span>
+          </span>
+          <span className="px-2 py-0.5 rounded-md bg-[#D32F2F] text-white text-[10px] font-black uppercase tracking-wider shadow-xs">
+            DABRA
+          </span>
+        </div>
         {showSubtitle && (
-          <span className="text-[10px] text-[#76A136] font-medium tracking-wider block italic font-serif">
-            Wings for Future...
+          <span
+            className={`text-[11px] font-bold tracking-wide block italic font-serif mt-0.5 ${
+              isLight ? 'text-amber-300' : 'text-[#D32F2F]'
+            }`}
+          >
+            Learn... Grow... Achieve...
           </span>
         )}
       </div>
@@ -69,3 +85,4 @@ export default function DandelionLogo({ className = 'h-14', showSubtitle = true 
   );
 }
 
+export { DandelionLogo as OmSchoolLogo };

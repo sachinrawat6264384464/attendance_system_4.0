@@ -6,9 +6,9 @@ import { AuthProvider } from '@/lib/auth-context';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Dandelion Kidz - School Management & Academic Tracking Platform',
+  title: 'Om Public School Dabra - English Medium Education (PG to 8th) | Gwalior, M.P.',
   description:
-    'Dedicated educational management platform for Dandelion Kidz Pre School, students, faculty, and administration.',
+    'Official academic platform for Om Public School Dabra, Deedar Colony, Gwalior (M.P.). Admissions open for Session 2027–28 from Playgroup to 8th standard.',
 };
 
 export default function RootLayout({
