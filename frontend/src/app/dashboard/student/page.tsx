@@ -31,15 +31,16 @@ interface AttendanceSummary {
 
 export default function StudentDashboardPage() {
   const [attendance, setAttendance] = useState<AttendanceSummary>({
-    totalPeriods: 184,
-    presentPeriods: 168,
-    absentPeriods: 16,
-    overallPercentage: 91.3,
+    totalPeriods: 25,
+    presentPeriods: 23,
+    absentPeriods: 2,
+    overallPercentage: 92.0,
     subjectBreakdown: [
-      { subjectId: '1', name: 'Mathematics', code: 'MATH-10', totalPeriods: 48, attendedPeriods: 45, percentage: 93.75 },
-      { subjectId: '2', name: 'Physics', code: 'PHY-10', totalPeriods: 46, attendedPeriods: 42, percentage: 91.3 },
-      { subjectId: '3', name: 'Chemistry', code: 'CHEM-10', totalPeriods: 45, attendedPeriods: 40, percentage: 88.89 },
-      { subjectId: '4', name: 'English', code: 'ENG-10', totalPeriods: 45, attendedPeriods: 41, percentage: 91.11 },
+      { subjectId: '1', name: 'Early Literacy & Phonics', code: 'LIT-101', totalPeriods: 5, attendedPeriods: 5, percentage: 100 },
+      { subjectId: '2', name: 'Numeracy & Shapes', code: 'NUM-101', totalPeriods: 5, attendedPeriods: 5, percentage: 100 },
+      { subjectId: '3', name: 'Sensory & Nature Play', code: 'SEN-101', totalPeriods: 5, attendedPeriods: 4, percentage: 80 },
+      { subjectId: '4', name: 'Creative Arts & Puppetry', code: 'ART-101', totalPeriods: 5, attendedPeriods: 5, percentage: 100 },
+      { subjectId: '5', name: 'Gross Motor & Agility', code: 'PHY-101', totalPeriods: 5, attendedPeriods: 4, percentage: 80 },
     ],
   });
 

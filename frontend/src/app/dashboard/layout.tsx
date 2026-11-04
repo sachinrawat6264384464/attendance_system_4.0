@@ -42,7 +42,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       title: 'Principal View',
       href: '/dashboard/principal',
       icon: Shield,
-      visible: user.roles.includes('PRINCIPAL'),
+      visible: user.roles.includes('PRINCIPAL') || user.roles.includes('COORDINATOR'),
     },
     {
       title: 'Coordinator Operations',
@@ -54,13 +54,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       title: 'Teacher Attendance & Tasks',
       href: '/dashboard/teacher',
       icon: CalendarCheck,
-      visible: user.roles.includes('TEACHER') || user.roles.includes('PRINCIPAL'),
+      visible: user.roles.includes('TEACHER') || user.roles.includes('PRINCIPAL') || user.roles.includes('COORDINATOR'),
     },
     {
       title: 'Student & Parent Portal',
       href: '/dashboard/student',
       icon: BookOpen,
-      visible: user.roles.includes('STUDENT') || user.roles.includes('PRINCIPAL'),
+      visible: user.roles.includes('STUDENT') || user.roles.includes('PRINCIPAL') || user.roles.includes('COORDINATOR'),
     },
   ];
 

@@ -3,17 +3,42 @@ dotenv.config({ path: '.env', override: true });
 dotenv.config({ path: '../.env', override: true });
 import { PrismaClient } from '@prisma/client';
 import * as argon2 from 'argon2';
+import crypto from 'crypto';
+
+const dbUrl =
+  process.env.DATABASE_URL ||
+  'postgresql://neondb_owner:npg_BVX8kIyUqlO0@ep-cold-sky-b53itt32-pooler.c-7.us-east-2.aws.neon.tech/neondb?sslmode=require&pgbouncer=true&connect_timeout=30&pool_timeout=30&connection_limit=10';
 
 const prisma = new PrismaClient({
   datasources: {
-    db: { url: process.env.DATABASE_URL }
-  }
+    db: { url: dbUrl },
+  },
 });
 
-async function main() {
-  console.log('🌱 Starting Dandelion Kidz Database Seeding...');
+const firstNamesBoy = [
+  'Aarav', 'Vihaan', 'Reyansh', 'Advik', 'Kabir', 'Ishaan', 'Vivaan', 'Dhruv',
+  'Shivansh', 'Kian', 'Aryan', 'Samar', 'Atharv', 'Rudra', 'Shaurya', 'Ayaan',
+  'Devansh', 'Hridaan', 'Yuvan', 'Tejas', 'Rishi', 'Parth', 'Manan', 'Ranveer',
+  'Darsh', 'Neil', 'Advaith', 'Krish', 'Veer', 'Siddharth', 'Laksh', 'Ansh',
+];
 
-  // 1. Create Roles
+const firstNamesGirl = [
+  'Ananya', 'Diya', 'Saanvi', 'Pari', 'Myra', 'Aadhya', 'Kiara', 'Anvi',
+  'Riya', 'Tara', 'Avani', 'Isha', 'Ahana', 'Meera', 'Navya', 'Prisha',
+  'Shanaya', 'Sara', 'Kavya', 'Anika', 'Siya', 'Vanya', 'Mira', 'Bhavya',
+  'Tanvi', 'Nyra', 'Samaira', 'Trisha', 'Khushi', 'Aditi', 'Nisha', 'Palak',
+];
+
+const lastNames = [
+  'Patel', 'Shah', 'Sharma', 'Verma', 'Mehta', 'Joshi', 'Trivedi', 'Dave',
+  'Chauhan', 'Nair', 'Menon', 'Rao', 'Reddy', 'Iyer', 'Deshmukh', 'Kulkarni',
+  'Gupta', 'Malhotra', 'Bhatia', 'Kapoor', 'Singh', 'Bhatt', 'Pandya', 'Rawat',
+];
+
+async function main() {
+  console.log('⚡ Starting High-Speed Master Seeding into Neon PostgreSQL...');
+
+  // 1. Roles
   const roles = [
     { name: 'PRINCIPAL', description: 'Executive School Leadership' },
     { name: 'HOD', description: 'Head of Department' },
@@ -22,16 +47,18 @@ async function main() {
     { name: 'STUDENT', description: 'Enrolled Student' },
   ];
 
+  const roleMap = {};
   for (const r of roles) {
-    await prisma.role.upsert({
+    const role = await prisma.role.upsert({
       where: { name: r.name },
       update: {},
       create: r,
     });
+    roleMap[r.name] = role;
   }
-  console.log('✅ Roles seeded.');
+  console.log('✅ Roles ready.');
 
-  // 2. Seed School Settings
+  // 2. School Settings
   await prisma.schoolSetting.upsert({
     where: { id: 'default-school-setting' },
     update: {},
@@ -49,9 +76,8 @@ async function main() {
       correctionWindowDays: 7,
     },
   });
-  console.log('✅ School Settings seeded.');
 
-  // 3. Seed Academic Year
+  // 3. Academic Year 2026-2027
   const currentYear = await prisma.academicYear.upsert({
     where: { name: '2026-2027' },
     update: { isCurrent: true },
@@ -68,53 +94,50 @@ async function main() {
       },
     },
   });
-  console.log('✅ Academic Year & Terms seeded.');
 
-  // 4. Seed Preschool Classes & Sections
-  const classesToSeed = [
-    { name: 'Todd Care', order: 1, age: '1 to 2 years' },
-    { name: 'Playhouse', order: 2, age: '2 to 3 years' },
-    { name: 'Nursery', order: 3, age: '3 to 4 years' },
-    { name: 'Jr. Kg', order: 4, age: '4 to 5 years' },
-    { name: 'Sr. Kg', order: 5, age: '5 to 6 years' },
-    { name: 'Day Care', order: 6, age: '1 to 10 years' },
+  // 4. Classes (Playhouse, Nursery, Jr. Kg, Sr. Kg)
+  const classConfigs = [
+    { name: 'Playhouse', order: 1, age: '2 to 3 years', total: 30, secA: 15, secB: 15 },
+    { name: 'Nursery', order: 2, age: '3 to 4 years', total: 23, secA: 12, secB: 11 },
+    { name: 'Jr. Kg', order: 3, age: '4 to 5 years', total: 45, secA: 23, secB: 22 },
+    { name: 'Sr. Kg', order: 4, age: '5 to 6 years', total: 38, secA: 19, secB: 19 },
   ];
 
   const seededClasses = [];
-  for (const cls of classesToSeed) {
-    const c = await prisma.class.upsert({
-      where: { name: cls.name },
-      update: {},
-      create: {
-        name: cls.name,
-        numericOrder: cls.order,
-        sections: {
-          create: [
-            { name: 'A', roomNumber: `Room 10${cls.order}` },
-            { name: 'B', roomNumber: `Room 20${cls.order}` },
-          ],
-        },
-      },
+  for (const cfg of classConfigs) {
+    let cls = await prisma.class.findUnique({
+      where: { name: cfg.name },
       include: { sections: true },
     });
-    seededClasses.push(c);
+    if (!cls) {
+      cls = await prisma.class.create({
+        data: {
+          name: cfg.name,
+          numericOrder: cfg.order,
+          sections: {
+            create: [
+              { name: 'A', roomNumber: `Room 10${cfg.order}` },
+              { name: 'B', roomNumber: `Room 20${cfg.order}` },
+            ],
+          },
+        },
+        include: { sections: true },
+      });
+    }
+    seededClasses.push({ ...cfg, model: cls });
   }
-  console.log('✅ Dandelion Kidz Classes & Sections seeded.');
 
-  // 5. Seed Department & Subjects
+  // 5. Department & 5 ECCE Subjects
   const ecceDept = await prisma.department.upsert({
     where: { code: 'ECCE' },
     update: {},
-    create: {
-      name: 'Early Childhood Care & Education',
-      code: 'ECCE',
-    },
+    create: { name: 'Early Childhood Care & Education', code: 'ECCE' },
   });
 
   const subjectsToSeed = [
-    { name: 'Sensory & Nature Play', code: 'SENSORY-01' },
     { name: 'Early Literacy & Phonics', code: 'LIT-01' },
     { name: 'Numeracy & Shapes', code: 'NUM-01' },
+    { name: 'Sensory & Nature Play', code: 'SENSORY-01' },
     { name: 'Creative Arts & Puppetry', code: 'ART-01' },
     { name: 'Gross Motor & Agility', code: 'MOTOR-01' },
   ];
@@ -123,184 +146,409 @@ async function main() {
   for (const s of subjectsToSeed) {
     const sub = await prisma.subject.upsert({
       where: { code: s.code },
-      update: {},
-      create: {
-        name: s.name,
-        code: s.code,
-        departmentId: ecceDept.id,
-      },
+      update: { name: s.name },
+      create: { name: s.name, code: s.code, departmentId: ecceDept.id },
     });
     seededSubjects.push(sub);
   }
-  console.log('✅ ECCE Department & Subjects seeded.');
 
-  // 6. Seed Key Users with Argon2
-  const principalRole = await prisma.role.findUnique({ where: { name: 'PRINCIPAL' } });
-  const coordinatorRole = await prisma.role.findUnique({ where: { name: 'COORDINATOR' } });
-  const teacherRole = await prisma.role.findUnique({ where: { name: 'TEACHER' } });
-  const studentRole = await prisma.role.findUnique({ where: { name: 'STUDENT' } });
+  // 6. Pre-calculate Argon2 Password Hashes once
+  console.log('🔐 Computing Argon2 password hashes...');
+  const principalHash = await argon2.hash('Principal@123');
+  const coordHash = await argon2.hash('Coordinator@123');
+  const teacherHash = await argon2.hash('Teacher@123');
+  const studentHash = await argon2.hash('Student@123');
 
   // Principal
-  const principalPassword = await argon2.hash('Principal@123');
   await prisma.user.upsert({
     where: { email: 'principal@apexschool.edu' },
     update: {},
     create: {
       email: 'principal@apexschool.edu',
-      passwordHash: principalPassword,
+      passwordHash: principalHash,
       firstName: 'Dr. Vikram',
       lastName: 'Malhotra',
       phone: '+91 98111 00001',
-      roles: { create: { roleId: principalRole.id } },
+      roles: { create: { roleId: roleMap['PRINCIPAL'].id } },
     },
   });
 
   // Coordinator
-  const coordPassword = await argon2.hash('Coordinator@123');
   await prisma.user.upsert({
     where: { email: 'coordinator@apexschool.edu' },
     update: {},
     create: {
       email: 'coordinator@apexschool.edu',
-      passwordHash: coordPassword,
+      passwordHash: coordHash,
       firstName: 'Sunita',
       lastName: 'Nambiar',
       phone: '+91 98111 00002',
-      roles: { create: { roleId: coordinatorRole.id } },
+      roles: { create: { roleId: roleMap['COORDINATOR'].id } },
     },
   });
 
-  // Teacher (ECCE Specialist)
-  const teacherPassword = await argon2.hash('Teacher@123');
-  const teacherUser = await prisma.user.upsert({
-    where: { email: 'teacher.math@apexschool.edu' },
-    update: {},
-    create: {
-      email: 'teacher.math@apexschool.edu',
-      passwordHash: teacherPassword,
-      firstName: 'Priya',
-      lastName: 'Shah',
-      phone: '+91 98111 00003',
-      roles: { create: { roleId: teacherRole.id } },
-      teacherProfile: {
-        create: {
-          employeeId: 'EMP-ECCE-01',
-          qualification: 'Diploma in Early Childhood Education, Montessori Certified',
-          specialization: 'Sensory & Reggio Play',
-          departmentId: ecceDept.id,
+  // 5 Teachers
+  const teacherDefs = [
+    { email: 'teacher.priya@apexschool.edu', firstName: 'Priya', lastName: 'Shah', phone: '+91 98111 00101', empId: 'EMP-TCH-01', spec: 'Early Literacy & Phonics', subCode: 'LIT-01' },
+    { email: 'teacher.anjali@apexschool.edu', firstName: 'Anjali', lastName: 'Sharma', phone: '+91 98111 00102', empId: 'EMP-TCH-02', spec: 'Numeracy & Shapes', subCode: 'NUM-01' },
+    { email: 'teacher.kavita@apexschool.edu', firstName: 'Kavita', lastName: 'Mehta', phone: '+91 98111 00103', empId: 'EMP-TCH-03', spec: 'Sensory & Nature Play', subCode: 'SENSORY-01' },
+    { email: 'teacher.rohan@apexschool.edu', firstName: 'Rohan', lastName: 'Verma', phone: '+91 98111 00104', empId: 'EMP-TCH-04', spec: 'Creative Arts & Puppetry', subCode: 'ART-01' },
+    { email: 'teacher.sunil@apexschool.edu', firstName: 'Sunil', lastName: 'Patel', phone: '+91 98111 00105', empId: 'EMP-TCH-05', spec: 'Gross Motor & Agility', subCode: 'MOTOR-01' },
+    // Also keep alias for existing button
+    { email: 'teacher.math@apexschool.edu', firstName: 'Priya', lastName: 'Shah', phone: '+91 98111 00100', empId: 'EMP-TCH-00', spec: 'Early Literacy & Phonics', subCode: 'LIT-01' },
+  ];
+
+  const seededTeachers = [];
+  for (const td of teacherDefs) {
+    let tUser = await prisma.user.findUnique({
+      where: { email: td.email },
+      include: { teacherProfile: true },
+    });
+    if (!tUser) {
+      tUser = await prisma.user.create({
+        data: {
+          email: td.email,
+          passwordHash: teacherHash,
+          firstName: td.firstName,
+          lastName: td.lastName,
+          phone: td.phone,
+          roles: { create: { roleId: roleMap['TEACHER'].id } },
+          teacherProfile: {
+            create: {
+              employeeId: td.empId,
+              qualification: 'ECCE Montessori Certified Educator',
+              specialization: td.spec,
+              departmentId: ecceDept.id,
+            },
+          },
         },
-      },
-    },
-    include: { teacherProfile: true },
+        include: { teacherProfile: true },
+      });
+    }
+    const matchedSub = seededSubjects.find((s) => s.code === td.subCode) || seededSubjects[0];
+    seededTeachers.push({ ...td, user: tUser, subject: matchedSub });
+  }
+  console.log('✅ 5 Teachers seeded.');
+
+  // Allocations for all 4 classes & sections in 1 batch
+  const allocationsToInsert = [];
+  for (const clsData of seededClasses) {
+    for (const sec of clsData.model.sections) {
+      for (const t of seededTeachers) {
+        if (!t.user.teacherProfile?.id) continue;
+        allocationsToInsert.push({
+          academicYearId: currentYear.id,
+          teacherId: t.user.teacherProfile.id,
+          subjectId: t.subject.id,
+          classId: clsData.model.id,
+          sectionId: sec.id,
+        });
+      }
+    }
+  }
+
+  await prisma.teacherAllocation.createMany({
+    data: allocationsToInsert,
+    skipDuplicates: true,
+  });
+  console.log('✅ Allocations ready in 1 query.');
+  console.log('✅ Allocations ready.');
+
+  // 7. Generate Bulk Arrays for 136 Students
+  console.log('📦 Preparing bulk data for 136 students...');
+  const usersToInsert = [];
+  const profilesToInsert = [];
+  const userRolesToInsert = [];
+  const enrollmentsToInsert = [];
+
+  let studentNum = 1;
+
+  for (const clsData of seededClasses) {
+    const cls = clsData.model;
+    const secA = cls.sections.find((s) => s.name === 'A') || cls.sections[0];
+    const secB = cls.sections.find((s) => s.name === 'B') || cls.sections[1] || cls.sections[0];
+
+    // Section A
+    for (let i = 1; i <= clsData.secA; i++) {
+      const idx = studentNum;
+      const isBoy = idx % 2 === 1;
+      const fName = isBoy ? firstNamesBoy[(idx - 1) % firstNamesBoy.length] : firstNamesGirl[(idx - 1) % firstNamesGirl.length];
+      const lName = lastNames[(idx + i) % lastNames.length];
+      const rollNumber = String(i).padStart(2, '0');
+      const admissionNumber = `DK-2026-${String(idx).padStart(3, '0')}`;
+      const email = `student.${fName.toLowerCase()}${idx}@apexschool.edu`;
+      const userId = crypto.randomUUID();
+      const profileId = crypto.randomUUID();
+
+      usersToInsert.push({
+        id: userId,
+        email,
+        passwordHash: studentHash,
+        firstName: fName,
+        lastName: lName,
+        phone: `+91 98${String(10000000 + idx)}`,
+        isActive: true,
+      });
+
+      profilesToInsert.push({
+        id: profileId,
+        userId,
+        admissionNumber,
+        rollNumber,
+        dateOfBirth: new Date(2021, idx % 12, (idx % 27) + 1),
+        gender: isBoy ? 'Male' : 'Female',
+        guardianName: `Parent of ${fName} ${lName}`,
+        guardianPhone: `+91 97${String(20000000 + idx)}`,
+        address: `House ${idx}, Phase 2, Rajkot, Gujarat`,
+      });
+
+      userRolesToInsert.push({
+        userId,
+        roleId: roleMap['STUDENT'].id,
+      });
+
+      enrollmentsToInsert.push({
+        id: crypto.randomUUID(),
+        studentId: profileId,
+        academicYearId: currentYear.id,
+        classId: cls.id,
+        sectionId: secA.id,
+        rollNumber,
+        isActive: true,
+      });
+
+      studentNum++;
+    }
+
+    // Section B
+    for (let j = 1; j <= clsData.secB; j++) {
+      const idx = studentNum;
+      const isBoy = idx % 2 === 1;
+      const fName = isBoy ? firstNamesBoy[(idx - 1) % firstNamesBoy.length] : firstNamesGirl[(idx - 1) % firstNamesGirl.length];
+      const lName = lastNames[(idx + j) % lastNames.length];
+      const rollNumber = String(j).padStart(2, '0');
+      const admissionNumber = `DK-2026-${String(idx).padStart(3, '0')}`;
+      const email = `student.${fName.toLowerCase()}${idx}@apexschool.edu`;
+      const userId = crypto.randomUUID();
+      const profileId = crypto.randomUUID();
+
+      usersToInsert.push({
+        id: userId,
+        email,
+        passwordHash: studentHash,
+        firstName: fName,
+        lastName: lName,
+        phone: `+91 98${String(10000000 + idx)}`,
+        isActive: true,
+      });
+
+      profilesToInsert.push({
+        id: profileId,
+        userId,
+        admissionNumber,
+        rollNumber,
+        dateOfBirth: new Date(2021, idx % 12, (idx % 27) + 1),
+        gender: isBoy ? 'Male' : 'Female',
+        guardianName: `Parent of ${fName} ${lName}`,
+        guardianPhone: `+91 97${String(20000000 + idx)}`,
+        address: `House ${idx}, University Road, Rajkot, Gujarat`,
+      });
+
+      userRolesToInsert.push({
+        userId,
+        roleId: roleMap['STUDENT'].id,
+      });
+
+      enrollmentsToInsert.push({
+        id: crypto.randomUUID(),
+        studentId: profileId,
+        academicYearId: currentYear.id,
+        classId: cls.id,
+        sectionId: secB.id,
+        rollNumber,
+        isActive: true,
+      });
+
+      studentNum++;
+    }
+  }
+
+  // Also include demo student Aarav Patel (DK-2026-DEMO)
+  const aaravUserId = crypto.randomUUID();
+  const aaravProfileId = crypto.randomUUID();
+  const playhouseModel = seededClasses[0].model;
+  const playhouseSecA = playhouseModel.sections.find((s) => s.name === 'A') || playhouseModel.sections[0];
+
+  usersToInsert.push({
+    id: aaravUserId,
+    email: 'student.aarav@apexschool.edu',
+    passwordHash: studentHash,
+    firstName: 'Aarav',
+    lastName: 'Patel',
+    phone: '+91 98111 00010',
+    isActive: true,
   });
 
-  // Student (Aarav Patel in Playhouse-A)
-  const studentPassword = await argon2.hash('Student@123');
-  const playhouseClass = seededClasses.find((c) => c.name === 'Playhouse') || seededClasses[0];
-  const sectionA = playhouseClass.sections.find((s) => s.name === 'A') || playhouseClass.sections[0];
-  const sensorySubject = seededSubjects[0];
+  profilesToInsert.push({
+    id: aaravProfileId,
+    userId: aaravUserId,
+    admissionNumber: 'DK-2026-DEMO',
+    rollNumber: '01',
+    dateOfBirth: new Date('2023-04-15'),
+    gender: 'Male',
+    guardianName: 'Ketan Patel',
+    guardianPhone: '+91 98111 00011',
+    address: 'Rajkot, Gujarat',
+  });
 
-  const aaravUser = await prisma.user.upsert({
-    where: { email: 'student.aarav@apexschool.edu' },
-    update: {},
-    create: {
-      email: 'student.aarav@apexschool.edu',
-      passwordHash: studentPassword,
-      firstName: 'Aarav',
-      lastName: 'Patel',
-      phone: '+91 98111 00010',
-      roles: { create: { roleId: studentRole.id } },
-      studentProfile: {
-        create: {
-          admissionNumber: 'DK-2026-001',
-          rollNumber: '01',
-          dateOfBirth: new Date('2023-04-15'),
-          gender: 'Male',
-          guardianName: 'Ketan Patel',
-          guardianPhone: '+91 98111 00011',
+  userRolesToInsert.push({
+    userId: aaravUserId,
+    roleId: roleMap['STUDENT'].id,
+  });
+
+  enrollmentsToInsert.push({
+    id: crypto.randomUUID(),
+    studentId: aaravProfileId,
+    academicYearId: currentYear.id,
+    classId: playhouseModel.id,
+    sectionId: playhouseSecA.id,
+    rollNumber: '01',
+    isActive: true,
+  });
+
+  console.log(`🚀 Bulk inserting ${usersToInsert.length} students into Neon DB...`);
+
+  // Execute createMany with skipDuplicates: true
+  await prisma.user.createMany({
+    data: usersToInsert,
+    skipDuplicates: true,
+  });
+  console.log('✅ Users inserted.');
+
+  // For profiles, ensure user IDs match existing users if any duplicate emails were skipped
+  const existingUsers = await prisma.user.findMany({
+    where: { email: { in: usersToInsert.map((u) => u.email) } },
+    select: { id: true, email: true },
+  });
+  const emailToUserId = new Map(existingUsers.map((u) => [u.email, u.id]));
+
+  for (let k = 0; k < profilesToInsert.length; k++) {
+    const prof = profilesToInsert[k];
+    const uEmail = usersToInsert[k]?.email;
+    if (uEmail && emailToUserId.has(uEmail)) {
+      prof.userId = emailToUserId.get(uEmail);
+    }
+  }
+
+  await prisma.studentProfile.createMany({
+    data: profilesToInsert,
+    skipDuplicates: true,
+  });
+  console.log('✅ Student Profiles inserted.');
+
+  // User Roles
+  const rolesWithRealIds = existingUsers.map((u) => ({
+    userId: u.id,
+    roleId: roleMap['STUDENT'].id,
+  }));
+  await prisma.userRole.createMany({
+    data: rolesWithRealIds,
+    skipDuplicates: true,
+  });
+  console.log('✅ Student User Roles inserted.');
+
+  // Enrollments
+  const allProfiles = await prisma.studentProfile.findMany({
+    select: { id: true, admissionNumber: true },
+  });
+  const admMap = new Map(allProfiles.map((p) => [p.admissionNumber, p.id]));
+
+  const validEnrollments = [];
+  for (let m = 0; m < enrollmentsToInsert.length; m++) {
+    const enr = enrollmentsToInsert[m];
+    const adm = profilesToInsert[m]?.admissionNumber;
+    if (adm && admMap.has(adm)) {
+      enr.studentId = admMap.get(adm);
+      validEnrollments.push(enr);
+    }
+  }
+
+  console.log(`📝 Inserting ${validEnrollments.length} valid student enrollments...`);
+  await prisma.studentEnrollment.createMany({
+    data: validEnrollments,
+    skipDuplicates: true,
+  });
+  console.log('✅ Student Enrollments inserted.');
+
+  // 8. Seed Live Attendance Session for Today
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const priyaTeacher = seededTeachers[0];
+  const litSubject = seededSubjects[0];
+
+  for (const clsData of seededClasses) {
+    for (const sec of clsData.model.sections) {
+      let session = await prisma.attendanceSession.findFirst({
+        where: {
+          academicYearId: currentYear.id,
+          classId: clsData.model.id,
+          sectionId: sec.id,
+          date: today,
+          periodNumber: 1,
         },
-      },
-    },
-    include: { studentProfile: true },
-  });
+      });
 
-  // Enroll Student in Playhouse Section A
-  await prisma.studentEnrollment.upsert({
-    where: {
-      studentId_academicYearId: {
-        studentId: aaravUser.studentProfile.id,
-        academicYearId: currentYear.id,
-      },
-    },
-    update: {},
-    create: {
-      studentId: aaravUser.studentProfile.id,
-      academicYearId: currentYear.id,
-      classId: playhouseClass.id,
-      sectionId: sectionA.id,
-      rollNumber: '01',
-    },
-  });
+      if (!session) {
+        session = await prisma.attendanceSession.create({
+          data: {
+            academicYearId: currentYear.id,
+            classId: clsData.model.id,
+            sectionId: sec.id,
+            subjectId: litSubject.id,
+            teacherId: priyaTeacher.user.teacherProfile.id,
+            date: today,
+            periodNumber: 1,
+            status: 'FINALIZED',
+            isFinalized: true,
+            finalizedAt: new Date(),
+          },
+        });
+      }
 
-  // 7. Teacher Allocation: Teacher -> Playhouse A -> Sensory & Nature Play
-  await prisma.teacherAllocation.upsert({
-    where: {
-      academicYearId_teacherId_subjectId_classId_sectionId: {
-        academicYearId: currentYear.id,
-        teacherId: teacherUser.teacherProfile.id,
-        subjectId: sensorySubject.id,
-        classId: playhouseClass.id,
-        sectionId: sectionA.id,
-      },
-    },
-    update: {},
-    create: {
-      academicYearId: currentYear.id,
-      teacherId: teacherUser.teacherProfile.id,
-      subjectId: sensorySubject.id,
-      classId: playhouseClass.id,
-      sectionId: sectionA.id,
-    },
-  });
+      const enrolled = await prisma.studentEnrollment.findMany({
+        where: { classId: clsData.model.id, sectionId: sec.id, academicYearId: currentYear.id },
+      });
 
-  // 8. Timetable Slot: Monday Period 1 (09:00 - 09:45)
-  await prisma.timetableSlot.upsert({
-    where: {
-      academicYearId_classId_sectionId_dayOfWeek_periodNumber: {
-        academicYearId: currentYear.id,
-        classId: playhouseClass.id,
-        sectionId: sectionA.id,
-        dayOfWeek: 1, // Monday
-        periodNumber: 1,
-      },
-    },
-    update: {},
-    create: {
-      academicYearId: currentYear.id,
-      classId: playhouseClass.id,
-      sectionId: sectionA.id,
-      subjectId: sensorySubject.id,
-      teacherId: teacherUser.teacherProfile.id,
-      dayOfWeek: 1,
-      periodNumber: 1,
-      startTime: '09:00',
-      endTime: '09:45',
-    },
-  });
+      const recordsData = enrolled.map((enr, idx) => ({
+        sessionId: session.id,
+        studentId: enr.studentId,
+        status: idx % 12 === 0 ? 'ABSENT' : idx % 15 === 0 ? 'LATE' : 'PRESENT',
+      }));
 
-  console.log('✅ Demo Allocations & Timetable Slots seeded.');
-  console.log('\n🎉 Seed completed successfully into live Neon database!');
-  console.log('----------------------------------------------------');
-  console.log('Principal:   principal@apexschool.edu   / Principal@123');
-  console.log('Coordinator: coordinator@apexschool.edu / Coordinator@123');
-  console.log('Teacher:     teacher.math@apexschool.edu / Teacher@123');
-  console.log('Student:     student.aarav@apexschool.edu / Student@123');
-  console.log('----------------------------------------------------');
+      await prisma.attendanceRecord.createMany({
+        data: recordsData,
+        skipDuplicates: true,
+      });
+    }
+  }
+  console.log('✅ Attendance Sessions & Records seeded for today.');
+
+  console.log('\n======================================================');
+  console.log('🎉 HIGH-SPEED MASTER SEED COMPLETED SUCCESSFULLY!');
+  console.log('======================================================');
+  console.log('4 CLASSES SEEDED:');
+  console.log('1. Playhouse: 30 Students');
+  console.log('2. Nursery:   23 Students');
+  console.log('3. Jr. Kg:    45 Students');
+  console.log('4. Sr. Kg:    38 Students');
+  console.log('TOTAL STUDENTS: 136');
+  console.log('======================================================\n');
 }
 
 main()
   .catch((e) => {
-    console.error('❌ Seeding failed:', e);
+    console.error('❌ Fast seeding failed:', e);
     process.exit(1);
   })
   .finally(async () => {

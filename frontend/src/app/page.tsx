@@ -408,7 +408,7 @@ export default function HomePage() {
             <div className="relative flex items-center justify-center">
               <div className="relative w-full max-w-lg h-72 sm:h-80 md:h-96">
                 <Image
-                  src="/images/playground-slide-clean.png"
+                  src="/images/kids-slide-illustration.png"
                   alt="Dandelion Kidz Children Playground Slide"
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"

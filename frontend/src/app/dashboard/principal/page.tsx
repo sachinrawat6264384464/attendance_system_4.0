@@ -52,14 +52,14 @@ interface CorrectionRequest {
 
 export default function PrincipalDashboardPage() {
   const [stats, setStats] = useState<DashboardStats>({
-    totalStudents: 1420,
-    totalTeachers: 48,
-    totalClasses: 12,
-    totalSections: 24,
-    pendingCorrections: 1,
-    activeAssignments: 16,
-    todaySessionsCount: 32,
-    todayAttendancePercentage: 94.6,
+    totalStudents: 0,
+    totalTeachers: 0,
+    totalClasses: 0,
+    totalSections: 0,
+    pendingCorrections: 0,
+    activeAssignments: 0,
+    todaySessionsCount: 0,
+    todayAttendancePercentage: 0,
   });
 
   const [corrections, setCorrections] = useState<CorrectionRequest[]>([]);

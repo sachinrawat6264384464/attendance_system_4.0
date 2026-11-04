@@ -108,18 +108,17 @@ export default function TeacherDashboardPage() {
           apiClient<AssignmentItem[]>('/assignments').catch(() => null),
         ]);
 
-        if (classesRes?.data) {
+        if (classesRes?.data && Array.isArray(classesRes.data) && classesRes.data.length > 0) {
           setClasses(classesRes.data);
-          if (classesRes.data[0]) {
-            setSelectedClassId(classesRes.data[0].id);
-            if (classesRes.data[0].sections?.[0]) {
-              setSelectedSectionId(classesRes.data[0].sections[0].id);
-            }
+          const firstClass = classesRes.data[0];
+          setSelectedClassId(firstClass.id);
+          if (firstClass.sections && firstClass.sections.length > 0) {
+            setSelectedSectionId(firstClass.sections[0].id);
           }
         }
-        if (subjectsRes?.data) {
+        if (subjectsRes?.data && Array.isArray(subjectsRes.data) && subjectsRes.data.length > 0) {
           setSubjects(subjectsRes.data);
-          if (subjectsRes.data[0]) setSelectedSubjectId(subjectsRes.data[0].id);
+          setSelectedSubjectId(subjectsRes.data[0].id);
         }
         if (yearsRes?.data) setAcademicYears(yearsRes.data);
         if (assignmentsRes?.data) setAssignments(assignmentsRes.data);
@@ -136,18 +135,22 @@ export default function TeacherDashboardPage() {
 
     async function loadStudents() {
       try {
-        const res = await apiClient<{ data: StudentRosterItem[] }>(
-          `/users/students?classId=${selectedClassId}&sectionId=${selectedSectionId}`,
+        const res = await apiClient<any>(
+          `/users/students?classId=${selectedClassId}&sectionId=${selectedSectionId}&pageSize=100`,
         );
-        if (res.data?.data) {
-          setRoster(res.data.data);
-          // Default all to PRESENT
-          const initialMap: Record<string, 'PRESENT' | 'ABSENT' | 'LATE'> = {};
-          res.data.data.forEach((item) => {
+        const rawList: StudentRosterItem[] = Array.isArray(res?.data)
+          ? res.data
+          : (res?.data as any)?.data || [];
+
+        setRoster(rawList);
+        // Default all to PRESENT
+        const initialMap: Record<string, 'PRESENT' | 'ABSENT' | 'LATE'> = {};
+        rawList.forEach((item) => {
+          if (item?.student?.id) {
             initialMap[item.student.id] = 'PRESENT';
-          });
-          setAttendanceMap(initialMap);
-        }
+          }
+        });
+        setAttendanceMap(initialMap);
       } catch (err) {
         console.error(err);
       }
@@ -283,9 +286,9 @@ export default function TeacherDashboardPage() {
       {activeTab === 'attendance' && (
         <div className="space-y-6">
           {/* Controls Bar */}
-          <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm grid grid-cols-1 sm:grid-cols-5 gap-4">
+          <div className="bg-white p-6 rounded-2xl border-2 border-slate-200/90 shadow-sm grid grid-cols-1 sm:grid-cols-5 gap-4">
             <div>
-              <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">Class</label>
+              <label className="block text-xs font-extrabold text-slate-800 uppercase tracking-wide mb-1.5">Class</label>
               <select
                 value={selectedClassId}
                 onChange={(e) => {
@@ -293,60 +296,60 @@ export default function TeacherDashboardPage() {
                   const cls = classes.find((c) => c.id === e.target.value);
                   if (cls?.sections?.[0]) setSelectedSectionId(cls.sections[0].id);
                 }}
-                className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-indigo-500 bg-white"
+                className="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-slate-900 font-bold text-sm shadow-sm focus:border-[#1B365D] focus:ring-4 focus:ring-[#1B365D]/10 focus:outline-none transition cursor-pointer"
               >
                 {classes.map((c) => (
-                  <option key={c.id} value={c.id}>{c.name}</option>
+                  <option key={c.id} value={c.id} className="text-slate-900 font-semibold bg-white">{c.name}</option>
                 ))}
               </select>
             </div>
 
             <div>
-              <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">Section</label>
+              <label className="block text-xs font-extrabold text-slate-800 uppercase tracking-wide mb-1.5">Section</label>
               <select
                 value={selectedSectionId}
                 onChange={(e) => setSelectedSectionId(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-indigo-500 bg-white"
+                className="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-slate-900 font-bold text-sm shadow-sm focus:border-[#1B365D] focus:ring-4 focus:ring-[#1B365D]/10 focus:outline-none transition cursor-pointer"
               >
                 {currentClassObj?.sections?.map((s) => (
-                  <option key={s.id} value={s.id}>{s.name}</option>
+                  <option key={s.id} value={s.id} className="text-slate-900 font-semibold bg-white">Section {s.name}</option>
                 ))}
               </select>
             </div>
 
             <div>
-              <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">Subject</label>
+              <label className="block text-xs font-extrabold text-slate-800 uppercase tracking-wide mb-1.5">Subject</label>
               <select
                 value={selectedSubjectId}
                 onChange={(e) => setSelectedSubjectId(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-indigo-500 bg-white"
+                className="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-slate-900 font-bold text-sm shadow-sm focus:border-[#1B365D] focus:ring-4 focus:ring-[#1B365D]/10 focus:outline-none transition cursor-pointer"
               >
                 {subjects.map((sub) => (
-                  <option key={sub.id} value={sub.id}>{sub.name} ({sub.code})</option>
+                  <option key={sub.id} value={sub.id} className="text-slate-900 font-semibold bg-white">{sub.name} ({sub.code})</option>
                 ))}
               </select>
             </div>
 
             <div>
-              <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">Period</label>
+              <label className="block text-xs font-extrabold text-slate-800 uppercase tracking-wide mb-1.5">Period</label>
               <select
                 value={selectedPeriod}
                 onChange={(e) => setSelectedPeriod(Number(e.target.value))}
-                className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-indigo-500 bg-white"
+                className="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-slate-900 font-bold text-sm shadow-sm focus:border-[#1B365D] focus:ring-4 focus:ring-[#1B365D]/10 focus:outline-none transition cursor-pointer"
               >
                 {[1, 2, 3, 4, 5, 6, 7, 8].map((p) => (
-                  <option key={p} value={p}>Period {p}</option>
+                  <option key={p} value={p} className="text-slate-900 font-semibold bg-white">Period {p}</option>
                 ))}
               </select>
             </div>
 
             <div>
-              <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">Date</label>
+              <label className="block text-xs font-extrabold text-slate-800 uppercase tracking-wide mb-1.5">Date</label>
               <input
                 type="date"
                 value={attendanceDate}
                 onChange={(e) => setAttendanceDate(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-slate-900 font-bold text-sm shadow-sm focus:border-[#1B365D] focus:ring-4 focus:ring-[#1B365D]/10 focus:outline-none transition cursor-pointer"
               />
             </div>
           </div>
@@ -479,61 +482,61 @@ export default function TeacherDashboardPage() {
               </h3>
               <form onSubmit={handleCreateAssignment} className="space-y-4">
                 <div>
-                  <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">Title *</label>
+                  <label className="block text-xs font-extrabold text-slate-800 uppercase tracking-wide mb-1.5">Title *</label>
                   <input
                     type="text"
                     required
                     value={assignmentForm.title}
                     onChange={(e) => setAssignmentForm({ ...assignmentForm, title: e.target.value })}
-                    placeholder="e.g. Chapter 4: Quadratic Equations Problem Set"
-                    className="w-full px-3.5 py-2 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-indigo-500"
+                    placeholder="e.g. Activity: Phonics Sound Matching Worksheet"
+                    className="w-full px-4 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-slate-900 font-semibold text-sm placeholder:text-slate-400 focus:border-[#1B365D] focus:ring-4 focus:ring-[#1B365D]/10 focus:outline-none transition"
                   />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">Due Date & Time *</label>
+                    <label className="block text-xs font-extrabold text-slate-800 uppercase tracking-wide mb-1.5">Due Date & Time *</label>
                     <input
                       type="datetime-local"
                       required
                       value={assignmentForm.dueDate}
                       onChange={(e) => setAssignmentForm({ ...assignmentForm, dueDate: e.target.value })}
-                      className="w-full px-3.5 py-2 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-indigo-500"
+                      className="w-full px-4 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-slate-900 font-semibold text-sm focus:border-[#1B365D] focus:ring-4 focus:ring-[#1B365D]/10 focus:outline-none transition"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">Max Marks</label>
+                    <label className="block text-xs font-extrabold text-slate-800 uppercase tracking-wide mb-1.5">Max Marks</label>
                     <input
                       type="number"
                       required
                       value={assignmentForm.maxMarks}
                       onChange={(e) => setAssignmentForm({ ...assignmentForm, maxMarks: Number(e.target.value) })}
-                      className="w-full px-3.5 py-2 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-indigo-500"
+                      className="w-full px-4 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-slate-900 font-semibold text-sm focus:border-[#1B365D] focus:ring-4 focus:ring-[#1B365D]/10 focus:outline-none transition"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">Description *</label>
+                  <label className="block text-xs font-extrabold text-slate-800 uppercase tracking-wide mb-1.5">Description *</label>
                   <textarea
                     rows={3}
                     required
                     value={assignmentForm.description}
                     onChange={(e) => setAssignmentForm({ ...assignmentForm, description: e.target.value })}
-                    placeholder="Describe problem details, chapters covered, etc..."
-                    className="w-full px-3.5 py-2 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-indigo-500"
+                    placeholder="Describe activity steps, sensory materials required, etc..."
+                    className="w-full px-4 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-slate-900 font-semibold text-sm placeholder:text-slate-400 focus:border-[#1B365D] focus:ring-4 focus:ring-[#1B365D]/10 focus:outline-none transition"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">Instructions</label>
+                  <label className="block text-xs font-extrabold text-slate-800 uppercase tracking-wide mb-1.5">Instructions</label>
                   <input
                     type="text"
                     value={assignmentForm.instructions}
                     onChange={(e) => setAssignmentForm({ ...assignmentForm, instructions: e.target.value })}
-                    placeholder="e.g. Upload scanned PDF. Show all derivation steps."
-                    className="w-full px-3.5 py-2 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-indigo-500"
+                    placeholder="e.g. Bring completed worksheet on Monday morning."
+                    className="w-full px-4 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-slate-900 font-semibold text-sm placeholder:text-slate-400 focus:border-[#1B365D] focus:ring-4 focus:ring-[#1B365D]/10 focus:outline-none transition"
                   />
                 </div>
 
