@@ -19,15 +19,19 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
       await this.$connect();
       this.logger.log('Successfully connected to Neon PostgreSQL database.');
 
-      // Start keep-alive ping every 2 minutes in development to prevent Neon serverless scale-to-zero idle drops
-      if (process.env.NODE_ENV === 'development') {
-        this.keepAliveTimer = setInterval(async () => {
-          try {
-            await this.$queryRaw`SELECT 1`;
-          } catch (pingError: any) {
-            this.logger.debug('Neon keep-alive ping reconnecting...');
-          }
-        }, 120000); // 2 minutes
+      // Start keep-alive ping every 45 seconds to keep Neon compute & PgBouncer socket active
+      this.keepAliveTimer = setInterval(async () => {
+        try {
+          await this.$queryRaw`SELECT 1`;
+        } catch {
+          this.logger.debug('Neon socket reset detected, reconnecting pool...');
+          await this.$connect().catch(() => {});
+        }
+      }, 45000);
+
+      // Allow node to exit cleanly without waiting on interval
+      if (this.keepAliveTimer.unref) {
+        this.keepAliveTimer.unref();
       }
     } catch (error) {
       this.logger.error('Failed to connect to database during initialization:', error);
