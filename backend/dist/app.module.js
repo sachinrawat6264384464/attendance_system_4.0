@@ -6,8 +6,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
-import { APP_GUARD } from '@nestjs/core';
 import { PrismaModule } from './prisma/prisma.module.js';
 import { AuthModule } from './auth/auth.module.js';
 import { AcademicsModule } from './academics/academics.module.js';
@@ -29,12 +27,6 @@ AppModule = __decorate([
                 isGlobal: true,
                 envFilePath: ['.env', '../.env'],
             }),
-            ThrottlerModule.forRoot([
-                {
-                    ttl: 60000,
-                    limit: 120,
-                },
-            ]),
             PrismaModule,
             AuthModule,
             AcademicsModule,
@@ -48,12 +40,7 @@ AppModule = __decorate([
             ReportsModule,
             HealthModule,
         ],
-        providers: [
-            {
-                provide: APP_GUARD,
-                useClass: ThrottlerGuard,
-            },
-        ],
+        providers: [],
     })
 ], AppModule);
 export { AppModule };
