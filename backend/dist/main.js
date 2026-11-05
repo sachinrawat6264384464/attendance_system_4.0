@@ -24,17 +24,7 @@ async function bootstrap() {
     ];
     app.enableCors({
         origin: (origin, callback) => {
-            if (!origin ||
-                allowedOrigins.includes(origin) ||
-                /^http:\/\/localhost:\d+$/.test(origin) ||
-                /^http:\/\/127\.0\.0\.1:\d+$/.test(origin) ||
-                origin.endsWith('.vercel.app') ||
-                origin.includes('vercel.app')) {
-                callback(null, true);
-            }
-            else {
-                callback(null, true);
-            }
+            callback(null, origin || 'https://attendancesystem40-frontend.vercel.app');
         },
         credentials: true,
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],

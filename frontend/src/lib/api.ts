@@ -1,3 +1,4 @@
+// Production endpoint dynamically resolved for Vercel deployment
 export const getApiUrl = (): string => {
   if (process.env.NEXT_PUBLIC_API_URL) {
     return process.env.NEXT_PUBLIC_API_URL.replace(/\/+$/, '');

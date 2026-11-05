@@ -12,14 +12,15 @@ let isAppInitialized = false;
 let initPromise = null;
 let initError = null;
 
-// CORS setup for Express root routes
+// CORS setup for Express root routes - dynamically echo requesting origin so credentials: 'include' is never blocked by Chrome
 server.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
+  const origin = req.headers.origin || 'https://attendancesystem40-frontend.vercel.app';
+  res.header('Access-Control-Allow-Origin', origin);
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept');
   res.header('Access-Control-Allow-Credentials', 'true');
   if (req.method === 'OPTIONS') {
-    return res.sendStatus(204);
+    return res.status(204).end();
   }
   next();
 });
@@ -68,7 +69,9 @@ async function initNest() {
       const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
 
       app.enableCors({
-        origin: (origin, callback) => callback(null, true),
+        origin: (origin, callback) => {
+          callback(null, origin || 'https://attendancesystem40-frontend.vercel.app');
+        },
         credentials: true,
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
         allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
