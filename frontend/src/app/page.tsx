@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import FloatingContact from '@/components/FloatingContact';
+import CampusScrollShowcase from '@/components/CampusScrollShowcase';
 import {
   GraduationCap,
   Sparkles,
@@ -27,20 +28,7 @@ import {
   ExternalLink,
 } from 'lucide-react';
 
-interface ShowcasePhoto {
-  id: string;
-  title: string;
-  category: string;
-  shapeName: string;
-  image: string;
-  description: string;
-  cardClasses: string;
-  badgeBg: string;
-}
-
 export default function HomePage() {
-  const [activeModalPhoto, setActiveModalPhoto] = useState<ShowcasePhoto | null>(null);
-
   const whyChoosePoints = [
     {
       title: 'English Medium Education',
@@ -149,80 +137,6 @@ export default function HomePage() {
       borderColor: 'border-purple-300',
       badgeBg: 'bg-purple-100 text-purple-800',
       features: ['Athletics & Physical Training', 'Art, Craft & Drama', 'Spoken English Club', 'Moral Values & Sanskar'],
-    },
-  ];
-
-  // 7 High-Definition Real Campus Images in Distinct Structural Shapes
-  const campusShowcasePhotos: ShowcasePhoto[] = [
-    {
-      id: 'smart-classroom',
-      title: 'Interactive Digital Smart Classrooms',
-      category: 'Smart Pedagogy',
-      shapeName: 'Wide Bento Showcase',
-      image: '/images/om-smart-classroom.jpg',
-      description: 'Audio-visual digital whiteboards transforming mathematics, science, and phonics into interactive, joyful learning experiences.',
-      cardClasses: 'col-span-2 sm:col-span-2 lg:col-span-2 rounded-3xl aspect-[16/10] sm:aspect-[16/9]',
-      badgeBg: 'bg-emerald-600',
-    },
-    {
-      id: 'computer-lab',
-      title: 'Modern IT & Coding Computer Lab',
-      category: 'Digital Literacy',
-      shapeName: 'Tall Arched Archway',
-      image: '/images/om-computer-lab.jpg',
-      description: 'Individual computing workstations with high-speed Internet where students build foundational coding, logic, and typing skills.',
-      cardClasses: 'col-span-1 rounded-t-[2.5rem] sm:rounded-t-[3.5rem] rounded-b-2xl aspect-[3/4] sm:aspect-auto',
-      badgeBg: 'bg-blue-600',
-    },
-    {
-      id: 'sports-field',
-      title: 'Athletic Sports & Running Grounds',
-      category: 'Sports & Agility',
-      shapeName: 'Diagonal Oval Frame',
-      image: '/images/om-sports-ground.jpg',
-      description: 'Expansive outdoor field for cricket, football, sprint relays, gymnastics, and morning yoga assemblies.',
-      cardClasses: 'col-span-1 rounded-[2rem] sm:rounded-[2.8rem] aspect-[4/3] sm:aspect-auto',
-      badgeBg: 'bg-[#D32F2F]',
-    },
-    {
-      id: 'reading-library',
-      title: 'Resource-Rich Knowledge Library',
-      category: 'Literature & Reading',
-      shapeName: 'Golden Bordered Squircle',
-      image: '/images/om-library.jpg',
-      description: 'Quiet sanctuary filled with thousands of illustrated storybooks, encyclopedias, and reference volumes.',
-      cardClasses: 'col-span-1 rounded-3xl border-2 border-amber-300 aspect-[4/3] sm:aspect-auto',
-      badgeBg: 'bg-amber-600',
-    },
-    {
-      id: 'science-lab',
-      title: 'Exploration Science & STEM Lab',
-      category: 'Practical Science',
-      shapeName: 'Asymmetric Leaf Contour',
-      image: '/images/om-science-lab.jpg',
-      description: 'Fully equipped experimental laboratory fostering hands-on discovery across physics, chemistry, and biology.',
-      cardClasses: 'col-span-1 rounded-tl-3xl rounded-br-3xl rounded-tr-lg rounded-bl-lg aspect-[4/3] sm:aspect-auto',
-      badgeBg: 'bg-teal-600',
-    },
-    {
-      id: 'cultural-stage',
-      title: 'Annual Day Stage & Performing Arts',
-      category: 'Events & Culture',
-      shapeName: 'Panoramic Stage Horizon',
-      image: '/images/om-cultural-celebration.jpg',
-      description: 'Vibrant auditorium stage hosting classical music, folk dance, drama, and youth confidence showcases.',
-      cardClasses: 'col-span-2 sm:col-span-2 lg:col-span-2 rounded-3xl aspect-[16/9] sm:aspect-[21/9]',
-      badgeBg: 'bg-purple-600',
-    },
-    {
-      id: 'school-facade',
-      title: 'Campus Architecture & Gated Entrance',
-      category: 'Safe Infrastructure',
-      shapeName: 'Pill Geometric Frame',
-      image: '/images/om-school-building.jpg',
-      description: 'Safe, CCTV-monitored boundary with welcoming facade and secure visitor checkpoints at Deedar Colony, Dabra.',
-      cardClasses: 'col-span-2 sm:col-span-1 lg:col-span-1 rounded-[2.2rem] aspect-[4/3] sm:aspect-auto',
-      badgeBg: 'bg-[#0D2056]',
     },
   ];
 
@@ -513,25 +427,8 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* 7 HD Images in Diverse Shapes: Paired 2-by-2 on mobile (grid-cols-2 lg:grid-cols-3) */}
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-6">
-            {campusShowcasePhotos.map((item) => (
-              <div
-                key={item.id}
-                onClick={() => setActiveModalPhoto(item)}
-                className={`group relative overflow-hidden bg-slate-100 border-2 border-slate-200/90 shadow-md hover:shadow-2xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1 ${item.cardClasses}`}
-              >
-                {/* Real High-Resolution Image: 100% Clean & Pure - NO text or dark overlay */}
-                <Image
-                  src={item.image}
-                  alt={item.title}
-                  fill
-                  sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-              </div>
-            ))}
-          </div>
+          {/* Scroll-Driven Dynamic Showcase: Emerge from left/right in dark form, illuminating to clean in center */}
+          <CampusScrollShowcase />
 
           {/* Bottom Action: Direct Link to Complete Gallery */}
           <div className="mt-10 sm:mt-14 text-center">
@@ -726,37 +623,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* ---------------- INTERACTIVE FULL-SCREEN LIGHTBOX MODAL ---------------- */}
-      {activeModalPhoto && (
-        <div
-          onClick={() => setActiveModalPhoto(null)}
-          className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 animate-in fade-in duration-200"
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="relative bg-black rounded-2xl sm:rounded-3xl overflow-hidden max-w-5xl w-full border border-white/20 shadow-2xl"
-          >
-            {/* Modal Image: Pure HD View with NO text clutter */}
-            <div className="relative aspect-[16/10] sm:aspect-[16/9] w-full">
-              <Image
-                src={activeModalPhoto.image}
-                alt={activeModalPhoto.title}
-                fill
-                sizes="(max-width: 1200px) 95vw, 1200px"
-                className="object-contain"
-              />
-              <button
-                onClick={() => setActiveModalPhoto(null)}
-                className="absolute top-3 sm:top-4 right-3 sm:right-4 p-2 sm:p-2.5 rounded-full bg-black/70 text-white hover:bg-[#D32F2F] transition border border-white/20 cursor-pointer shadow-lg"
-                aria-label="Close Preview"
-              >
-                <X className="w-5 h-5 sm:w-6 sm:h-6" />
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       <Footer />
       <FloatingContact />
