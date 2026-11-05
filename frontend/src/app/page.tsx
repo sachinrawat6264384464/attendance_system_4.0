@@ -7,6 +7,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import FloatingContact from '@/components/FloatingContact';
 import CampusScrollShowcase from '@/components/CampusScrollShowcase';
+import AcademicWingsSection from '@/components/AcademicWingsSection';
 import {
   GraduationCap,
   Sparkles,
@@ -93,50 +94,6 @@ export default function HomePage() {
       color: 'bg-[#D32F2F]',
       lightBg: 'bg-red-50',
       border: 'border-red-200',
-    },
-  ];
-
-  // 4 Wings: Pairs cleanly 2-by-2 on mobile view (grid-cols-2 lg:grid-cols-4)
-  const classWings = [
-    {
-      wing: 'Pre-Primary Wing',
-      badge: 'Early Childhood Care',
-      classes: 'PG, Nursery, LKG, UKG',
-      color: 'from-amber-500 to-orange-600',
-      bgColor: 'bg-amber-50/70',
-      borderColor: 'border-amber-300',
-      badgeBg: 'bg-amber-100 text-amber-800',
-      features: ['Sensory Play & Phonics', 'Motor Skill Development', 'Rhymes & Storytelling', 'Safe Playrooms'],
-    },
-    {
-      wing: 'Primary Wing',
-      badge: 'Foundational Stage',
-      classes: 'Class 1st to 5th',
-      color: 'from-blue-600 to-indigo-700',
-      bgColor: 'bg-blue-50/70',
-      borderColor: 'border-blue-300',
-      badgeBg: 'bg-blue-100 text-blue-800',
-      features: ['Mathematical Logic', 'Environmental Science', 'English Grammar', 'Smart Classrooms'],
-    },
-    {
-      wing: 'Middle Wing',
-      badge: 'Preparatory Stage',
-      classes: 'Class 6th to 8th',
-      color: 'from-emerald-600 to-teal-700',
-      bgColor: 'bg-emerald-50/70',
-      borderColor: 'border-emerald-300',
-      badgeBg: 'bg-emerald-100 text-emerald-800',
-      features: ['Science Lab & Computers', 'Analytical Thinking', 'Social Studies & Civics', 'Leadership Skills'],
-    },
-    {
-      wing: 'Co-Curricular Wing',
-      badge: 'Holistic Development',
-      classes: 'PG to 8th Standard',
-      color: 'from-purple-600 to-rose-600',
-      bgColor: 'bg-purple-50/70',
-      borderColor: 'border-purple-300',
-      badgeBg: 'bg-purple-100 text-purple-800',
-      features: ['Athletics & Physical Training', 'Art, Craft & Drama', 'Spoken English Club', 'Moral Values & Sanskar'],
     },
   ];
 
@@ -352,62 +309,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ---------------- 3. ACADEMIC WINGS (PG TO 8TH) (Paired 2-by-2 on mobile) ---------------- */}
-      <section className="py-12 sm:py-20 bg-gradient-to-b from-[#F8FAFC] to-[#EEF4FF] border-y border-slate-200">
-        <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12 space-y-2">
-            <span className="text-[10px] sm:text-xs font-black text-[#D32F2F] uppercase tracking-wider">
-              Comprehensive Schooling Structure
-            </span>
-            <h2 className="text-2xl sm:text-4xl font-black text-[#0D2056] tracking-tight">
-              Academic Wings: <span className="text-[#D32F2F]">Classes PG to 8th</span>
-            </h2>
-            <p className="text-[11px] sm:text-sm text-slate-600">
-              Age-appropriate pedagogy designed to spark curiosity, build mastery, and instill confidence.
-            </p>
-          </div>
-
-          {/* 4 Cards: Paired 2-by-2 on mobile (grid-cols-2 lg:grid-cols-4) */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-6">
-            {classWings.map((wing, i) => (
-              <div
-                key={i}
-                className={`bg-white rounded-2xl sm:rounded-3xl p-3.5 sm:p-6 border-2 ${wing.borderColor} shadow-xs hover:shadow-xl transition flex flex-col justify-between`}
-              >
-                <div>
-                  <div className={`inline-block px-2 sm:px-2.5 py-0.5 rounded-full ${wing.badgeBg} font-bold text-[8px] sm:text-[10px] uppercase tracking-wider mb-2`}>
-                    {wing.badge}
-                  </div>
-                  <h3 className="text-xs sm:text-lg font-black text-[#0D2056] leading-tight">
-                    {wing.wing}
-                  </h3>
-                  <div className="text-[11px] sm:text-sm font-black text-[#D32F2F] mt-0.5 sm:mt-1 mb-2.5 sm:mb-3">
-                    {wing.classes}
-                  </div>
-
-                  <div className="space-y-1.5 sm:space-y-2 pt-2 border-t border-slate-100">
-                    {wing.features.map((feat, fi) => (
-                      <div key={fi} className="flex items-center gap-1.5 text-[9px] sm:text-xs text-slate-700 font-semibold">
-                        <div className="w-1.5 h-1.5 rounded-full bg-[#D32F2F] shrink-0" />
-                        <span className="truncate">{feat}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="pt-3.5 sm:pt-5">
-                  <Link
-                    href="/admissions"
-                    className="w-full inline-block text-center py-2 sm:py-2.5 px-2 rounded-xl bg-[#0D2056] hover:bg-[#D32F2F] text-white font-bold text-[9px] sm:text-xs uppercase tracking-wider transition shadow-2xs"
-                  >
-                    Enquire Wing
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* ---------------- 3. ACADEMIC WINGS (PG TO 8TH) (Scroll Slide from Left & Right) ---------------- */}
+      <AcademicWingsSection />
 
       {/* ---------------- NEW SECTION: CAMPUS INFRASTRUCTURE & PHOTO SHOWCASE ---------------- */}
       {/* 6 to 7 HD Images in Diverse Structural Shapes and Creative Masonry / Bento Layout */}

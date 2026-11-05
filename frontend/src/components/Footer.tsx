@@ -141,8 +141,25 @@ export default function Footer() {
           </div>
         </div>
 
+        {/* Grand School Name in Majestic Red & Chrome Silver Typography */}
+        <div className="pt-10 pb-6 my-4 border-t border-white/10 text-center select-none">
+          <div className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black uppercase tracking-tight sm:tracking-wider leading-none">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF5252] via-[#D32F2F] to-[#b71c1c] drop-shadow-[0_2px_14px_rgba(211,47,47,0.6)]">
+              OM PUBLIC SCHOOL
+            </span>{' '}
+            <span className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-slate-200 via-white to-slate-300 drop-shadow-[0_2px_14px_rgba(255,255,255,0.4)]">
+              DABRA
+            </span>
+          </div>
+          <div className="flex items-center justify-center gap-3 pt-3 text-[10px] sm:text-xs font-bold tracking-[0.25em] uppercase text-slate-300">
+            <span className="w-12 sm:w-20 h-px bg-gradient-to-r from-transparent via-[#D32F2F] to-transparent" />
+            <span className="text-slate-300 font-extrabold">Learn • Grow • Achieve</span>
+            <span className="w-12 sm:w-20 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent" />
+          </div>
+        </div>
+
         {/* Bottom Copyright & Verification Line */}
-        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-[10px] sm:text-xs text-slate-400 text-center sm:text-left">
+        <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-[10px] sm:text-xs text-slate-400 text-center sm:text-left">
           <div>
             © {new Date().getFullYear()} <strong>Om Public School, Dabra</strong>. All Rights Reserved.
           </div>
