@@ -3,10 +3,16 @@ import { PrismaClient } from '@prisma/client';
 import fs from 'fs';
 import path from 'path';
 
-const NEON_DEFAULT_POOLER_URL =
-  'postgresql://neondb_owner:npg_BVX8kIyUqlO0@ep-cold-sky-b53itt32-pooler.c-7.us-east-2.aws.neon.tech/neondb?sslmode=require&pgbouncer=true&connect_timeout=30&pool_timeout=60&connection_limit=20&statement_cache_size=0';
+const NEON_DIRECT_URL =
+  'postgresql://neondb_owner:npg_BVX8kIyUqlO0@ep-cold-sky-b53itt32.c-7.us-east-2.aws.neon.tech/neondb?sslmode=require&connect_timeout=20';
 
 function resolveDatabaseUrl(): string {
+  const isCloud = Boolean(
+    process.env.VERCEL ||
+    process.env.RENDER ||
+    (process.env.NODE_ENV === 'production' && !process.env.LOCAL_DEV)
+  );
+
   // 1. First check local .env files to override any stale OS-level environment variables (like prisma.io)
   const candidatePaths = [
     path.resolve(process.cwd(), '.env'),
@@ -21,12 +27,14 @@ function resolveDatabaseUrl(): string {
         const match = content.match(/DATABASE_URL=["']?([^"'\r\n]+)["']?/);
         if (match && match[1] && !match[1].includes('prisma.io')) {
           let resolved = match[1].trim();
-          // Adjust connection limits for high-concurrency resilience
+          // On local dev, remove -pooler to connect reliably to Neon compute
+          if (!isCloud && resolved.includes('-pooler')) {
+            resolved = resolved.replace('-pooler', '');
+            resolved = resolved.replace('&pgbouncer=true', '');
+            resolved = resolved.replace('&statement_cache_size=0', '');
+          }
           if (resolved.includes('connection_limit=5')) {
             resolved = resolved.replace('connection_limit=5', 'connection_limit=20');
-          }
-          if (resolved.includes('pool_timeout=30')) {
-            resolved = resolved.replace('pool_timeout=30', 'pool_timeout=60');
           }
           return resolved;
         }
@@ -40,17 +48,16 @@ function resolveDatabaseUrl(): string {
   const envUrl = process.env.DATABASE_URL;
   if (envUrl && !envUrl.includes('prisma.io')) {
     let resolved = envUrl.trim();
-    if (resolved.includes('connection_limit=5')) {
-      resolved = resolved.replace('connection_limit=5', 'connection_limit=20');
-    }
-    if (resolved.includes('pool_timeout=30')) {
-      resolved = resolved.replace('pool_timeout=30', 'pool_timeout=60');
+    if (!isCloud && resolved.includes('-pooler')) {
+      resolved = resolved.replace('-pooler', '');
+      resolved = resolved.replace('&pgbouncer=true', '');
+      resolved = resolved.replace('&statement_cache_size=0', '');
     }
     return resolved;
   }
 
-  // 3. Authoritative fallback to verified Neon PostgreSQL credentials
-  return NEON_DEFAULT_POOLER_URL;
+  // 3. Authoritative fallback to verified Neon PostgreSQL direct credentials
+  return NEON_DIRECT_URL;
 }
 
 @Injectable()
