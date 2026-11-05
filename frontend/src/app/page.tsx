@@ -35,65 +35,41 @@ export default function HomePage() {
       title: 'English Medium Education',
       description: 'Comprehensive English medium curriculum focusing on strong foundational literacy, numeracy, and fluent communication.',
       icon: BookOpen,
-      color: 'bg-blue-600',
-      lightBg: 'bg-blue-50',
-      border: 'border-blue-200',
     },
     {
       title: 'Qualified & Experienced Teachers',
       description: 'Dedicated faculty committed to patient mentorship, conceptual clarity, and personal attention for every learner.',
       icon: Users,
-      color: 'bg-emerald-600',
-      lightBg: 'bg-emerald-50',
-      border: 'border-emerald-200',
     },
     {
       title: 'Smart Classes & Modern Teaching',
       description: 'Interactive audio-visual smart classroom technology making complex concepts easy, engaging, and memorable.',
       icon: Sparkles,
-      color: 'bg-purple-600',
-      lightBg: 'bg-purple-50',
-      border: 'border-purple-200',
     },
     {
       title: 'Special Focus on English Speaking',
       description: 'Daily phonics, conversation drills, storytelling, and public speaking clubs to build lifelong confidence in English.',
       icon: Compass,
-      color: 'bg-amber-600',
-      lightBg: 'bg-amber-50',
-      border: 'border-amber-200',
     },
     {
       title: 'Sports & Cultural Activities',
       description: 'Robust sports programs, annual sports day, dance, drama, art, and music nurturing both physical stamina and creative expression.',
       icon: Trophy,
-      color: 'bg-rose-600',
-      lightBg: 'bg-rose-50',
-      border: 'border-rose-200',
     },
     {
       title: 'Discipline & Moral Values',
       description: 'Inculcating Indian cultural ethos, mutual respect, civic sense, and ethical integrity as core building blocks of character.',
       icon: Award,
-      color: 'bg-indigo-600',
-      lightBg: 'bg-indigo-50',
-      border: 'border-indigo-200',
     },
     {
       title: 'Safe and Friendly Environment',
       description: 'CCTV monitored campus, child-safe infrastructure, loving caretakers, and high sanitation standards providing complete peace of mind.',
       icon: ShieldCheck,
-      color: 'bg-teal-600',
-      lightBg: 'bg-teal-50',
-      border: 'border-teal-200',
     },
     {
       title: 'Quality Education for a Better Tomorrow',
       description: 'Holistic growth from Playgroup to 8th class, empowering students to lead, innovate, and succeed in higher secondary pursuits.',
       icon: GraduationCap,
-      color: 'bg-[#D32F2F]',
-      lightBg: 'bg-red-50',
-      border: 'border-red-200',
     },
   ];
 
@@ -102,7 +78,7 @@ export default function HomePage() {
       <Navbar />
 
       {/* ---------------- 1. HERO SECTION ---------------- */}
-      <section className="relative min-h-[90vh] lg:min-h-screen flex items-center overflow-hidden py-10 sm:py-16 lg:py-20">
+      <section className="relative overflow-hidden pt-4 sm:pt-6 lg:pt-8 pb-8 sm:pb-14">
         {/* Full-Width and Full-Height HD Background Campus Image */}
         {/* NO heavy blue blur or dark blue overlay! Clean, bright, vivid real school campus */}
         <div className="absolute inset-0 z-0 overflow-hidden">
@@ -204,57 +180,17 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Right Real Campus Photo Card (5 Cols) */}
-            <div className="lg:col-span-5 flex flex-col items-center">
-              <div className="w-full max-w-md bg-black/40 backdrop-blur-md p-3.5 sm:p-4 rounded-3xl shadow-2xl border-2 border-white/20 space-y-3">
-                {/* Real Campus Photo Frame */}
-                <div className="relative aspect-[16/10] w-full rounded-2xl overflow-hidden shadow-inner bg-slate-900 border border-white/20 group">
-                  <Image
-                    src="/images/om-smart-classroom.jpg"
-                    alt="Om Public School Dabra Smart Digital Classroom"
-                    fill
-                    priority
-                    sizes="(max-width: 768px) 100vw, 45vw"
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                </div>
-
-                {/* Institutional Details */}
-                <div className="space-y-2 pt-1 text-xs text-slate-100">
-                  <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white/10 border border-white/10">
-                    <div className="w-8 h-8 rounded-lg bg-[#FFD600] text-[#0D2056] flex items-center justify-center font-black text-xs shrink-0 shadow-xs">
-                      OPS
-                    </div>
-                    <div>
-                      <div className="font-extrabold text-white text-xs">Om Public School, Dabra</div>
-                      <div className="text-[10px] text-amber-200">Deedar Colony, Dabra, Dist. Gwalior (M.P.)</div>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2 text-[11px]">
-                    <div className="p-2 rounded-xl bg-white/5 border border-white/10">
-                      <span className="text-slate-300 block text-[9px] uppercase font-bold">Curriculum</span>
-                      <span className="font-bold text-white">English Medium</span>
-                    </div>
-                    <div className="p-2 rounded-xl bg-white/5 border border-white/10">
-                      <span className="text-slate-300 block text-[9px] uppercase font-bold">Class Span</span>
-                      <span className="font-bold text-[#FFD600]">PG to 8th Standard</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between p-2 rounded-xl bg-white/5 border border-white/10 text-[11px]">
-                    <span className="text-slate-200 flex items-center gap-1.5 text-[10px] sm:text-[11px]">
-                      <Phone className="w-3.5 h-3.5 text-amber-300 shrink-0" />
-                      <span>7999083379, 9516469021</span>
-                    </span>
-                    <Link
-                      href="/facilities"
-                      className="text-[#FFD600] font-bold hover:underline text-[10px] uppercase"
-                    >
-                      Facilities →
-                    </Link>
-                  </div>
-                </div>
+            {/* Right Real Campus Photo (5 Cols) - Border none, no text, filling the box */}
+            <div className="lg:col-span-5 flex flex-col items-center justify-center w-full">
+              <div className="relative aspect-[16/11] sm:aspect-[4/3] w-full max-w-lg rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl group border-0">
+                <Image
+                  src="/images/om-smart-classroom.jpg"
+                  alt="Om Public School Dabra Smart Digital Classroom"
+                  fill
+                  priority
+                  sizes="(max-width: 768px) 100vw, 45vw"
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                />
               </div>
             </div>
           </div>
@@ -266,14 +202,14 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8">
           {/* Section Header */}
           <div className="text-center max-w-3xl mx-auto space-y-2 sm:space-y-3 mb-10 sm:mb-14">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[10px] sm:text-xs font-black uppercase tracking-wider">
-              <CheckCircle2 className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-300 text-black text-[10px] sm:text-xs font-black uppercase tracking-wider">
+              <CheckCircle2 className="w-3.5 h-3.5 text-black" />
               <span>Official Institutional Features</span>
             </div>
-            <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-[#0D2056] tracking-tight">
+            <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-black tracking-tight">
               Why Choose <span className="text-[#D32F2F]">Om Public School?</span>
             </h2>
-            <p className="text-xs sm:text-base text-slate-600 font-medium">
+            <p className="text-xs sm:text-base text-black font-medium">
               We provide a disciplined, nurturing, and modern English medium learning environment that lays a solid foundation for your child&apos;s lifelong success.
             </p>
           </div>
@@ -285,21 +221,21 @@ export default function HomePage() {
               return (
                 <div
                   key={idx}
-                  className={`p-3 sm:p-5 lg:p-6 rounded-2xl sm:rounded-3xl border-2 ${item.border} ${item.lightBg} hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between`}
+                  className="p-3.5 sm:p-5 lg:p-6 rounded-2xl sm:rounded-3xl bg-white border-2 border-slate-300 hover:border-black shadow-xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between"
                 >
-                  <div className="space-y-1.5 sm:space-y-3">
-                    <div className={`w-7 h-7 sm:w-11 sm:h-11 rounded-lg sm:rounded-2xl ${item.color} text-white flex items-center justify-center shadow-xs sm:shadow-md`}>
-                      <Icon className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+                  <div className="space-y-2 sm:space-y-3">
+                    <div className="w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-black text-white flex items-center justify-center shadow-xs">
+                      <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
                     </div>
-                    <h3 className="text-[11px] sm:text-base font-black text-slate-900 leading-snug">
+                    <h3 className="text-[12px] sm:text-base font-black text-black leading-snug">
                       {item.title}
                     </h3>
-                    <p className="text-[10px] sm:text-xs text-slate-600 leading-relaxed line-clamp-3 sm:line-clamp-none">
+                    <p className="text-[10px] sm:text-xs text-black font-medium leading-relaxed line-clamp-3 sm:line-clamp-none">
                       {item.description}
                     </p>
                   </div>
-                  <div className="pt-2 sm:pt-4 flex items-center gap-1 sm:gap-1.5 text-[#0D2056] text-[9px] sm:text-xs font-bold">
-                    <CheckCircle2 className="w-3 h-3 sm:w-4 sm:h-4 text-emerald-600 shrink-0" />
+                  <div className="pt-2 sm:pt-4 mt-2 sm:mt-3 border-t border-slate-200 flex items-center gap-1 sm:gap-1.5 text-black text-[9px] sm:text-xs font-black">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-black shrink-0" />
                     <span>Verified Standard</span>
                   </div>
                 </div>
