@@ -346,12 +346,6 @@ export default function HomePage() {
                     sizes="(max-width: 768px) 100vw, 45vw"
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-3">
-                    <span className="text-white text-xs font-bold flex items-center gap-1.5">
-                      <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-                      Smart Interactive Classroom & STEM
-                    </span>
-                  </div>
                 </div>
 
                 {/* Institutional Details */}
@@ -525,9 +519,9 @@ export default function HomePage() {
               <div
                 key={item.id}
                 onClick={() => setActiveModalPhoto(item)}
-                className={`group relative overflow-hidden bg-slate-900 border-2 border-slate-200/80 shadow-md hover:shadow-2xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1 flex flex-col justify-end ${item.cardClasses}`}
+                className={`group relative overflow-hidden bg-slate-100 border-2 border-slate-200/90 shadow-md hover:shadow-2xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1 ${item.cardClasses}`}
               >
-                {/* Real High-Resolution Image */}
+                {/* Real High-Resolution Image: 100% Clean & Pure - NO text or dark overlay */}
                 <Image
                   src={item.image}
                   alt={item.title}
@@ -535,34 +529,6 @@ export default function HomePage() {
                   sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-
-                {/* Subtle dark gradient overlay for crystal clear text legibility */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent group-hover:from-black/95 transition-all" />
-
-                {/* Top Badge: Structural shape label & Category */}
-                <div className="absolute top-2.5 sm:top-3.5 left-2.5 sm:left-3.5 right-2.5 sm:right-3.5 flex items-center justify-between gap-1 pointer-events-none">
-                  <span className={`px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-white text-[8px] sm:text-[10px] font-black uppercase tracking-wider shadow-md ${item.badgeBg}`}>
-                    {item.category}
-                  </span>
-                  <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/50 backdrop-blur-md text-amber-300 text-[9px] font-bold border border-white/20">
-                    <Sparkles className="w-2.5 h-2.5" />
-                    {item.shapeName}
-                  </span>
-                </div>
-
-                {/* Bottom Content Frame */}
-                <div className="relative z-10 p-2.5 sm:p-5 space-y-1 sm:space-y-1.5 text-white">
-                  <h3 className="text-xs sm:text-lg font-black text-white leading-tight group-hover:text-amber-300 transition-colors">
-                    {item.title}
-                  </h3>
-                  <p className="text-[9px] sm:text-xs text-slate-200 line-clamp-2 leading-relaxed hidden sm:block">
-                    {item.description}
-                  </p>
-                  <div className="pt-1 flex items-center gap-1 text-[8px] sm:text-[11px] font-bold text-amber-300">
-                    <Eye className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                    <span>Tap to Inspect HD View</span>
-                  </div>
-                </div>
               </div>
             ))}
           </div>
@@ -765,58 +731,28 @@ export default function HomePage() {
       {activeModalPhoto && (
         <div
           onClick={() => setActiveModalPhoto(null)}
-          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 animate-in fade-in duration-200"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="relative bg-slate-900 rounded-3xl overflow-hidden max-w-4xl w-full border border-white/20 shadow-2xl space-y-4"
+            className="relative bg-black rounded-2xl sm:rounded-3xl overflow-hidden max-w-5xl w-full border border-white/20 shadow-2xl"
           >
-            {/* Modal Image */}
-            <div className="relative aspect-[16/10] w-full bg-black">
+            {/* Modal Image: Pure HD View with NO text clutter */}
+            <div className="relative aspect-[16/10] sm:aspect-[16/9] w-full">
               <Image
                 src={activeModalPhoto.image}
                 alt={activeModalPhoto.title}
                 fill
-                sizes="(max-width: 1200px) 90vw, 1000px"
+                sizes="(max-width: 1200px) 95vw, 1200px"
                 className="object-contain"
               />
               <button
                 onClick={() => setActiveModalPhoto(null)}
-                className="absolute top-4 right-4 p-2 rounded-full bg-black/60 text-white hover:bg-[#D32F2F] transition border border-white/20 cursor-pointer"
+                className="absolute top-3 sm:top-4 right-3 sm:right-4 p-2 sm:p-2.5 rounded-full bg-black/70 text-white hover:bg-[#D32F2F] transition border border-white/20 cursor-pointer shadow-lg"
                 aria-label="Close Preview"
               >
-                <X className="w-5 h-5" />
+                <X className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
-            </div>
-
-            {/* Modal Description */}
-            <div className="p-5 sm:p-6 text-white space-y-2">
-              <div className="flex items-center gap-2">
-                <span className={`px-2.5 py-0.5 rounded-full text-white text-[10px] font-black uppercase tracking-wider ${activeModalPhoto.badgeBg}`}>
-                  {activeModalPhoto.category}
-                </span>
-                <span className="text-amber-300 text-xs font-bold">
-                  • {activeModalPhoto.shapeName}
-                </span>
-              </div>
-              <h2 className="text-lg sm:text-2xl font-black text-white">
-                {activeModalPhoto.title}
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                {activeModalPhoto.description}
-              </p>
-              <div className="pt-2 flex items-center justify-between">
-                <span className="text-[11px] text-slate-400 font-semibold">
-                  Om Public School Dabra (PG to 8th) • Deedar Colony
-                </span>
-                <Link
-                  href="/gallery"
-                  className="inline-flex items-center gap-1.5 text-xs text-[#FFD600] font-bold hover:underline"
-                >
-                  <span>Open Full Gallery</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </Link>
-              </div>
             </div>
           </div>
         </div>
