@@ -136,47 +136,47 @@ export default function FacilitiesPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 flex-1 space-y-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 py-10 sm:py-16 flex-1 space-y-10">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-8">
           {facilities.map((fac, i) => {
             const Icon = fac.icon;
             return (
               <div
                 key={i}
-                className={`bg-white rounded-3xl overflow-hidden border-2 ${fac.color} shadow-sm hover:shadow-xl transition duration-200 flex flex-col justify-between`}
+                className={`bg-white rounded-2xl sm:rounded-3xl overflow-hidden border-2 ${fac.color} shadow-xs hover:shadow-xl transition duration-200 flex flex-col justify-between`}
               >
-                <div className="p-7 space-y-4">
+                <div className="p-3.5 sm:p-7 space-y-2 sm:space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className={`px-3 py-1 rounded-full text-white text-[11px] font-black uppercase tracking-wider ${fac.tagBg}`}>
+                    <span className={`px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-white text-[8px] sm:text-[11px] font-black uppercase tracking-wider ${fac.tagBg}`}>
                       {fac.tag}
                     </span>
-                    <Icon className="w-6 h-6 text-[#0D2056]" />
+                    <Icon className="w-4 h-4 sm:w-6 sm:h-6 text-[#0D2056]" />
                   </div>
 
-                  <h3 className="text-xl font-black text-[#0D2056] leading-tight">
+                  <h3 className="text-xs sm:text-xl font-black text-[#0D2056] leading-tight">
                     {fac.title}
                   </h3>
 
-                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                  <p className="text-[10px] sm:text-sm text-slate-600 leading-relaxed line-clamp-3 sm:line-clamp-none">
                     {fac.description}
                   </p>
 
-                  <div className="space-y-2 pt-2 border-t border-slate-100">
+                  <div className="space-y-1 sm:space-y-2 pt-2 border-t border-slate-100 hidden sm:block">
                     {fac.highlights.map((h, hi) => (
-                      <div key={hi} className="flex items-center gap-2 text-xs font-bold text-slate-700">
+                      <div key={hi} className="flex items-center gap-1.5 text-xs font-bold text-slate-700">
                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                        <span>{h}</span>
+                        <span className="truncate">{h}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                <div className="p-6 bg-slate-50 border-t border-slate-100">
+                <div className="p-2.5 sm:p-6 bg-slate-50 border-t border-slate-100">
                   <Link
                     href="/admissions"
-                    className="w-full inline-block text-center py-2.5 px-4 rounded-xl bg-[#0D2056] hover:bg-[#D32F2F] text-white font-bold text-xs uppercase tracking-wider transition"
+                    className="w-full inline-block text-center py-2 sm:py-2.5 px-2 rounded-xl bg-[#0D2056] hover:bg-[#D32F2F] text-white font-bold text-[9px] sm:text-xs uppercase tracking-wider transition"
                   >
-                    Experience Campus Facility →
+                    Experience Facility →
                   </Link>
                 </div>
               </div>

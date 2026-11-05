@@ -103,40 +103,42 @@ export default function FacultyPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 flex-1">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 py-10 sm:py-16 flex-1">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-8">
           {faculty.map((member) => (
             <div
               key={member.id}
-              className="bg-white rounded-3xl border-2 border-slate-200 p-7 shadow-sm hover:shadow-lg transition text-center flex flex-col items-center"
+              className="bg-white rounded-2xl sm:rounded-3xl border-2 border-slate-200 p-3.5 sm:p-7 shadow-xs hover:shadow-lg transition text-center flex flex-col items-center justify-between"
             >
-              <div className="w-20 h-20 rounded-full bg-blue-50 border-2 border-[#0D2056]/30 flex items-center justify-center text-[#0D2056] mb-4 shadow-inner">
-                <User className="w-10 h-10" />
+              <div className="flex flex-col items-center">
+                <div className="w-12 h-12 sm:w-20 sm:h-20 rounded-full bg-blue-50 border-2 border-[#0D2056]/30 flex items-center justify-center text-[#0D2056] mb-2 sm:mb-4 shadow-inner">
+                  <User className="w-6 h-6 sm:w-10 sm:h-10" />
+                </div>
+
+                <h3 className="font-black text-xs sm:text-lg text-[#0D2056] leading-snug">
+                  {member.user.firstName} {member.user.lastName}
+                </h3>
+                <p className="text-[10px] sm:text-xs text-[#D32F2F] font-black mt-0.5">
+                  {member.department?.name || 'Faculty Member'}
+                </p>
               </div>
 
-              <h3 className="font-black text-lg text-[#0D2056]">
-                {member.user.firstName} {member.user.lastName}
-              </h3>
-              <p className="text-xs text-[#D32F2F] font-black mt-0.5">
-                {member.department?.name || 'Faculty Member'}
-              </p>
+              <div className="w-full border-t border-slate-100 my-2 sm:my-4" />
 
-              <div className="w-full border-t border-slate-100 my-4" />
-
-              <div className="text-xs text-slate-600 space-y-2 text-left w-full">
-                <div className="flex items-start gap-2 text-slate-800 font-semibold">
-                  <GraduationCap className="w-4 h-4 text-[#0D2056] shrink-0 mt-0.5" />
-                  <span className="leading-tight">{member.qualification || 'Educator'}</span>
+              <div className="text-[10px] sm:text-xs text-slate-600 space-y-1 sm:space-y-2 text-left w-full">
+                <div className="flex items-start gap-1.5 sm:gap-2 text-slate-800 font-semibold">
+                  <GraduationCap className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#0D2056] shrink-0 mt-0.5" />
+                  <span className="leading-tight truncate">{member.qualification || 'Educator'}</span>
                 </div>
                 {member.specialization && (
-                  <div className="flex items-start gap-2 text-slate-600 font-medium">
-                    <Heart className="w-4 h-4 text-[#D32F2F] shrink-0 mt-0.5" />
-                    <span className="leading-tight">{member.specialization}</span>
+                  <div className="flex items-start gap-1.5 sm:gap-2 text-slate-600 font-medium hidden sm:flex">
+                    <Heart className="w-3.5 h-3.5 text-[#D32F2F] shrink-0 mt-0.5" />
+                    <span className="leading-tight truncate">{member.specialization}</span>
                   </div>
                 )}
-                <div className="flex items-center gap-2 text-slate-400 text-[11px] pt-1">
-                  <Award className="w-3.5 h-3.5 text-amber-500 shrink-0" />
-                  <span className="font-mono">Faculty ID: {member.employeeId}</span>
+                <div className="flex items-center gap-1 sm:gap-2 text-slate-400 text-[9px] sm:text-[11px] pt-0.5">
+                  <Award className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-500 shrink-0" />
+                  <span className="font-mono">ID: {member.employeeId}</span>
                 </div>
               </div>
             </div>

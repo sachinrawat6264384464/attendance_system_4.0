@@ -78,48 +78,48 @@ export default function GalleryPage() {
         </div>
       </section>
 
-      {/* Gallery Grid */}
-      <section className="py-14 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex-1">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+      {/* Gallery Grid: Paired 2-by-2 on mobile */}
+      <section className="py-8 sm:py-14 max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 flex-1">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-8">
           {filteredItems.map((item) => (
             <div
               key={item.id}
               onClick={() => setActivePhoto(item)}
-              className="group bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col cursor-pointer transform hover:-translate-y-1"
+              className="group bg-white rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-200/80 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col cursor-pointer transform hover:-translate-y-1"
             >
               <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100">
                 <Image
                   src={item.image}
                   alt={item.title}
                   fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  sizes="(max-width: 768px) 50vw, (max-width: 1200px) 50vw, 33vw"
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                  <div className="text-white text-xs font-semibold flex items-center gap-1.5">
-                    <Eye className="w-4 h-4" />
-                    <span>View High Resolution</span>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-2 sm:p-4">
+                  <div className="text-white text-[10px] sm:text-xs font-semibold flex items-center gap-1.5">
+                    <Eye className="w-3.5 h-3.5" />
+                    <span>View Fullscreen</span>
                   </div>
                 </div>
                 <span
-                  className={`absolute top-4 left-4 ${item.tagColor} text-white text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full shadow-sm`}
+                  className={`absolute top-2 sm:top-4 left-2 sm:left-4 ${item.tagColor} text-white text-[8px] sm:text-[10px] font-black uppercase tracking-wider px-2 sm:px-3 py-0.5 sm:py-1 rounded-full shadow-xs`}
                 >
                   {item.category}
                 </span>
               </div>
 
-              <div className="p-6 flex-1 flex flex-col justify-between space-y-3">
+              <div className="p-3 sm:p-6 flex-1 flex flex-col justify-between space-y-2 sm:space-y-3">
                 <div>
-                  <h3 className="font-bold text-slate-800 text-base group-hover:text-[#0D2056] transition-colors leading-snug">
+                  <h3 className="font-bold text-slate-800 text-xs sm:text-base group-hover:text-[#0D2056] transition-colors leading-snug line-clamp-2">
                     {item.title}
                   </h3>
-                  <p className="text-xs text-slate-500 line-clamp-3 leading-relaxed mt-2">
+                  <p className="text-[10px] sm:text-xs text-slate-500 line-clamp-2 sm:line-clamp-3 leading-relaxed mt-1 sm:mt-2 hidden sm:block">
                     {item.description}
                   </p>
                 </div>
-                <div className="pt-2 flex items-center justify-between text-xs font-bold text-[#0D2056] group-hover:text-[#D32F2F] transition-colors border-t border-slate-100">
-                  <span>Enlarge Preview</span>
-                  <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform" />
+                <div className="pt-1.5 sm:pt-2 flex items-center justify-between text-[10px] sm:text-xs font-bold text-[#0D2056] group-hover:text-[#D32F2F] transition-colors border-t border-slate-100">
+                  <span>Inspect</span>
+                  <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 transform group-hover:translate-x-1 transition-transform" />
                 </div>
               </div>
             </div>

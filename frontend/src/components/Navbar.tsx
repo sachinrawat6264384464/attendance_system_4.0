@@ -124,10 +124,10 @@ export default function Navbar() {
           </div>
 
           {/* Mobile / Tablet Controls (Below LG < 1024px) */}
-          <div className="flex lg:hidden items-center gap-2">
+          <div className="flex lg:hidden items-center gap-1.5 sm:gap-2 shrink-0">
             <Link
               href={getDashboardLink()}
-              className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-bold text-[#0D2056] bg-blue-50 border border-blue-200 rounded-full"
+              className="inline-flex items-center gap-1 px-2.5 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-xs font-bold text-[#0D2056] bg-blue-50 border border-blue-200 rounded-full"
             >
               {user ? 'Dashboard' : 'Login'}
             </Link>
@@ -135,10 +135,10 @@ export default function Navbar() {
             {/* Mobile / Tablet Hamburger Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-xl text-slate-700 hover:text-[#0D2056] hover:bg-slate-100 transition focus:outline-hidden"
+              className="p-1.5 sm:p-2 rounded-xl text-slate-700 hover:text-[#0D2056] hover:bg-slate-100 transition focus:outline-hidden"
               aria-label="Toggle Navigation Menu"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6 text-[#D32F2F]" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6 text-[#D32F2F]" /> : <Menu className="w-5 h-5 sm:w-6 sm:h-6" />}
             </button>
           </div>
         </div>

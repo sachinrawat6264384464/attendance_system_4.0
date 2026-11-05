@@ -19,10 +19,10 @@ export default function Footer() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Main 4 Columns */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10 pb-10 border-b border-white/10">
-          {/* Column 1: School Identity */}
-          <div className="space-y-4">
+        {/* Main Columns: Paired 2-by-2 on mobile */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 pb-10 border-b border-white/10">
+          {/* Column 1: School Identity (Desktop 4 cols) */}
+          <div className="lg:col-span-4 space-y-4">
             <Link href="/" className="inline-block">
               <DandelionLogo variant="light" />
             </Link>
@@ -35,132 +35,121 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Column 2: Key Academic Highlights */}
-          <div className="space-y-3">
-            <h4 className="text-sm font-black text-amber-300 uppercase tracking-wider">
-              Why Om Public School?
-            </h4>
-            <div className="w-12 h-1 bg-[#D32F2F] rounded-full" />
-            <ul className="space-y-2 text-xs text-slate-300">
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                <span>English Medium Education</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                <span>Qualified & Experienced Teachers</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                <span>Smart Classes & Modern Teaching</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                <span>Special Focus on English Speaking</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                <span>Sports & Cultural Activities</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                <span>Safe and Friendly Environment</span>
-              </li>
-            </ul>
+          {/* Middle Group: Paired 2-by-2 on mobile (Desktop 5 cols) */}
+          <div className="lg:col-span-5 grid grid-cols-2 gap-4 sm:gap-6">
+            {/* Column 2: Key Academic Highlights */}
+            <div className="space-y-3">
+              <h4 className="text-xs sm:text-sm font-black text-amber-300 uppercase tracking-wider">
+                Why Choose Us?
+              </h4>
+              <div className="w-10 sm:w-12 h-1 bg-[#D32F2F] rounded-full" />
+              <ul className="space-y-1.5 sm:space-y-2 text-[11px] sm:text-xs text-slate-300">
+                <li className="flex items-center gap-1.5 sm:gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <span>English Medium</span>
+                </li>
+                <li className="flex items-center gap-1.5 sm:gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <span>Expert Teachers</span>
+                </li>
+                <li className="flex items-center gap-1.5 sm:gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <span>Smart Classes</span>
+                </li>
+                <li className="flex items-center gap-1.5 sm:gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <span>English Speaking</span>
+                </li>
+                <li className="flex items-center gap-1.5 sm:gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <span>Sports & Games</span>
+                </li>
+                <li className="flex items-center gap-1.5 sm:gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <span>Safe Campus</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Column 3: Quick Links */}
+            <div className="space-y-3">
+              <h4 className="text-xs sm:text-sm font-black text-amber-300 uppercase tracking-wider">
+                Quick Links
+              </h4>
+              <div className="w-10 sm:w-12 h-1 bg-[#D32F2F] rounded-full" />
+              <ul className="space-y-1.5 sm:space-y-2 text-[11px] sm:text-xs text-slate-300">
+                <li>
+                  <Link href="/" className="hover:text-amber-300 transition">Home Page</Link>
+                </li>
+                <li>
+                  <Link href="/academics" className="hover:text-amber-300 transition">About School</Link>
+                </li>
+                <li>
+                  <Link href="/facilities" className="hover:text-amber-300 transition">Facilities</Link>
+                </li>
+                <li>
+                  <Link href="/faculty" className="hover:text-amber-300 transition">Faculty Team</Link>
+                </li>
+                <li>
+                  <Link href="/gallery" className="hover:text-amber-300 transition">Photo Gallery</Link>
+                </li>
+                <li>
+                  <Link href="/admissions" className="hover:text-amber-300 transition font-bold text-rose-300">
+                    Apply Online
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/login" className="hover:text-amber-300 transition">
+                    Portal Login
+                  </Link>
+                </li>
+              </ul>
+            </div>
           </div>
 
-          {/* Column 3: Quick Links */}
-          <div className="space-y-3">
-            <h4 className="text-sm font-black text-amber-300 uppercase tracking-wider">
-              Quick Navigation
-            </h4>
-            <div className="w-12 h-1 bg-[#D32F2F] rounded-full" />
-            <ul className="space-y-2 text-xs text-slate-300">
-              <li>
-                <Link href="/" className="hover:text-amber-300 transition">Home Page</Link>
-              </li>
-              <li>
-                <Link href="/academics" className="hover:text-amber-300 transition">About School & Vision</Link>
-              </li>
-              <li>
-                <Link href="/facilities" className="hover:text-amber-300 transition">Smart Classes & Infrastructure</Link>
-              </li>
-              <li>
-                <Link href="/faculty" className="hover:text-amber-300 transition">Experienced Faculty Team</Link>
-              </li>
-              <li>
-                <Link href="/gallery" className="hover:text-amber-300 transition">School Activity Gallery</Link>
-              </li>
-              <li>
-                <Link href="/admissions" className="hover:text-amber-300 transition font-bold text-rose-300">
-                  Admission Enquiry 2027–28
-                </Link>
-              </li>
-              <li>
-                <Link href="/login" className="hover:text-amber-300 transition">
-                  Staff & Student Academic Portal
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Column 4: Official Contact & Address */}
-          <div className="space-y-3">
-            <h4 className="text-sm font-black text-amber-300 uppercase tracking-wider">
+          {/* Column 4: Official Contact & Address (Desktop 3 cols) */}
+          <div className="lg:col-span-3 space-y-3">
+            <h4 className="text-xs sm:text-sm font-black text-amber-300 uppercase tracking-wider">
               Campus Contact
             </h4>
-            <div className="w-12 h-1 bg-[#D32F2F] rounded-full" />
+            <div className="w-10 sm:w-12 h-1 bg-[#D32F2F] rounded-full" />
             
-            <div className="space-y-3 text-xs text-slate-300">
-              <div className="flex items-start gap-2.5">
+            <div className="grid grid-cols-2 lg:grid-cols-1 gap-3 sm:gap-4 text-xs text-slate-300">
+              <div className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
-                <span className="leading-relaxed">
-                  <strong>Deedar Colony, Dabra</strong>,<br />
-                  District Gwalior (Madhya Pradesh)
+                <span className="leading-relaxed text-[11px] sm:text-xs">
+                  <strong>Deedar Colony</strong>,<br />
+                  Dabra, Dist. Gwalior (M.P.)
                 </span>
               </div>
 
-              <div className="flex items-center gap-2.5">
-                <Phone className="w-4 h-4 text-amber-400 shrink-0" />
-                <div className="space-x-1 font-bold">
-                  <a href="tel:+917999083379" className="hover:text-amber-300">7999083379</a>,
-                  <a href="tel:+919516469021" className="hover:text-amber-300"> 9516469021</a>
+              <div className="flex items-start gap-2">
+                <Clock className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                <span className="text-[11px] sm:text-xs">
+                  Mon – Sat: 8 AM – 2:30 PM
+                </span>
+              </div>
+
+              <div className="col-span-2 lg:col-span-1 flex items-start gap-2">
+                <Phone className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                <div className="text-[11px] sm:text-xs">
+                  <a href="tel:+917999083379" className="hover:text-amber-300 font-bold">7999083379</a>,{' '}
+                  <a href="tel:+919516469021" className="hover:text-amber-300 font-bold">9516469021</a>
                 </div>
-              </div>
-
-              <div className="flex items-center gap-2.5">
-                <Mail className="w-4 h-4 text-amber-400 shrink-0" />
-                <a href="mailto:info@ompublicschool.edu.in" className="hover:text-amber-300">
-                  info@ompublicschool.edu.in
-                </a>
-              </div>
-
-              <div className="flex items-start gap-2.5 pt-1 text-[11px] text-slate-400">
-                <Clock className="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5" />
-                <span>Mon to Sat : 08:00 AM - 02:30 PM<br />Sunday: Closed</span>
-              </div>
-
-              <div className="pt-2">
-                <Link
-                  href="/admissions"
-                  className="w-full inline-block text-center py-2 px-4 rounded-xl bg-[#D32F2F] hover:bg-[#b71c1c] text-white font-extrabold text-xs shadow-md transition"
-                >
-                  Apply Online for 2027–28
-                </Link>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Bottom Rights Bar */}
-        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-3">
-          <p>
-            © {new Date().getFullYear()} <strong>Om Public School Dabra</strong> (Gwalior, M.P.). All Rights Reserved.
-          </p>
-          <div className="flex items-center gap-4 text-[11px]">
-            <span className="text-amber-300 font-semibold">Affiliated Standard: Nursery to 8th</span>
+        {/* Bottom Copyright & Verification Line */}
+        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-[10px] sm:text-xs text-slate-400 text-center sm:text-left">
+          <div>
+            © {new Date().getFullYear()} <strong>Om Public School, Dabra</strong>. All Rights Reserved.
+          </div>
+          <div className="text-slate-400 flex items-center gap-2">
+            <span>English Medium (PG to 8th)</span>
             <span>•</span>
-            <Link href="/login" className="hover:text-white transition">Institutional Dashboard</Link>
+            <span className="text-amber-300 font-bold">Dabra (Gwalior, M.P.)</span>
           </div>
         </div>
       </div>

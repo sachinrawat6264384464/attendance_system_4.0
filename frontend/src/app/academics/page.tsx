@@ -125,23 +125,23 @@ export default function AboutAndAcademicsPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-2.5 sm:gap-6">
             {corePillars.map((item, idx) => (
               <div
                 key={idx}
-                className={`${item.bg} rounded-3xl p-6 text-center border-2 ${item.border} shadow-sm hover:shadow-lg transition duration-200 flex flex-col justify-between`}
+                className={`${item.bg} rounded-2xl sm:rounded-3xl p-3.5 sm:p-6 text-center border-2 ${item.border} shadow-xs hover:shadow-lg transition duration-200 flex flex-col justify-between ${idx === 4 ? 'col-span-2 sm:col-span-1' : ''}`}
               >
                 <div>
                   <div
-                    className="w-12 h-12 rounded-2xl text-white font-black text-xl flex items-center justify-center mx-auto mb-4 shadow-md"
+                    className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl text-white font-black text-sm sm:text-xl flex items-center justify-center mx-auto mb-2 sm:mb-4 shadow-xs sm:shadow-md"
                     style={{ backgroundColor: item.color }}
                   >
                     {idx + 1}
                   </div>
-                  <h3 className="font-extrabold text-base mb-2 text-slate-900">
+                  <h3 className="font-extrabold text-xs sm:text-base mb-1 sm:mb-2 text-slate-900 leading-snug">
                     {item.title}
                   </h3>
-                  <p className="text-xs text-slate-600 leading-relaxed">{item.desc}</p>
+                  <p className="text-[10px] sm:text-xs text-slate-600 leading-relaxed line-clamp-3 sm:line-clamp-none">{item.desc}</p>
                 </div>
               </div>
             ))}
