@@ -17,9 +17,10 @@ async function bootstrap() {
   // Global Middleware
   app.use(cookieParser());
 
-  // CORS Configuration - Supports ports 3000, 3001, etc.
+  // CORS Configuration - Supports ports 3000, 3001, and production Vercel frontend
   const allowedOrigins = [
     process.env.FRONTEND_URL || 'http://localhost:3000',
+    'https://attendancesystem40-frontend.vercel.app',
     'http://localhost:3000',
     'http://localhost:3001',
     'http://localhost:3002',

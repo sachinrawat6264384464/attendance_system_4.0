@@ -13,56 +13,72 @@ import { TransformInterceptor } from '../dist/common/interceptors/transform.inte
 
 const server = express();
 let isAppInitialized = false;
+let initError = null;
 
 async function bootstrap() {
   if (!isAppInitialized) {
-    server.use(cookieParser());
+    try {
+      server.use(cookieParser());
 
-    // Root status handler for https://attendance-system-4-0-15mw.vercel.app/
-    server.get('/', (req, res) => {
-      res.status(200).json({
-        status: 'online',
-        institution: 'Om Public School Dabra',
-        message: 'Om Public School Academic Management REST API is live and operational',
-        docs: '/api/v1/docs',
-        apiPrefix: '/api/v1',
-        timestamp: new Date().toISOString(),
+      // Root status handler for https://attendancesystem40-backend.vercel.app/
+      server.get('/', (req, res) => {
+        res.status(200).json({
+          status: 'online',
+          institution: 'Om Public School Dabra',
+          message: 'Om Public School Academic Management REST API is live and operational',
+          docs: '/api/v1/docs',
+          apiPrefix: '/api/v1',
+          frontend: 'https://attendancesystem40-frontend.vercel.app',
+          backend: 'https://attendancesystem40-backend.vercel.app',
+          timestamp: new Date().toISOString(),
+        });
       });
-    });
 
-    const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
+      const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
 
-    app.enableCors({
-      origin: (origin, callback) => {
-        // Allow all requests from localhost, 127.0.0.1, and all vercel.app domains
-        callback(null, true);
-      },
-      credentials: true,
-      methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
-    });
+      app.enableCors({
+        origin: (origin, callback) => {
+          // Allow all requests from localhost, 127.0.0.1, and all vercel.app domains
+          callback(null, true);
+        },
+        credentials: true,
+        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+      });
 
-    const apiPrefix = process.env.API_PREFIX || 'api/v1';
-    app.setGlobalPrefix(apiPrefix);
+      const apiPrefix = process.env.API_PREFIX || 'api/v1';
+      app.setGlobalPrefix(apiPrefix);
 
-    app.useGlobalPipes(
-      new ValidationPipe({
-        whitelist: true,
-        transform: true,
-        forbidNonWhitelisted: false,
-      }),
-    );
-    app.useGlobalFilters(new AllExceptionsFilter());
-    app.useGlobalInterceptors(new TransformInterceptor());
+      app.useGlobalPipes(
+        new ValidationPipe({
+          whitelist: true,
+          transform: true,
+          forbidNonWhitelisted: false,
+        }),
+      );
+      app.useGlobalFilters(new AllExceptionsFilter());
+      app.useGlobalInterceptors(new TransformInterceptor());
 
-    await app.init();
-    isAppInitialized = true;
+      await app.init();
+      isAppInitialized = true;
+    } catch (err) {
+      console.error('NestJS Serverless bootstrap failed:', err);
+      initError = err;
+    }
   }
   return server;
 }
 
 export default async function handler(req, res) {
-  const app = await bootstrap();
-  return app(req, res);
+  await bootstrap();
+  if (initError && !isAppInitialized) {
+    return res.status(500).json({
+      status: 'error',
+      message: 'Serverless initialization error',
+      error: initError?.message || String(initError),
+      timestamp: new Date().toISOString(),
+    });
+  }
+  return server(req, res);
 }
 
