@@ -99,3 +99,4 @@ export function saveStoredGalleryItems(items: GalleryItem[]): void {
     console.error('Failed to save gallery items:', e);
   }
 }
+

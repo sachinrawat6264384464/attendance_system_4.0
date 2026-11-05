@@ -128,8 +128,8 @@ export default function HomePage() {
       <Navbar />
 
       {/* ---------------- 1. HERO SECTION ---------------- */}
-      <section className="relative min-h-[90vh] lg:min-h-[94vh] flex items-center overflow-hidden py-16 sm:py-20">
-        {/* Full-Width HD Background Campus Image */}
+      <section className="relative min-h-[92vh] lg:min-h-screen flex items-center overflow-hidden py-14 sm:py-20">
+        {/* Full-Width and Full-Height HD Background Campus Image */}
         <div className="absolute inset-0 z-0">
           <Image
             src="/images/om-hero-campus-hd.jpg"
@@ -137,111 +137,153 @@ export default function HomePage() {
             fill
             priority
             sizes="100vw"
-            className="object-cover object-center"
+            className="object-cover object-center w-full h-full"
           />
           {/* Deep Royal Multi-Stop Gradient Overlay for High-Contrast Text Legibility */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#071333]/98 via-[#0D2056]/90 to-[#0D2056]/65 backdrop-blur-[1px]" />
-          <div className="absolute inset-0 bg-radial-at-t from-transparent via-[#0D2056]/40 to-[#071333]/80" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#060f26]/95 via-[#0D2056]/85 to-[#060f26]/90" />
+          <div className="absolute inset-0 bg-black/25" />
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-            {/* Left Content (7 Cols) */}
-            <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-              {/* Badge strip */}
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[#FFD600] text-xs font-black uppercase tracking-wider shadow-md">
-                <Sparkles className="w-4 h-4 text-[#FFD600] animate-spin-slow" />
-                <span>Admission Open • Session 2027–28 • Limited Seats</span>
+            {/* Left Content: School Identity & Information (7 Cols) */}
+            <div className="lg:col-span-7 space-y-5 sm:space-y-6 text-center lg:text-left">
+              {/* Institution Excellence Badge (NO "Admission Open") */}
+              <div className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[#FFD600] text-[11px] sm:text-xs font-black uppercase tracking-wider shadow-md">
+                <Sparkles className="w-4 h-4 text-[#FFD600]" />
+                <span>Premier English Medium Institution • Deedar Colony, Dabra</span>
               </div>
 
               {/* Main Heading */}
               <div>
-                <span className="text-sm sm:text-base font-extrabold text-[#FFD600] tracking-widest uppercase block mb-1">
+                <span className="text-xs sm:text-base font-extrabold text-[#FFD600] tracking-widest uppercase block mb-1">
                   Learn... Grow... Achieve...
                 </span>
-                <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight leading-[1.1]">
+                <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.1]">
                   OM PUBLIC <span className="text-[#FF5252]">SCHOOL</span>
-                  <span className="inline-block ml-3 px-3.5 py-1 bg-[#D32F2F] text-[#FFD600] rounded-2xl text-2xl sm:text-3xl font-black uppercase shadow-lg align-middle transform -rotate-1 border border-white/20">
+                  <span className="inline-block ml-2 sm:ml-3 px-3 py-1 bg-[#D32F2F] text-[#FFD600] rounded-2xl text-xl sm:text-2xl font-black uppercase shadow-lg align-middle border border-white/20">
                     DABRA
                   </span>
                 </h1>
-                <p className="mt-3 text-lg sm:text-xl font-bold text-slate-200 italic">
+                <p className="mt-2 text-base sm:text-xl font-bold text-slate-200 italic">
                   &ldquo;Quality Education for a Better Tomorrow&rdquo;
                 </p>
               </div>
 
               {/* Tagline / Subtitle */}
-              <p className="text-sm sm:text-base text-slate-200 leading-relaxed max-w-xl mx-auto lg:mx-0">
-                Welcome to <strong className="text-white">Om Public School, Dabra (District Gwalior, M.P.)</strong>. We provide holistic, English Medium education from <strong className="text-[#FFD600]">Playgroup (PG) to 8th Standard</strong>, empowering children with academic excellence, strong communication skills, and noble moral values.
+              <p className="text-xs sm:text-sm md:text-base text-slate-200 leading-relaxed max-w-xl mx-auto lg:mx-0">
+                Welcome to <strong className="text-white">Om Public School, Dabra (District Gwalior, M.P.)</strong>. We provide holistic, child-centric English Medium schooling from <strong className="text-[#FFD600]">Playgroup (PG) to 8th Standard</strong>, empowering children with interactive smart classroom learning, strong English speaking confidence, and noble moral values.
               </p>
 
-              {/* Highlight Glass Stats Box */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-1 max-w-lg mx-auto lg:mx-0">
-                <div className="p-3.5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-center shadow-sm">
-                  <div className="text-[11px] font-bold text-slate-300 uppercase tracking-wide">Classes</div>
-                  <div className="text-base font-black text-[#FFD600]">PG to 8th</div>
+              {/* Highlight Stats Box (Paired 2-by-2 on mobile) */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 pt-1 max-w-xl mx-auto lg:mx-0">
+                <div className="p-3 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-center shadow-xs">
+                  <div className="text-[10px] font-bold text-slate-300 uppercase tracking-wide">Classes</div>
+                  <div className="text-sm sm:text-base font-black text-[#FFD600]">PG to 8th</div>
                 </div>
-                <div className="p-3.5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-center shadow-sm">
-                  <div className="text-[11px] font-bold text-slate-300 uppercase tracking-wide">Medium</div>
-                  <div className="text-base font-black text-white">English Medium</div>
+                <div className="p-3 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-center shadow-xs">
+                  <div className="text-[10px] font-bold text-slate-300 uppercase tracking-wide">Medium</div>
+                  <div className="text-sm sm:text-base font-black text-white">English Medium</div>
                 </div>
-                <div className="p-3.5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-center shadow-sm col-span-2 sm:col-span-1">
-                  <div className="text-[11px] font-bold text-slate-300 uppercase tracking-wide">Curriculum</div>
-                  <div className="text-base font-black text-emerald-300">Modern & Value-Based</div>
+                <div className="p-3 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-center shadow-xs">
+                  <div className="text-[10px] font-bold text-slate-300 uppercase tracking-wide">Smart Classes</div>
+                  <div className="text-sm sm:text-base font-black text-emerald-300">Audio-Visual</div>
+                </div>
+                <div className="p-3 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-center shadow-xs">
+                  <div className="text-[10px] font-bold text-slate-300 uppercase tracking-wide">Campus Focus</div>
+                  <div className="text-sm sm:text-base font-black text-amber-300">Values & Sports</div>
                 </div>
               </div>
 
               {/* CTA Buttons */}
-              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
+              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-2">
                 <Link
-                  href="/admissions"
-                  className="px-8 py-4 bg-[#D32F2F] hover:bg-[#b71c1c] text-white font-black text-sm uppercase tracking-wider rounded-full shadow-xl hover:shadow-2xl transition transform hover:-translate-y-0.5 flex items-center gap-2 group"
+                  href="/academics"
+                  className="px-6 py-3.5 bg-[#D32F2F] hover:bg-[#b71c1c] text-white font-black text-xs sm:text-sm uppercase tracking-wider rounded-full shadow-xl hover:shadow-2xl transition transform hover:-translate-y-0.5 flex items-center gap-2 group"
                 >
-                  <span>Apply for Admission</span>
+                  <span>Explore Academics</span>
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </Link>
+
+                <Link
+                  href="/gallery"
+                  className="px-6 py-3.5 bg-white/15 hover:bg-white/25 text-white border border-white/30 font-extrabold text-xs sm:text-sm rounded-full backdrop-blur-md transition flex items-center gap-2"
+                >
+                  <span>View Campus Gallery</span>
                 </Link>
 
                 <a
                   href="tel:+917999083379"
-                  className="px-7 py-4 bg-white hover:bg-slate-100 text-[#0D2056] font-extrabold text-sm rounded-full shadow-lg hover:shadow-xl transition flex items-center gap-2"
+                  className="px-5 py-3.5 bg-white hover:bg-slate-100 text-[#0D2056] font-extrabold text-xs sm:text-sm rounded-full shadow-md transition flex items-center gap-1.5"
                 >
                   <Phone className="w-4 h-4 text-[#D32F2F]" />
                   <span>Call: 7999083379</span>
                 </a>
-
-                <Link
-                  href="/login"
-                  className="px-6 py-4 bg-[#FFD600] hover:bg-amber-400 text-slate-900 font-black text-xs uppercase tracking-wider rounded-full shadow-lg transition"
-                >
-                  Portal Login
-                </Link>
               </div>
 
               {/* Campus Address quick indicator */}
-              <div className="flex items-center justify-center lg:justify-start gap-2 text-xs text-slate-300 pt-1 font-semibold">
+              <div className="flex items-center justify-center lg:justify-start gap-2 text-[11px] sm:text-xs text-slate-300 pt-1 font-semibold">
                 <MapPin className="w-4 h-4 text-[#FF5252] shrink-0" />
                 <span>Deedar Colony, Dabra, District Gwalior (M.P.) • Contact: 7999083379, 9516469021</span>
               </div>
             </div>
 
-            {/* Right Poster Graphic (5 Cols) */}
-            <div className="lg:col-span-5 flex justify-center">
-              <div className="relative w-full max-w-md bg-white/10 backdrop-blur-md p-3 rounded-3xl shadow-2xl border-4 border-[#FFD600]/80 overflow-hidden group">
-                {/* Poster Frame */}
-                <div className="relative aspect-[975/1024] w-full rounded-2xl overflow-hidden bg-white">
+            {/* Right Real Campus Photo & School Info Card (5 Cols - NO Poster Flyer!) */}
+            <div className="lg:col-span-5 flex flex-col items-center">
+              <div className="w-full max-w-md bg-white/10 backdrop-blur-md p-4 rounded-3xl shadow-2xl border-2 border-white/20 space-y-3.5">
+                {/* Real Campus Photo Frame */}
+                <div className="relative aspect-[16/10] w-full rounded-2xl overflow-hidden shadow-inner bg-slate-900 border border-white/20 group">
                   <Image
-                    src="/images/om-public-school-poster.jpg"
-                    alt="Om Public School Dabra Official Admission Banner Session 2027-28"
+                    src="/images/om-smart-classroom.jpg"
+                    alt="Om Public School Dabra Smart Digital Classroom"
                     fill
                     priority
-                    sizes="(max-width: 768px) 100vw, 40vw"
-                    className="object-contain transform group-hover:scale-[1.02] transition-transform duration-300"
+                    sizes="(max-width: 768px) 100vw, 45vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end p-3">
+                    <span className="text-white text-xs font-bold flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                      Smart Interactive Classroom & STEM
+                    </span>
+                  </div>
                 </div>
 
-                {/* Floating Admission Badge */}
-                <div className="absolute top-6 right-6 bg-[#D32F2F] text-[#FFD600] px-4 py-1.5 rounded-full font-black text-xs uppercase tracking-wider shadow-xl border-2 border-white animate-bounce">
-                  Limited Seats!
+                {/* Institutional Details */}
+                <div className="space-y-2 pt-1 text-xs text-slate-100">
+                  <div className="flex items-center gap-2.5 p-2.5 rounded-xl bg-white/10 border border-white/10">
+                    <div className="w-8 h-8 rounded-lg bg-[#FFD600] text-[#0D2056] flex items-center justify-center font-black text-xs shrink-0 shadow-xs">
+                      OPS
+                    </div>
+                    <div>
+                      <div className="font-extrabold text-white text-xs">Om Public School, Dabra</div>
+                      <div className="text-[10px] text-amber-200">Deedar Colony, Dabra, Dist. Gwalior (M.P.)</div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 text-[11px]">
+                    <div className="p-2.5 rounded-xl bg-white/5 border border-white/10">
+                      <span className="text-slate-400 block text-[9px] uppercase font-bold">Curriculum</span>
+                      <span className="font-bold text-white">English Medium</span>
+                    </div>
+                    <div className="p-2.5 rounded-xl bg-white/5 border border-white/10">
+                      <span className="text-slate-400 block text-[9px] uppercase font-bold">Class Span</span>
+                      <span className="font-bold text-[#FFD600]">PG to 8th Standard</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/10 text-[11px]">
+                    <span className="text-slate-300 flex items-center gap-1.5 text-[10px] sm:text-[11px]">
+                      <Phone className="w-3.5 h-3.5 text-amber-300 shrink-0" />
+                      <span>7999083379, 9516469021</span>
+                    </span>
+                    <Link
+                      href="/facilities"
+                      className="text-[#FFD600] font-bold hover:underline text-[10px] uppercase"
+                    >
+                      Facilities →
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>

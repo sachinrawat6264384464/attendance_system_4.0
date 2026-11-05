@@ -47,3 +47,4 @@ export function saveStoredSchoolProfile(profile: SchoolProfile): void {
     console.error('Failed to save school profile:', e);
   }
 }
+
