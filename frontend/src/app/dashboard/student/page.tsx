@@ -140,44 +140,44 @@ export default function StudentDashboardPage() {
       {/* ---------------- ATTENDANCE TAB ---------------- */}
       {activeTab === 'attendance' && (
         <div className="space-y-6">
-          {/* Top Score Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-4 gap-5">
-            <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm text-center sm:text-left">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-2">
+          {/* Top Score Cards (Paired 2-by-2 on mobile) */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-5">
+            <div className="bg-white p-3.5 sm:p-6 rounded-2xl border border-slate-200/80 shadow-xs text-center sm:text-left">
+              <span className="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1 sm:mb-2">
                 Overall Attendance
               </span>
-              <div className="flex items-baseline gap-2">
-                <span className={`text-4xl font-extrabold ${isAttendanceSafe ? 'text-emerald-600' : 'text-rose-600'}`}>
+              <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-2">
+                <span className={`text-2xl sm:text-4xl font-black ${isAttendanceSafe ? 'text-emerald-600' : 'text-rose-600'}`}>
                   {attendance.overallPercentage}%
                 </span>
-                <span className="text-xs text-slate-500 font-semibold">
-                  {isAttendanceSafe ? 'Above CBSE 75%' : 'Below Threshold'}
+                <span className="text-[10px] sm:text-xs text-slate-500 font-semibold">
+                  {isAttendanceSafe ? 'Above 75%' : 'Below 75%'}
                 </span>
               </div>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-2">
-                Total Periods Logged
+            <div className="bg-white p-3.5 sm:p-6 rounded-2xl border border-slate-200/80 shadow-xs">
+              <span className="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1 sm:mb-2">
+                Periods Logged
               </span>
-              <div className="text-3xl font-extrabold text-slate-900">{attendance.totalPeriods}</div>
-              <div className="text-xs text-slate-500 mt-1">Conducted by teachers this term</div>
+              <div className="text-xl sm:text-3xl font-black text-slate-900">{attendance.totalPeriods}</div>
+              <div className="text-[10px] sm:text-xs text-slate-400 mt-0.5 sm:mt-1 font-medium">Conducted this term</div>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-2">
-                Attended (Present / Late)
+            <div className="bg-white p-3.5 sm:p-6 rounded-2xl border border-slate-200/80 shadow-xs">
+              <span className="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1 sm:mb-2">
+                Attended (P / L)
               </span>
-              <div className="text-3xl font-extrabold text-emerald-600">{attendance.presentPeriods}</div>
-              <div className="text-xs text-slate-500 mt-1">Active periods verified</div>
+              <div className="text-xl sm:text-3xl font-black text-emerald-600">{attendance.presentPeriods}</div>
+              <div className="text-[10px] sm:text-xs text-slate-400 mt-0.5 sm:mt-1 font-medium">Active verified slots</div>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-2">
-                Absences Recorded
+            <div className="bg-white p-3.5 sm:p-6 rounded-2xl border border-slate-200/80 shadow-xs">
+              <span className="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1 sm:mb-2">
+                Absences Logged
               </span>
-              <div className="text-3xl font-extrabold text-rose-500">{attendance.absentPeriods}</div>
-              <div className="text-xs text-slate-500 mt-1">Total missed period slots</div>
+              <div className="text-xl sm:text-3xl font-black text-rose-500">{attendance.absentPeriods}</div>
+              <div className="text-[10px] sm:text-xs text-slate-400 mt-0.5 sm:mt-1 font-medium">Missed period slots</div>
             </div>
           </div>
 

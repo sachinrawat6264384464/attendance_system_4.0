@@ -128,55 +128,66 @@ export default function HomePage() {
       <Navbar />
 
       {/* ---------------- 1. HERO SECTION ---------------- */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#EEF4FF] via-[#F8FAFC] to-white pt-8 pb-16 sm:pb-24">
-        {/* Decorative Background Elements */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-200/40 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-amber-200/30 rounded-full blur-3xl pointer-events-none -ml-20 -mb-20" />
+      <section className="relative min-h-[90vh] lg:min-h-[94vh] flex items-center overflow-hidden py-16 sm:py-20">
+        {/* Full-Width HD Background Campus Image */}
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="/images/om-hero-campus-hd.jpg"
+            alt="Om Public School Dabra Campus"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center"
+          />
+          {/* Deep Royal Multi-Stop Gradient Overlay for High-Contrast Text Legibility */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#071333]/98 via-[#0D2056]/90 to-[#0D2056]/65 backdrop-blur-[1px]" />
+          <div className="absolute inset-0 bg-radial-at-t from-transparent via-[#0D2056]/40 to-[#071333]/80" />
+        </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             {/* Left Content (7 Cols) */}
             <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
               {/* Badge strip */}
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border-2 border-rose-200 text-[#D32F2F] text-xs font-black uppercase tracking-wider shadow-sm">
-                <Sparkles className="w-4 h-4 text-amber-500 animate-spin-slow" />
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[#FFD600] text-xs font-black uppercase tracking-wider shadow-md">
+                <Sparkles className="w-4 h-4 text-[#FFD600] animate-spin-slow" />
                 <span>Admission Open • Session 2027–28 • Limited Seats</span>
               </div>
 
               {/* Main Heading */}
               <div>
-                <span className="text-sm sm:text-base font-extrabold text-[#D32F2F] tracking-widest uppercase block mb-1">
+                <span className="text-sm sm:text-base font-extrabold text-[#FFD600] tracking-widest uppercase block mb-1">
                   Learn... Grow... Achieve...
                 </span>
-                <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-[#0D2056] tracking-tight leading-[1.1]">
-                  OM PUBLIC <span className="text-[#D32F2F]">SCHOOL</span>
-                  <span className="inline-block ml-3 px-3.5 py-1 bg-[#D32F2F] text-[#FFD600] rounded-2xl text-2xl sm:text-3xl font-black uppercase shadow-md align-middle transform -rotate-1">
+                <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight leading-[1.1]">
+                  OM PUBLIC <span className="text-[#FF5252]">SCHOOL</span>
+                  <span className="inline-block ml-3 px-3.5 py-1 bg-[#D32F2F] text-[#FFD600] rounded-2xl text-2xl sm:text-3xl font-black uppercase shadow-lg align-middle transform -rotate-1 border border-white/20">
                     DABRA
                   </span>
                 </h1>
-                <p className="mt-3 text-lg sm:text-xl font-bold text-[#0D2056]/80 italic">
+                <p className="mt-3 text-lg sm:text-xl font-bold text-slate-200 italic">
                   &ldquo;Quality Education for a Better Tomorrow&rdquo;
                 </p>
               </div>
 
               {/* Tagline / Subtitle */}
-              <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-xl mx-auto lg:mx-0">
-                Welcome to <strong>Om Public School, Dabra (District Gwalior, M.P.)</strong>. We provide holistic, English Medium education from <strong>Playgroup (PG) to 8th Standard</strong>, empowering children with academic excellence, strong communication skills, and noble moral values.
+              <p className="text-sm sm:text-base text-slate-200 leading-relaxed max-w-xl mx-auto lg:mx-0">
+                Welcome to <strong className="text-white">Om Public School, Dabra (District Gwalior, M.P.)</strong>. We provide holistic, English Medium education from <strong className="text-[#FFD600]">Playgroup (PG) to 8th Standard</strong>, empowering children with academic excellence, strong communication skills, and noble moral values.
               </p>
 
-              {/* Highlight Highlights Box */}
+              {/* Highlight Glass Stats Box */}
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-1 max-w-lg mx-auto lg:mx-0">
-                <div className="p-3 rounded-2xl bg-white border-2 border-blue-200 shadow-xs text-center">
-                  <div className="text-xs font-bold text-slate-500">Classes</div>
-                  <div className="text-base font-black text-[#0D2056]">PG to 8th</div>
+                <div className="p-3.5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-center shadow-sm">
+                  <div className="text-[11px] font-bold text-slate-300 uppercase tracking-wide">Classes</div>
+                  <div className="text-base font-black text-[#FFD600]">PG to 8th</div>
                 </div>
-                <div className="p-3 rounded-2xl bg-white border-2 border-rose-200 shadow-xs text-center">
-                  <div className="text-xs font-bold text-slate-500">Medium</div>
-                  <div className="text-base font-black text-[#D32F2F]">English Medium</div>
+                <div className="p-3.5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-center shadow-sm">
+                  <div className="text-[11px] font-bold text-slate-300 uppercase tracking-wide">Medium</div>
+                  <div className="text-base font-black text-white">English Medium</div>
                 </div>
-                <div className="p-3 rounded-2xl bg-white border-2 border-emerald-200 shadow-xs text-center col-span-2 sm:col-span-1">
-                  <div className="text-xs font-bold text-slate-500">Curriculum</div>
-                  <div className="text-base font-black text-emerald-700">Modern & Value-Based</div>
+                <div className="p-3.5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-center shadow-sm col-span-2 sm:col-span-1">
+                  <div className="text-[11px] font-bold text-slate-300 uppercase tracking-wide">Curriculum</div>
+                  <div className="text-base font-black text-emerald-300">Modern & Value-Based</div>
                 </div>
               </div>
 
@@ -184,7 +195,7 @@ export default function HomePage() {
               <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
                 <Link
                   href="/admissions"
-                  className="px-8 py-4 bg-[#D32F2F] hover:bg-[#b71c1c] text-white font-black text-sm uppercase tracking-wider rounded-full shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5 flex items-center gap-2 group"
+                  className="px-8 py-4 bg-[#D32F2F] hover:bg-[#b71c1c] text-white font-black text-sm uppercase tracking-wider rounded-full shadow-xl hover:shadow-2xl transition transform hover:-translate-y-0.5 flex items-center gap-2 group"
                 >
                   <span>Apply for Admission</span>
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -192,7 +203,7 @@ export default function HomePage() {
 
                 <a
                   href="tel:+917999083379"
-                  className="px-7 py-4 bg-white hover:bg-slate-50 text-[#0D2056] border-2 border-[#0D2056] font-extrabold text-sm rounded-full shadow-sm hover:shadow transition flex items-center gap-2"
+                  className="px-7 py-4 bg-white hover:bg-slate-100 text-[#0D2056] font-extrabold text-sm rounded-full shadow-lg hover:shadow-xl transition flex items-center gap-2"
                 >
                   <Phone className="w-4 h-4 text-[#D32F2F]" />
                   <span>Call: 7999083379</span>
@@ -200,24 +211,24 @@ export default function HomePage() {
 
                 <Link
                   href="/login"
-                  className="px-6 py-4 bg-[#0D2056] hover:bg-[#081538] text-white font-bold text-xs uppercase tracking-wider rounded-full shadow-sm transition"
+                  className="px-6 py-4 bg-[#FFD600] hover:bg-amber-400 text-slate-900 font-black text-xs uppercase tracking-wider rounded-full shadow-lg transition"
                 >
                   Portal Login
                 </Link>
               </div>
 
               {/* Campus Address quick indicator */}
-              <div className="flex items-center justify-center lg:justify-start gap-2 text-xs text-slate-500 pt-1 font-semibold">
-                <MapPin className="w-4 h-4 text-rose-500 shrink-0" />
-                <span>Deedar Colony, Dabra, District Gwalior (M.P.)</span>
+              <div className="flex items-center justify-center lg:justify-start gap-2 text-xs text-slate-300 pt-1 font-semibold">
+                <MapPin className="w-4 h-4 text-[#FF5252] shrink-0" />
+                <span>Deedar Colony, Dabra, District Gwalior (M.P.) • Contact: 7999083379, 9516469021</span>
               </div>
             </div>
 
             {/* Right Poster Graphic (5 Cols) */}
             <div className="lg:col-span-5 flex justify-center">
-              <div className="relative w-full max-w-md bg-white p-3 rounded-3xl shadow-2xl border-4 border-[#0D2056] overflow-hidden group">
+              <div className="relative w-full max-w-md bg-white/10 backdrop-blur-md p-3 rounded-3xl shadow-2xl border-4 border-[#FFD600]/80 overflow-hidden group">
                 {/* Poster Frame */}
-                <div className="relative aspect-[975/1024] w-full rounded-2xl overflow-hidden">
+                <div className="relative aspect-[975/1024] w-full rounded-2xl overflow-hidden bg-white">
                   <Image
                     src="/images/om-public-school-poster.jpg"
                     alt="Om Public School Dabra Official Admission Banner Session 2027-28"
@@ -229,7 +240,7 @@ export default function HomePage() {
                 </div>
 
                 {/* Floating Admission Badge */}
-                <div className="absolute top-6 right-6 bg-[#D32F2F] text-[#FFD600] px-3.5 py-1.5 rounded-full font-black text-xs uppercase tracking-wider shadow-lg border-2 border-white animate-bounce">
+                <div className="absolute top-6 right-6 bg-[#D32F2F] text-[#FFD600] px-4 py-1.5 rounded-full font-black text-xs uppercase tracking-wider shadow-xl border-2 border-white animate-bounce">
                   Limited Seats!
                 </div>
               </div>
@@ -255,28 +266,28 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* 8 Feature Cards Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* 8 Feature Cards Grid (Paired 2-by-2 on mobile) */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4 lg:gap-6">
             {whyChoosePoints.map((item, idx) => {
               const Icon = item.icon;
               return (
                 <div
                   key={idx}
-                  className={`p-6 rounded-3xl border-2 ${item.border} ${item.lightBg} hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between`}
+                  className={`p-3.5 sm:p-5 lg:p-6 rounded-2xl sm:rounded-3xl border-2 ${item.border} ${item.lightBg} hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between`}
                 >
-                  <div className="space-y-4">
-                    <div className={`w-12 h-12 rounded-2xl ${item.color} text-white flex items-center justify-center shadow-md`}>
-                      <Icon className="w-6 h-6" />
+                  <div className="space-y-2 sm:space-y-4">
+                    <div className={`w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl ${item.color} text-white flex items-center justify-center shadow-xs sm:shadow-md`}>
+                      <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
                     </div>
-                    <h3 className="text-base font-black text-slate-900 leading-snug">
+                    <h3 className="text-xs sm:text-base font-black text-slate-900 leading-snug">
                       {item.title}
                     </h3>
-                    <p className="text-xs text-slate-600 leading-relaxed">
+                    <p className="text-[10px] sm:text-xs text-slate-600 leading-relaxed line-clamp-3 sm:line-clamp-none">
                       {item.description}
                     </p>
                   </div>
-                  <div className="pt-4 flex items-center gap-1.5 text-[#0D2056] text-xs font-bold">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                  <div className="pt-2 sm:pt-4 flex items-center gap-1 sm:gap-1.5 text-[#0D2056] text-[10px] sm:text-xs font-bold">
+                    <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600 shrink-0" />
                     <span>Verified Standard</span>
                   </div>
                 </div>

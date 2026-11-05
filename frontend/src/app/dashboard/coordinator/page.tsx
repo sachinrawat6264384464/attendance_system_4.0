@@ -77,8 +77,9 @@ interface AllocationItem {
 }
 
 export default function CoordinatorDashboardPage() {
-  // Navigation Tabs: 'students' | 'teachers' | 'allocations'
-  const [activeTab, setActiveTab] = useState<'students' | 'teachers' | 'allocations'>('students');
+  // Navigation Tabs: 'students' | 'teachers' | 'allocations' | 'academics'
+  const [activeTab, setActiveTab] = useState<'students' | 'teachers' | 'allocations' | 'academics'>('students');
+  const [academicSubTab, setAcademicSubTab] = useState<'classes' | 'subjects' | 'timetable'>('classes');
 
   // Master Data
   const [students, setStudents] = useState<StudentItem[]>([]);
@@ -132,6 +133,39 @@ export default function CoordinatorDashboardPage() {
     subjectId: '',
     academicYearId: '',
   });
+
+  // Academic Structure Forms
+  const [classForm, setClassForm] = useState({
+    name: '',
+    numericOrder: 1,
+  });
+
+  const [sectionForm, setSectionForm] = useState({
+    classId: '',
+    name: '',
+    roomNumber: '',
+  });
+
+  const [subjectForm, setSubjectForm] = useState({
+    name: '',
+    code: '',
+    isElective: false,
+  });
+
+  const [timetableForm, setTimetableForm] = useState({
+    classId: '',
+    sectionId: '',
+    subjectId: '',
+    teacherId: '',
+    dayOfWeek: 1,
+    periodNumber: 1,
+    startTime: '08:30',
+    endTime: '09:15',
+  });
+
+  const [activeTimetableSlots, setActiveTimetableSlots] = useState<any[]>([]);
+  const [viewTimetableClassId, setViewTimetableClassId] = useState('');
+  const [viewTimetableSectionId, setViewTimetableSectionId] = useState('');
 
   const loadAllData = async () => {
     setLoading(true);
@@ -299,8 +333,107 @@ export default function CoordinatorDashboardPage() {
     }
   };
 
+  // ---------------- Academic Structure Handlers ----------------
+  const handleCreateClass = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await apiClient('/academics/classes', {
+        method: 'POST',
+        body: JSON.stringify({
+          name: classForm.name,
+          numericOrder: Number(classForm.numericOrder),
+        }),
+      });
+      setActionMessage({ text: `Class ${classForm.name} created successfully!`, type: 'success' });
+      setClassForm({ name: '', numericOrder: classes.length + 1 });
+      loadAllData();
+    } catch (err: any) {
+      setActionMessage({ text: `Failed to create class: ${err.message}`, type: 'error' });
+    }
+  };
+
+  const handleCreateSection = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await apiClient('/academics/sections', {
+        method: 'POST',
+        body: JSON.stringify(sectionForm),
+      });
+      setActionMessage({ text: `Section ${sectionForm.name} created successfully!`, type: 'success' });
+      setSectionForm({ classId: sectionForm.classId, name: '', roomNumber: '' });
+      loadAllData();
+    } catch (err: any) {
+      setActionMessage({ text: `Failed to create section: ${err.message}`, type: 'error' });
+    }
+  };
+
+  const handleCreateSubject = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await apiClient('/academics/subjects', {
+        method: 'POST',
+        body: JSON.stringify(subjectForm),
+      });
+      setActionMessage({ text: `Subject ${subjectForm.name} created successfully!`, type: 'success' });
+      setSubjectForm({ name: '', code: '', isElective: false });
+      loadAllData();
+    } catch (err: any) {
+      setActionMessage({ text: `Failed to create subject: ${err.message}`, type: 'error' });
+    }
+  };
+
+  const handleCreateTimetableSlot = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const currentYear = academicYears.find((y) => y.isCurrent) || academicYears[0];
+    if (!currentYear) {
+      setActionMessage({ text: 'No active academic year found.', type: 'error' });
+      return;
+    }
+    try {
+      await apiClient('/timetable/slots', {
+        method: 'POST',
+        body: JSON.stringify({
+          ...timetableForm,
+          academicYearId: currentYear.id,
+          dayOfWeek: Number(timetableForm.dayOfWeek),
+          periodNumber: Number(timetableForm.periodNumber),
+        }),
+      });
+      setActionMessage({ text: `Timetable slot for Period ${timetableForm.periodNumber} scheduled!`, type: 'success' });
+      if (viewTimetableClassId === timetableForm.classId && viewTimetableSectionId === timetableForm.sectionId) {
+        loadTimetableSlots(timetableForm.classId, timetableForm.sectionId);
+      }
+    } catch (err: any) {
+      setActionMessage({ text: `Failed to schedule slot: ${err.message}`, type: 'error' });
+    }
+  };
+
+  const loadTimetableSlots = async (cId: string, sId: string) => {
+    if (!cId || !sId) return;
+    try {
+      const res = await apiClient<any[]>(`/timetable/section?classId=${cId}&sectionId=${sId}`);
+      if (res?.data) setActiveTimetableSlots(res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleDeleteTimetableSlot = async (slotId: string) => {
+    if (!confirm('Are you sure you want to delete this period slot?')) return;
+    try {
+      await apiClient(`/timetable/slots/${slotId}`, { method: 'DELETE' });
+      setActionMessage({ text: 'Timetable slot removed successfully.', type: 'success' });
+      loadTimetableSlots(viewTimetableClassId, viewTimetableSectionId);
+    } catch (err: any) {
+      setActionMessage({ text: `Failed to delete slot: ${err.message}`, type: 'error' });
+    }
+  };
+
   const selectedStudentClass = classes.find((c) => c.id === studentForm.classId);
   const selectedAllocClass = classes.find((c) => c.id === allocationForm.classId);
+  const selectedSectionFormClass = classes.find((c) => c.id === sectionForm.classId);
+  const selectedTimetableFormClass = classes.find((c) => c.id === timetableForm.classId);
+  const selectedViewTimetableClass = classes.find((c) => c.id === viewTimetableClassId);
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto pb-12">
@@ -380,7 +513,7 @@ export default function CoordinatorDashboardPage() {
       )}
 
       {/* Main Tab Navigation */}
-      <div className="flex bg-slate-200/90 p-1.5 rounded-2xl text-xs font-bold w-fit shadow-xs">
+      <div className="flex flex-wrap bg-slate-200/90 p-1.5 rounded-2xl text-xs font-bold w-fit shadow-xs gap-1">
         <button
           onClick={() => setActiveTab('students')}
           className={`flex items-center gap-2 px-5 py-2.5 rounded-xl transition cursor-pointer ${
@@ -415,6 +548,18 @@ export default function CoordinatorDashboardPage() {
         >
           <BookOpen className="w-4 h-4" />
           <span>Course Allocations ({allocations.length})</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('academics')}
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl transition cursor-pointer ${
+            activeTab === 'academics'
+              ? 'bg-white text-[#D32F2F] shadow-sm font-extrabold'
+              : 'text-slate-600 hover:text-slate-900'
+          }`}
+        >
+          <Layers className="w-4 h-4" />
+          <span>Classes, Subjects & Bell Schedule</span>
         </button>
       </div>
 
@@ -890,12 +1035,12 @@ export default function CoordinatorDashboardPage() {
             </div>
           )}
 
-          {/* Teacher Directory Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Teacher Directory Cards Grid (Paired 2-by-2 on mobile) */}
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-6">
             {teachers.map((t) => (
               <div
                 key={t.id}
-                className="bg-white p-6 rounded-3xl border-2 border-slate-200/80 shadow-sm hover:shadow-md transition space-y-4"
+                className="bg-white p-3.5 sm:p-6 rounded-2xl sm:rounded-3xl border-2 border-slate-200/80 shadow-xs hover:shadow-md transition space-y-2 sm:space-y-4"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="w-12 h-12 rounded-2xl bg-[#EBF3FA] text-[#1B365D] flex items-center justify-center font-extrabold text-lg">
@@ -1152,6 +1297,606 @@ export default function CoordinatorDashboardPage() {
               </table>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* ======================================================== */}
+      {/* 4. ACADEMIC STRUCTURE & TIMETABLE TAB                     */}
+      {/* ======================================================== */}
+      {activeTab === 'academics' && (
+        <div className="space-y-8">
+          {/* Sub Tab Switcher */}
+          <div className="flex bg-slate-200/80 p-1 rounded-xl text-xs font-bold w-fit">
+            <button
+              onClick={() => setAcademicSubTab('classes')}
+              className={`px-4 py-2 rounded-lg transition ${
+                academicSubTab === 'classes'
+                  ? 'bg-white text-[#1B365D] shadow-sm font-extrabold'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Classes & Sections ({classes.length})
+            </button>
+            <button
+              onClick={() => setAcademicSubTab('subjects')}
+              className={`px-4 py-2 rounded-lg transition ${
+                academicSubTab === 'subjects'
+                  ? 'bg-white text-[#1B365D] shadow-sm font-extrabold'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Subjects Master ({subjects.length})
+            </button>
+            <button
+              onClick={() => {
+                setAcademicSubTab('timetable');
+                if (classes.length > 0 && !viewTimetableClassId) {
+                  const first = classes[0];
+                  setViewTimetableClassId(first.id);
+                  if (first.sections?.[0]) {
+                    setViewTimetableSectionId(first.sections[0].id);
+                    loadTimetableSlots(first.id, first.sections[0].id);
+                  }
+                }
+              }}
+              className={`px-4 py-2 rounded-lg transition ${
+                academicSubTab === 'timetable'
+                  ? 'bg-white text-[#1B365D] shadow-sm font-extrabold'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Bell Schedule & Timetable
+            </button>
+          </div>
+
+          {/* 4.A CLASSES & SECTIONS */}
+          {academicSubTab === 'classes' && (
+            <div className="space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Create Class Form */}
+                <div className="bg-white p-6 sm:p-7 rounded-3xl border-2 border-slate-200/90 shadow-sm">
+                  <h3 className="text-base font-extrabold text-[#1B365D] mb-1">Create Class Grade</h3>
+                  <p className="text-xs text-slate-500 mb-5">
+                    Define new academic grades (e.g., Playhouse, Nursery, Class 1st to 8th).
+                  </p>
+                  <form onSubmit={handleCreateClass} className="space-y-4">
+                    <div>
+                      <label className="block text-xs font-extrabold text-slate-800 uppercase tracking-wide mb-1.5">
+                        Class Name *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={classForm.name}
+                        onChange={(e) => setClassForm({ ...classForm, name: e.target.value })}
+                        placeholder="e.g. Class 1st, LKG, UKG"
+                        className="w-full px-4 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-slate-900 font-semibold text-sm focus:border-[#1B365D] focus:ring-4 focus:ring-[#1B365D]/10 focus:outline-none transition"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-extrabold text-slate-800 uppercase tracking-wide mb-1.5">
+                        Grade Numeric Order *
+                      </label>
+                      <input
+                        type="number"
+                        min="1"
+                        max="20"
+                        required
+                        value={classForm.numericOrder}
+                        onChange={(e) => setClassForm({ ...classForm, numericOrder: Number(e.target.value) })}
+                        className="w-full px-4 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-slate-900 font-semibold text-sm focus:border-[#1B365D] focus:ring-4 focus:ring-[#1B365D]/10 focus:outline-none transition"
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      className="w-full py-3 bg-[#1B365D] hover:bg-[#152a48] text-white rounded-xl font-bold text-xs uppercase tracking-wider shadow-md hover:shadow-lg transition cursor-pointer"
+                    >
+                      + Add Class Grade
+                    </button>
+                  </form>
+                </div>
+
+                {/* Create Section Form */}
+                <div className="bg-white p-6 sm:p-7 rounded-3xl border-2 border-slate-200/90 shadow-sm">
+                  <h3 className="text-base font-extrabold text-[#1B365D] mb-1">Create Section</h3>
+                  <p className="text-xs text-slate-500 mb-5">
+                    Assign a division/section to an existing class grade level.
+                  </p>
+                  <form onSubmit={handleCreateSection} className="space-y-4">
+                    <div>
+                      <label className="block text-xs font-extrabold text-slate-800 uppercase tracking-wide mb-1.5">
+                        Target Class *
+                      </label>
+                      <select
+                        required
+                        value={sectionForm.classId}
+                        onChange={(e) => setSectionForm({ ...sectionForm, classId: e.target.value })}
+                        className="w-full px-4 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-slate-900 font-semibold text-sm focus:border-[#1B365D] focus:ring-4 focus:ring-[#1B365D]/10 focus:outline-none transition cursor-pointer"
+                      >
+                        <option value="">Select Target Class</option>
+                        {classes.map((c) => (
+                          <option key={c.id} value={c.id}>
+                            {c.name} (Order: {c.numericOrder})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-extrabold text-slate-800 uppercase tracking-wide mb-1.5">
+                          Section Name *
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={sectionForm.name}
+                          onChange={(e) => setSectionForm({ ...sectionForm, name: e.target.value })}
+                          placeholder="e.g. A, B, Rose"
+                          className="w-full px-4 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-slate-900 font-semibold text-sm focus:border-[#1B365D] focus:ring-4 focus:ring-[#1B365D]/10 focus:outline-none transition"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-extrabold text-slate-800 uppercase tracking-wide mb-1.5">
+                          Room Number
+                        </label>
+                        <input
+                          type="text"
+                          value={sectionForm.roomNumber}
+                          onChange={(e) => setSectionForm({ ...sectionForm, roomNumber: e.target.value })}
+                          placeholder="e.g. Room 101"
+                          className="w-full px-4 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-slate-900 font-semibold text-sm focus:border-[#1B365D] focus:ring-4 focus:ring-[#1B365D]/10 focus:outline-none transition"
+                        />
+                      </div>
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={!sectionForm.classId}
+                      className="w-full py-3 bg-[#76A136] hover:bg-[#5e822a] text-white rounded-xl font-bold text-xs uppercase tracking-wider shadow-md hover:shadow-lg transition cursor-pointer disabled:opacity-50"
+                    >
+                      + Add Section
+                    </button>
+                  </form>
+                </div>
+              </div>
+
+              {/* Classes & Sections Roster */}
+              <div className="bg-white rounded-3xl border-2 border-slate-200/90 shadow-sm overflow-hidden p-6 sm:p-7">
+                <h3 className="text-base font-extrabold text-[#1B365D] mb-1">
+                  Institutional Classes & Sections Directory
+                </h3>
+                <p className="text-xs text-slate-500 mb-6">
+                  Overview of all registered grades, classroom divisions, and live enrolled student tallies.
+                </p>
+
+                <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-5">
+                  {classes.map((cls) => {
+                    const totalStudentsInClass =
+                      cls.sections?.reduce(
+                        (sum: number, s: any) => sum + (s._count?.studentEnrollments || 0),
+                        0,
+                      ) || 0;
+                    return (
+                      <div
+                        key={cls.id}
+                        className="p-5 rounded-2xl border-2 border-slate-200 bg-slate-50/50 hover:bg-white hover:border-[#1B365D] transition group"
+                      >
+                        <div className="flex items-center justify-between mb-3">
+                          <h4 className="text-base font-black text-[#1B365D]">{cls.name}</h4>
+                          <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-slate-200 text-slate-700">
+                            Grade Order {cls.numericOrder}
+                          </span>
+                        </div>
+                        <div className="text-xs font-bold text-emerald-700 mb-4">
+                          {totalStudentsInClass} Active Students Enrolled
+                        </div>
+                        <div className="space-y-2">
+                          <span className="text-[10px] font-extrabold uppercase text-slate-400 tracking-wider block">
+                            Active Sections ({cls.sections?.length || 0})
+                          </span>
+                          <div className="flex flex-wrap gap-2">
+                            {cls.sections?.map((sec: any) => (
+                              <span
+                                key={sec.id}
+                                className="px-3 py-1 rounded-xl bg-white border border-slate-200 text-xs font-bold text-slate-800 shadow-2xs"
+                              >
+                                Sec {sec.name}{' '}
+                                <span className="text-slate-400 font-normal">
+                                  ({sec._count?.studentEnrollments || 0})
+                                </span>
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 4.B SUBJECTS MASTER */}
+          {academicSubTab === 'subjects' && (
+            <div className="space-y-8">
+              {/* Add Subject Form */}
+              <div className="bg-white p-6 sm:p-7 rounded-3xl border-2 border-slate-200/90 shadow-sm max-w-xl">
+                <h3 className="text-base font-extrabold text-[#1B365D] mb-1">Create New Subject</h3>
+                <p className="text-xs text-slate-500 mb-5">
+                  Define academic curriculum subjects and corresponding codes.
+                </p>
+                <form onSubmit={handleCreateSubject} className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-extrabold text-slate-800 uppercase tracking-wide mb-1.5">
+                      Subject Name *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={subjectForm.name}
+                      onChange={(e) => setSubjectForm({ ...subjectForm, name: e.target.value })}
+                      placeholder="e.g. General English, Mathematics, Hindi"
+                      className="w-full px-4 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-slate-900 font-semibold text-sm focus:border-[#1B365D] focus:ring-4 focus:ring-[#1B365D]/10 focus:outline-none transition"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-extrabold text-slate-800 uppercase tracking-wide mb-1.5">
+                      Subject Code *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={subjectForm.code}
+                      onChange={(e) => setSubjectForm({ ...subjectForm, code: e.target.value.toUpperCase() })}
+                      placeholder="e.g. ENG-01, MATH-01, HIN-01"
+                      className="w-full px-4 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-slate-900 font-semibold text-sm uppercase focus:border-[#1B365D] focus:ring-4 focus:ring-[#1B365D]/10 focus:outline-none transition"
+                    />
+                  </div>
+                  <div className="flex items-center gap-2 pt-1">
+                    <input
+                      type="checkbox"
+                      id="isElectiveCheck"
+                      checked={subjectForm.isElective}
+                      onChange={(e) => setSubjectForm({ ...subjectForm, isElective: e.target.checked })}
+                      className="w-4 h-4 text-[#1B365D] rounded border-slate-300 cursor-pointer"
+                    />
+                    <label htmlFor="isElectiveCheck" className="text-xs font-bold text-slate-700 cursor-pointer">
+                      Elective / Optional Subject
+                    </label>
+                  </div>
+                  <button
+                    type="submit"
+                    className="w-full py-3 bg-[#1B365D] hover:bg-[#152a48] text-white rounded-xl font-bold text-xs uppercase tracking-wider shadow-md hover:shadow-lg transition cursor-pointer"
+                  >
+                    + Add Subject
+                  </button>
+                </form>
+              </div>
+
+              {/* Subjects Table */}
+              <div className="bg-white rounded-3xl border-2 border-slate-200/90 shadow-sm overflow-hidden">
+                <div className="p-6 border-b border-slate-100">
+                  <h3 className="text-base font-extrabold text-[#1B365D]">Subject Curriculum Directory</h3>
+                  <p className="text-xs text-slate-500">
+                    All authorized subjects taught across classes at Om Public School Dabra.
+                  </p>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs text-slate-600">
+                    <thead className="bg-slate-50 text-[11px] font-bold text-slate-700 uppercase tracking-wider border-b border-slate-100">
+                      <tr>
+                        <th className="px-6 py-3.5">Subject Code</th>
+                        <th className="px-6 py-3.5">Subject Name</th>
+                        <th className="px-6 py-3.5">Curriculum Type</th>
+                        <th className="px-6 py-3.5">Department</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 font-medium">
+                      {subjects.map((sub) => (
+                        <tr key={sub.id} className="hover:bg-slate-50/70 transition">
+                          <td className="px-6 py-3.5 font-mono font-bold text-slate-900">{sub.code}</td>
+                          <td className="px-6 py-3.5 font-bold text-[#1B365D]">{sub.name}</td>
+                          <td className="px-6 py-3.5">
+                            <span
+                              className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase ${
+                                sub.isElective
+                                  ? 'bg-amber-100 text-amber-800'
+                                  : 'bg-emerald-100 text-emerald-800'
+                              }`}
+                            >
+                              {sub.isElective ? 'Elective' : 'Core'}
+                            </span>
+                          </td>
+                          <td className="px-6 py-3.5 text-slate-500">
+                            {sub.department?.name || 'Primary & Middle Education'}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 4.C BELL SCHEDULE & TIMETABLE SLOTS */}
+          {academicSubTab === 'timetable' && (
+            <div className="space-y-8">
+              {/* Schedule Period Slot Form */}
+              <div className="bg-white p-6 sm:p-7 rounded-3xl border-2 border-slate-200/90 shadow-sm">
+                <h3 className="text-base font-extrabold text-[#1B365D] mb-1">
+                  Schedule Class Period Slot
+                </h3>
+                <p className="text-xs text-slate-500 mb-5">
+                  Allocate subject teacher and time bell for specific class and section period.
+                </p>
+
+                <form onSubmit={handleCreateTimetableSlot} className="space-y-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                    <div>
+                      <label className="block text-xs font-extrabold text-slate-800 uppercase tracking-wide mb-1.5">
+                        Class *
+                      </label>
+                      <select
+                        required
+                        value={timetableForm.classId}
+                        onChange={(e) => {
+                          const cId = e.target.value;
+                          const cls = classes.find((c) => c.id === cId);
+                          setTimetableForm({
+                            ...timetableForm,
+                            classId: cId,
+                            sectionId: cls?.sections?.[0]?.id || '',
+                          });
+                        }}
+                        className="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-slate-900 font-bold text-xs shadow-sm focus:border-[#1B365D] focus:ring-4 focus:ring-[#1B365D]/10 focus:outline-none transition cursor-pointer"
+                      >
+                        <option value="">Select Class</option>
+                        {classes.map((c) => (
+                          <option key={c.id} value={c.id}>
+                            {c.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-extrabold text-slate-800 uppercase tracking-wide mb-1.5">
+                        Section *
+                      </label>
+                      <select
+                        required
+                        value={timetableForm.sectionId}
+                        onChange={(e) => setTimetableForm({ ...timetableForm, sectionId: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-slate-900 font-bold text-xs shadow-sm focus:border-[#1B365D] focus:ring-4 focus:ring-[#1B365D]/10 focus:outline-none transition cursor-pointer"
+                      >
+                        <option value="">Select Section</option>
+                        {selectedTimetableFormClass?.sections?.map((s: any) => (
+                          <option key={s.id} value={s.id}>
+                            Section {s.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-extrabold text-slate-800 uppercase tracking-wide mb-1.5">
+                        Subject *
+                      </label>
+                      <select
+                        required
+                        value={timetableForm.subjectId}
+                        onChange={(e) => setTimetableForm({ ...timetableForm, subjectId: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-slate-900 font-bold text-xs shadow-sm focus:border-[#1B365D] focus:ring-4 focus:ring-[#1B365D]/10 focus:outline-none transition cursor-pointer"
+                      >
+                        <option value="">Select Subject</option>
+                        {subjects.map((s) => (
+                          <option key={s.id} value={s.id}>
+                            {s.name} ({s.code})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-extrabold text-slate-800 uppercase tracking-wide mb-1.5">
+                        Faculty *
+                      </label>
+                      <select
+                        required
+                        value={timetableForm.teacherId}
+                        onChange={(e) => setTimetableForm({ ...timetableForm, teacherId: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-slate-900 font-bold text-xs shadow-sm focus:border-[#1B365D] focus:ring-4 focus:ring-[#1B365D]/10 focus:outline-none transition cursor-pointer"
+                      >
+                        <option value="">Select Teacher</option>
+                        {teachers.map((t) => (
+                          <option key={t.id} value={t.teacherProfile?.id || ''}>
+                            {t.firstName} {t.lastName} ({t.teacherProfile?.employeeId || 'ID'})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                    <div>
+                      <label className="block text-xs font-extrabold text-slate-800 uppercase tracking-wide mb-1.5">
+                        Day of Week *
+                      </label>
+                      <select
+                        value={timetableForm.dayOfWeek}
+                        onChange={(e) => setTimetableForm({ ...timetableForm, dayOfWeek: Number(e.target.value) })}
+                        className="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-slate-900 font-bold text-xs shadow-sm focus:border-[#1B365D] focus:ring-4 focus:ring-[#1B365D]/10 focus:outline-none transition cursor-pointer"
+                      >
+                        <option value={1}>Monday</option>
+                        <option value={2}>Tuesday</option>
+                        <option value={3}>Wednesday</option>
+                        <option value={4}>Thursday</option>
+                        <option value={5}>Friday</option>
+                        <option value={6}>Saturday</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-extrabold text-slate-800 uppercase tracking-wide mb-1.5">
+                        Period Slot *
+                      </label>
+                      <select
+                        value={timetableForm.periodNumber}
+                        onChange={(e) => setTimetableForm({ ...timetableForm, periodNumber: Number(e.target.value) })}
+                        className="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-slate-900 font-bold text-xs shadow-sm focus:border-[#1B365D] focus:ring-4 focus:ring-[#1B365D]/10 focus:outline-none transition cursor-pointer"
+                      >
+                        {[1, 2, 3, 4, 5, 6, 7, 8].map((p) => (
+                          <option key={p} value={p}>
+                            Period {p}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-extrabold text-slate-800 uppercase tracking-wide mb-1.5">
+                        Start Time
+                      </label>
+                      <input
+                        type="time"
+                        value={timetableForm.startTime}
+                        onChange={(e) => setTimetableForm({ ...timetableForm, startTime: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-slate-900 font-bold text-xs shadow-sm focus:border-[#1B365D] focus:ring-4 focus:ring-[#1B365D]/10 focus:outline-none transition"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-extrabold text-slate-800 uppercase tracking-wide mb-1.5">
+                        End Time
+                      </label>
+                      <input
+                        type="time"
+                        value={timetableForm.endTime}
+                        onChange={(e) => setTimetableForm({ ...timetableForm, endTime: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-slate-900 font-bold text-xs shadow-sm focus:border-[#1B365D] focus:ring-4 focus:ring-[#1B365D]/10 focus:outline-none transition"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="pt-2">
+                    <button
+                      type="submit"
+                      disabled={!timetableForm.classId || !timetableForm.sectionId || !timetableForm.subjectId || !timetableForm.teacherId}
+                      className="px-6 py-3 bg-[#1B365D] hover:bg-[#152a48] text-white rounded-xl font-bold text-xs uppercase tracking-wider shadow-md hover:shadow-lg transition cursor-pointer disabled:opacity-50"
+                    >
+                      + Save Period Schedule
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+              {/* View Section Schedule */}
+              <div className="bg-white rounded-3xl border-2 border-slate-200/90 shadow-sm overflow-hidden p-6 sm:p-7">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                  <div>
+                    <h3 className="text-base font-extrabold text-[#1B365D]">Weekly Section Timetable Viewer</h3>
+                    <p className="text-xs text-slate-500">
+                      View all scheduled periods and assigners for the selected classroom.
+                    </p>
+                  </div>
+
+                  {/* Filter selectors */}
+                  <div className="flex items-center gap-3">
+                    <select
+                      value={viewTimetableClassId}
+                      onChange={(e) => {
+                        const cId = e.target.value;
+                        setViewTimetableClassId(cId);
+                        const cls = classes.find((c) => c.id === cId);
+                        const sId = cls?.sections?.[0]?.id || '';
+                        setViewTimetableSectionId(sId);
+                        if (cId && sId) loadTimetableSlots(cId, sId);
+                      }}
+                      className="px-3.5 py-2 rounded-xl border-2 border-slate-300 bg-white text-slate-900 font-bold text-xs"
+                    >
+                      {classes.map((c) => (
+                        <option key={c.id} value={c.id}>
+                          {c.name}
+                        </option>
+                      ))}
+                    </select>
+
+                    <select
+                      value={viewTimetableSectionId}
+                      onChange={(e) => {
+                        const sId = e.target.value;
+                        setViewTimetableSectionId(sId);
+                        if (viewTimetableClassId && sId) loadTimetableSlots(viewTimetableClassId, sId);
+                      }}
+                      className="px-3.5 py-2 rounded-xl border-2 border-slate-300 bg-white text-slate-900 font-bold text-xs"
+                    >
+                      {selectedViewTimetableClass?.sections?.map((s: any) => (
+                        <option key={s.id} value={s.id}>
+                          Section {s.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs text-slate-600">
+                    <thead className="bg-slate-50 text-[11px] font-bold text-slate-700 uppercase tracking-wider border-b border-slate-100">
+                      <tr>
+                        <th className="px-6 py-3.5">Day</th>
+                        <th className="px-6 py-3.5">Period</th>
+                        <th className="px-6 py-3.5">Time</th>
+                        <th className="px-6 py-3.5">Subject</th>
+                        <th className="px-6 py-3.5">Assigned Teacher</th>
+                        <th className="px-6 py-3.5 text-right">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 font-medium">
+                      {activeTimetableSlots.length === 0 ? (
+                        <tr>
+                          <td colSpan={6} className="px-6 py-8 text-center text-slate-400">
+                            No timetable slots scheduled yet for this section. Use the form above to add periods.
+                          </td>
+                        </tr>
+                      ) : (
+                        activeTimetableSlots.map((slot) => {
+                          const dayNames = ['', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                          return (
+                            <tr key={slot.id} className="hover:bg-slate-50/70 transition">
+                              <td className="px-6 py-3.5 font-bold text-slate-800">{dayNames[slot.dayOfWeek]}</td>
+                              <td className="px-6 py-3.5 font-bold text-indigo-700">Period {slot.periodNumber}</td>
+                              <td className="px-6 py-3.5 font-mono text-slate-600">
+                                {slot.startTime} - {slot.endTime}
+                              </td>
+                              <td className="px-6 py-3.5">
+                                <span className="font-bold text-[#1B365D]">{slot.subject.name}</span>
+                                <span className="text-[10px] text-slate-400 font-mono ml-1.5">
+                                  ({slot.subject.code})
+                                </span>
+                              </td>
+                              <td className="px-6 py-3.5 font-bold text-slate-800">
+                                {slot.teacher?.user?.firstName} {slot.teacher?.user?.lastName}
+                              </td>
+                              <td className="px-6 py-3.5 text-right">
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteTimetableSlot(slot.id)}
+                                  className="p-1.5 rounded-lg text-rose-500 hover:bg-rose-50 hover:text-rose-700 transition cursor-pointer"
+                                  title="Delete Slot"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

@@ -1,163 +1,37 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import FloatingContact from '@/components/FloatingContact';
 import { Sparkles, Camera, ArrowRight, Eye, X } from 'lucide-react';
-
-interface GalleryItem {
-  id: string;
-  title: string;
-  category: string;
-  image: string;
-  description: string;
-  tagColor: string;
-}
+import { GalleryItem, getStoredGalleryItems } from '@/lib/gallery-store';
 
 export default function GalleryPage() {
+  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [activePhoto, setActivePhoto] = useState<GalleryItem | null>(null);
 
+  useEffect(() => {
+    setGalleryItems(getStoredGalleryItems());
+
+    const handleUpdate = () => {
+      setGalleryItems(getStoredGalleryItems());
+    };
+    window.addEventListener('gallery-updated', handleUpdate);
+    return () => window.removeEventListener('gallery-updated', handleUpdate);
+  }, []);
+
   const categories = [
     'All',
-    'Play & Sensory',
-    'Celebrations',
-    'Puppet Theatre',
-    'Campus & Dining',
-    'Learning Corners',
-    'Outdoor Playground',
-  ];
-
-  const galleryItems: GalleryItem[] = [
-    {
-      id: 'om-poster-official',
-      title: 'Om Public School Dabra - Session 2027-28 Admission Open',
-      category: 'Celebrations',
-      image: '/images/om-public-school-poster.jpg',
-      description:
-        'Official admission campaign poster for Om Public School Dabra featuring modern building and bright young learners.',
-      tagColor: 'bg-[#D32F2F]',
-    },
-    {
-      id: 'om-building-modern',
-      title: 'Modern Campus Building & Main Entrance',
-      category: 'Campus & Dining',
-      image: '/images/om-school-building.jpg',
-      description:
-        'Spacious, multi-storey campus at Deedar Colony, Dabra with ventilated smart classrooms and secure boundary.',
-      tagColor: 'bg-[#0D2056]',
-    },
-    {
-      id: 'jamboree',
-      title: 'Jamboree Annual Day Stage Celebration',
-      category: 'Celebrations',
-      image: '/images/gallery-1.jpg',
-      description:
-        'Our vibrant annual cultural extravaganza celebrating our young achievers with music, drama, and heartfelt applause.',
-      tagColor: 'bg-[#1B365D]',
-    },
-    {
-      id: 'night-festival',
-      title: 'Illuminated Campus Evening Carnival',
-      category: 'Celebrations',
-      image: '/images/gallery-2.jpg',
-      description:
-        'Magical fairyland evening with colorful canopies, fairy lights, and joyful bonding between parents, children, and teachers.',
-      tagColor: 'bg-[#E91E63]',
-    },
-    {
-      id: 'sensory-science',
-      title: 'Botanical & Color Sensory Chemistry',
-      category: 'Play & Sensory',
-      image: '/images/gallery-3.jpg',
-      description:
-        'Hands-on natural science exploration with botanical infusions, colorful water jars, and olfactory discovery.',
-      tagColor: 'bg-[#76A136]',
-    },
-    {
-      id: 'community-dining',
-      title: 'Community Meal Dining & Food Gratitude',
-      category: 'Campus & Dining',
-      image: '/images/gallery-4.jpg',
-      description:
-        'Shared wholesome dining sessions fostering table etiquette, conscious nutrition, mindful eating habits, and camaraderie.',
-      tagColor: 'bg-[#E87722]',
-    },
-    {
-      id: 'sand-pit',
-      title: 'Sensory Sand Pit & Fine Motor Play',
-      category: 'Play & Sensory',
-      image: '/images/gallery-5.jpg',
-      description:
-        'Tactile outdoor sand exploration where children build fine motor grip, spatial awareness, and imaginative castles.',
-      tagColor: 'bg-[#00695C]',
-    },
-    {
-      id: 'theatrical-singing',
-      title: 'Theatrical Stage & Cultural Role-Play',
-      category: 'Celebrations',
-      image: '/images/gallery-6.jpg',
-      description:
-        'Fostering stage confidence, vocal projection, and traditional cultural awareness with joyful musical performances.',
-      tagColor: 'bg-[#7B1FA2]',
-    },
-    {
-      id: 'mentor-felicitation',
-      title: 'Mentor Felicitation & Academic Excellence',
-      category: 'Celebrations',
-      image: '/images/gallery-7.jpg',
-      description:
-        'Honoring our certified early childhood educators and Montessorians for nurturing young minds with care.',
-      tagColor: 'bg-[#1B365D]',
-    },
-    {
-      id: 'community-gathering',
-      title: 'Parents & Educators Community Gathering',
-      category: 'Celebrations',
-      image: '/images/gallery-8.jpg',
-      description:
-        'Strong parent-school collaboration creating a supportive, transparent ecosystem for every child’s holistic growth.',
-      tagColor: 'bg-[#76A136]',
-    },
-    {
-      id: 'ball-pit',
-      title: 'Sensory Ball Pit & Soft Play Area',
-      category: 'Play & Sensory',
-      image: '/images/hero-playroom.jpg',
-      description:
-        'A vibrant, padded sensory exploration arena with non-toxic colorful balls, rocking animal trainers, and joyful wall murals.',
-      tagColor: 'bg-[#1B365D]',
-    },
-    {
-      id: 'welcome-arch',
-      title: 'Dandelion Kidz Campus Entrance & Welcome Arch',
-      category: 'Campus & Dining',
-      image: '/images/welcome-entrance.jpg',
-      description:
-        'Colorful circular balloon canopy welcoming our little stars each morning into a secure and joyful learning sanctuary.',
-      tagColor: 'bg-[#76A136]',
-    },
-    {
-      id: 'puppet-theatre',
-      title: 'The Puppet Theatre & Storytelling Corner',
-      category: 'Puppet Theatre',
-      image: '/images/hero-playroom.jpg',
-      description:
-        'Handmade animal puppets where children build verbal communication, self-expression, and empathetic role-play instincts.',
-      tagColor: 'bg-[#E87722]',
-    },
-    {
-      id: 'outdoor-play',
-      title: 'Outdoor Adventure Slides & Playground',
-      category: 'Outdoor Playground',
-      image: '/images/franchisee-playground.jpg',
-      description:
-        'Child-safe turf, ladder bridges, and swings designed to refine gross motor agility, balance, and cooperative play.',
-      tagColor: 'bg-[#E91E63]',
-    },
+    'Smart Classrooms',
+    'Computer & STEM Lab',
+    'Sports & Athletics',
+    'Library & Reading',
+    'Campus & Building',
+    'Events & Celebrations',
   ];
 
   const filteredItems =
@@ -171,18 +45,18 @@ export default function GalleryPage() {
       <FloatingContact />
 
       {/* Header Banner */}
-      <section className="bg-gradient-to-b from-[#F0F7E8] to-[#FCFDFD] pt-12 pb-14 border-b border-slate-100">
+      <section className="bg-gradient-to-b from-[#EEF4FF] to-[#FCFDFD] pt-12 pb-14 border-b border-slate-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white text-[#76A136] text-xs font-bold uppercase tracking-widest shadow-xs border border-[#76A136]/20">
-            <Camera className="w-4 h-4" />
-            Life at Dandelion Kidz
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white text-[#D32F2F] text-xs font-black uppercase tracking-widest shadow-xs border border-rose-200">
+            <Camera className="w-4 h-4 text-[#D32F2F]" />
+            Life at Om Public School Dabra
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight">
-            <span className="text-[#1B365D]">Campus </span>
-            <span className="text-[#76A136]">Photo Gallery</span>
+            <span className="text-[#0D2056]">Campus </span>
+            <span className="text-[#D32F2F]">Photo Gallery</span>
           </h1>
-          <p className="max-w-2xl mx-auto text-xs sm:text-sm text-slate-600 leading-relaxed">
-            Take a visual tour through our thoughtfully designed child-friendly campus, sensory ball pits, puppet theatre, and joyful learning corners.
+          <p className="max-w-2xl mx-auto text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
+            Explore our state-of-the-art campus, digital smart classrooms, computer laboratory, sports facilities, and joyful learning environment at Deedar Colony, Dabra.
           </p>
 
           {/* Category Filter Pills */}
@@ -191,9 +65,9 @@ export default function GalleryPage() {
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-4 py-2 rounded-full text-xs font-bold transition ${
+                className={`px-4 py-2 rounded-full text-xs font-bold transition-all duration-200 cursor-pointer ${
                   selectedCategory === cat
-                    ? 'bg-[#1B365D] text-white shadow-sm'
+                    ? 'bg-[#0D2056] text-white shadow-md shadow-blue-900/20 scale-105'
                     : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
                 }`}
               >
@@ -205,47 +79,47 @@ export default function GalleryPage() {
       </section>
 
       {/* Gallery Grid */}
-      <section className="py-12 sm:py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex-1">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <section className="py-14 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {filteredItems.map((item) => (
             <div
               key={item.id}
               onClick={() => setActivePhoto(item)}
-              className="group bg-white rounded-3xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col"
+              className="group bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col cursor-pointer transform hover:-translate-y-1"
             >
-              <div className="relative h-60 w-full overflow-hidden bg-slate-100">
+              <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100">
                 <Image
                   src={item.image}
                   alt={item.title}
                   fill
-                  sizes="(max-width: 768px) 100vw, 33vw"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <span className="w-12 h-12 rounded-full bg-white/90 text-[#1B365D] flex items-center justify-center shadow-lg">
-                    <Eye className="w-6 h-6" />
-                  </span>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                  <div className="text-white text-xs font-semibold flex items-center gap-1.5">
+                    <Eye className="w-4 h-4" />
+                    <span>View High Resolution</span>
+                  </div>
                 </div>
                 <span
-                  className={`absolute top-4 left-4 text-[11px] font-bold text-white px-3 py-1 rounded-full shadow-sm ${item.tagColor}`}
+                  className={`absolute top-4 left-4 ${item.tagColor} text-white text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full shadow-sm`}
                 >
                   {item.category}
                 </span>
               </div>
 
-              <div className="p-6 flex-1 flex flex-col justify-between">
+              <div className="p-6 flex-1 flex flex-col justify-between space-y-3">
                 <div>
-                  <h3 className="font-extrabold text-base text-[#1B365D] mb-2 group-hover:text-[#76A136] transition">
+                  <h3 className="font-bold text-slate-800 text-base group-hover:text-[#0D2056] transition-colors leading-snug">
                     {item.title}
                   </h3>
-                  <p className="text-xs text-slate-600 leading-relaxed">
+                  <p className="text-xs text-slate-500 line-clamp-3 leading-relaxed mt-2">
                     {item.description}
                   </p>
                 </div>
-
-                <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-[#76A136]">
-                  <span>View Details</span>
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                <div className="pt-2 flex items-center justify-between text-xs font-bold text-[#0D2056] group-hover:text-[#D32F2F] transition-colors border-t border-slate-100">
+                  <span>Enlarge Preview</span>
+                  <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform" />
                 </div>
               </div>
             </div>
@@ -256,73 +130,76 @@ export default function GalleryPage() {
       {/* Lightbox Modal */}
       {activePhoto && (
         <div
-          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6"
           onClick={() => setActivePhoto(null)}
+          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 animate-fade-in"
         >
           <div
-            className="bg-white rounded-3xl overflow-hidden max-w-3xl w-full shadow-2xl relative"
             onClick={(e) => e.stopPropagation()}
+            className="relative bg-white rounded-3xl max-w-4xl w-full overflow-hidden shadow-2xl border border-white/20 animate-scale-up"
           >
             <button
               onClick={() => setActivePhoto(null)}
-              className="absolute top-4 right-4 z-10 w-9 h-9 rounded-full bg-black/50 text-white hover:bg-black flex items-center justify-center transition"
+              className="absolute top-4 right-4 z-10 w-9 h-9 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/80 transition cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <div className="relative h-80 sm:h-96 w-full bg-slate-900">
+            <div className="relative aspect-[16/10] w-full bg-black">
               <Image
                 src={activePhoto.image}
                 alt={activePhoto.title}
                 fill
-                sizes="(max-width: 768px) 100vw, 800px"
+                sizes="(max-width: 1200px) 100vw, 1200px"
                 className="object-contain"
               />
             </div>
 
-            <div className="p-6 sm:p-8 space-y-3">
-              <span
-                className={`inline-block text-[11px] font-bold text-white px-3 py-1 rounded-full ${activePhoto.tagColor}`}
-              >
-                {activePhoto.category}
-              </span>
-              <h2 className="text-xl sm:text-2xl font-extrabold text-[#1B365D]">
+            <div className="p-6 sm:p-8 bg-white space-y-3">
+              <div className="flex items-center gap-2">
+                <span
+                  className={`${activePhoto.tagColor} text-white text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full`}
+                >
+                  {activePhoto.category}
+                </span>
+                <span className="text-xs text-slate-400 font-medium">Om Public School Dabra Campus</span>
+              </div>
+              <h2 className="text-xl sm:text-2xl font-extrabold text-[#0D2056] tracking-tight">
                 {activePhoto.title}
               </h2>
-              <p className="text-sm text-slate-600 leading-relaxed">
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
                 {activePhoto.description}
               </p>
-              <div className="pt-2">
-                <Link
-                  href="/admissions"
-                  className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#1B365D] hover:bg-[#152a48] text-white text-xs font-bold uppercase tracking-wider rounded-full shadow transition"
-                >
-                  Book Campus Visit
-                  <Sparkles className="w-4 h-4 text-amber-300" />
-                </Link>
-              </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* CTA Footer Section */}
-      <section className="bg-gradient-to-r from-[#1B365D] to-[#254673] py-12 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
-          <h2 className="text-2xl sm:text-3xl font-extrabold">
-            Want to Experience Our Campus in Person?
+      {/* Campus Visit Banner */}
+      <section className="bg-gradient-to-r from-[#0D2056] via-[#152a48] to-[#0D2056] text-white py-12 px-4 sm:px-6 lg:px-8 text-center">
+        <div className="max-w-3xl mx-auto space-y-4">
+          <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-white/10 text-[#FFD600] text-xs font-black uppercase tracking-wider border border-white/10">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Schedule a Guided Walkthrough</span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+            Experience Om Public School in Person
           </h2>
-          <p className="text-xs sm:text-sm text-slate-200 max-w-xl mx-auto">
-            We welcome parents to visit Dandelion Kidz Rajkot campus, tour our facilities, and observe our Reggio-inspired classrooms.
+          <p className="text-xs sm:text-sm text-slate-200 leading-relaxed">
+            Parents and prospective students are cordially invited to visit our campus at Deedar Colony, Dabra. Tour our smart classrooms, playground, and computer lab with our admissions counselors.
           </p>
-          <div className="pt-2">
+          <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/admissions"
-              className="px-8 py-3 bg-[#76A136] hover:bg-[#688f30] text-white font-bold text-xs uppercase tracking-wider rounded-full shadow-lg transition inline-flex items-center gap-2"
+              className="px-6 py-3 bg-[#D32F2F] hover:bg-[#b71c1c] text-white font-bold text-xs uppercase tracking-wider rounded-full shadow-md hover:shadow-lg transition"
             >
-              Schedule A Campus Tour
-              <ArrowRight className="w-4 h-4" />
+              Apply for Admission (PG to 8th)
             </Link>
+            <a
+              href="tel:+917999083379"
+              className="px-6 py-3 bg-white hover:bg-slate-100 text-[#0D2056] font-bold text-xs uppercase tracking-wider rounded-full shadow-md transition"
+            >
+              Call Campus Desk: 7999083379
+            </a>
           </div>
         </div>
       </section>

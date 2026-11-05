@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Body, Param, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { RoleType } from '@prisma/client';
 import { PublicService } from './public.service.js';
@@ -37,6 +37,24 @@ export class PublicController {
   @ApiOperation({ summary: 'List submitted admission enquiries' })
   getAdmissionEnquiries() {
     return this.publicService.getAdmissionEnquiries();
+  }
+
+  @Patch('school-info')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(RoleType.PRINCIPAL)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Update public school profile, address, and contacts (Principal only)' })
+  updateSchoolInfo(@Body() dto: any) {
+    return this.publicService.updateSchoolInfo(dto);
+  }
+
+  @Patch('admissions/:id/status')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(RoleType.PRINCIPAL, RoleType.COORDINATOR)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Update admission enquiry status (Principal or Coordinator)' })
+  updateAdmissionStatus(@Param('id') id: string, @Body('status') status: any) {
+    return this.publicService.updateAdmissionStatus(id, status);
   }
 }
 

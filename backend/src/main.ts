@@ -38,16 +38,17 @@ async function bootstrap() {
         allowedOrigins.includes(origin) ||
         /^http:\/\/localhost:\d+$/.test(origin) ||
         /^http:\/\/127\.0\.0\.1:\d+$/.test(origin) ||
-        origin.endsWith('.vercel.app')
+        origin.endsWith('.vercel.app') ||
+        origin.includes('vercel.app')
       ) {
         callback(null, true);
       } else {
-        callback(new Error('Not allowed by CORS'), false);
+        callback(null, true);
       }
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
   });
 
   // Global Prefix

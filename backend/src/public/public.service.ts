@@ -11,12 +11,12 @@ export class PublicService {
     if (!setting) {
       setting = await this.prisma.schoolSetting.create({
         data: {
-          schoolName: process.env.SCHOOL_NAME || 'Apex Model Senior Secondary School',
-          schoolCode: process.env.SCHOOL_CODE || 'APEX-SCH-01',
-          affiliationNo: process.env.SCHOOL_AFFILIATION_NO || 'CBSE-AFF-2024-987',
-          email: process.env.SCHOOL_EMAIL || 'admin@apexschool.edu',
-          phone: process.env.SCHOOL_PHONE || '+91 98765 43210',
-          address: process.env.SCHOOL_ADDRESS || 'Knowledge City, Sector 4, Educational Hub',
+          schoolName: process.env.SCHOOL_NAME || 'Om Public School Dabra',
+          schoolCode: process.env.SCHOOL_CODE || 'OPS-DABRA',
+          affiliationNo: process.env.SCHOOL_AFFILIATION_NO || 'MP-GWL-2027-OPS',
+          email: process.env.SCHOOL_EMAIL || 'info@ompublicschool.edu.in',
+          phone: process.env.SCHOOL_PHONE || '+91 7999083379, +91 9516469021',
+          address: process.env.SCHOOL_ADDRESS || 'Deedar Colony, Dabra, District Gwalior (M.P.)',
         },
       });
     }
@@ -58,6 +58,41 @@ export class PublicService {
   async getAdmissionEnquiries() {
     return this.prisma.admissionEnquiry.findMany({
       orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async updateSchoolInfo(data: any) {
+    let setting = await this.prisma.schoolSetting.findFirst();
+    if (setting) {
+      return this.prisma.schoolSetting.update({
+        where: { id: setting.id },
+        data: {
+          schoolName: data.schoolName ?? setting.schoolName,
+          schoolCode: data.schoolCode ?? setting.schoolCode,
+          affiliationNo: data.affiliationNo ?? setting.affiliationNo,
+          email: data.email ?? setting.email,
+          phone: data.phone ?? setting.phone,
+          address: data.address ?? setting.address,
+        },
+      });
+    } else {
+      return this.prisma.schoolSetting.create({
+        data: {
+          schoolName: data.schoolName || 'Om Public School Dabra',
+          schoolCode: data.schoolCode || 'OPS-DABRA',
+          affiliationNo: data.affiliationNo || 'MP-GWL-2027-OPS',
+          email: data.email || 'info@ompublicschool.edu.in',
+          phone: data.phone || '+91 7999083379, +91 9516469021',
+          address: data.address || 'Deedar Colony, Dabra, District Gwalior (M.P.)',
+        },
+      });
+    }
+  }
+
+  async updateAdmissionStatus(id: string, status: any) {
+    return this.prisma.admissionEnquiry.update({
+      where: { id },
+      data: { status },
     });
   }
 }

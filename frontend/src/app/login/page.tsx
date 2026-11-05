@@ -162,46 +162,117 @@ export default function LoginPage() {
 
           {/* Quick Demo Fillers */}
           <div className="mt-8 pt-6 border-t border-slate-100">
-            <span className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider text-center mb-3">
-              One-Click Demo Roles
+            <span className="block text-[11px] font-extrabold text-[#0D2056] uppercase tracking-wider text-center mb-3">
+              One-Click Demo Fast Logins
             </span>
             <div className="grid grid-cols-2 gap-2.5 text-xs">
               <button
                 type="button"
                 onClick={() => fillDemo('principal@apexschool.edu', 'Principal@123')}
-                className="p-3 rounded-2xl border-2 border-slate-200 hover:border-[#1B365D] hover:bg-[#EBF3FA] text-slate-800 font-bold flex items-center gap-2 transition group"
+                className="p-3 rounded-2xl border-2 border-slate-200 hover:border-[#0D2056] hover:bg-[#EBF3FA] text-slate-800 font-bold flex items-center gap-2 transition group cursor-pointer"
               >
-                <Shield className="w-4 h-4 text-[#1B365D] shrink-0 group-hover:scale-110 transition-transform" />
-                <span>Principal</span>
+                <Shield className="w-4 h-4 text-[#0D2056] shrink-0 group-hover:scale-110 transition-transform" />
+                <div className="text-left">
+                  <div className="font-extrabold">Principal</div>
+                  <div className="text-[10px] text-slate-400 font-normal">Dr. Vikram Malhotra</div>
+                </div>
               </button>
 
               <button
                 type="button"
                 onClick={() => fillDemo('coordinator@apexschool.edu', 'Coordinator@123')}
-                className="p-3 rounded-2xl border-2 border-slate-200 hover:border-[#7B1FA2] hover:bg-[#F4ECF8] text-slate-800 font-bold flex items-center gap-2 transition group"
+                className="p-3 rounded-2xl border-2 border-slate-200 hover:border-[#7B1FA2] hover:bg-[#F4ECF8] text-slate-800 font-bold flex items-center gap-2 transition group cursor-pointer"
               >
                 <UserCheck className="w-4 h-4 text-[#7B1FA2] shrink-0 group-hover:scale-110 transition-transform" />
-                <span>Coordinator</span>
+                <div className="text-left">
+                  <div className="font-extrabold">Coordinator</div>
+                  <div className="text-[10px] text-slate-400 font-normal">Sunita Nambiar</div>
+                </div>
               </button>
 
               <button
                 type="button"
-                onClick={() => fillDemo('teacher.math@apexschool.edu', 'Teacher@123')}
-                className="p-3 rounded-2xl border-2 border-slate-200 hover:border-[#76A136] hover:bg-[#F0F7E8] text-slate-800 font-bold flex items-center gap-2 transition group"
+                onClick={() => fillDemo('teacher.priya@apexschool.edu', 'Teacher@123')}
+                className="p-3 rounded-2xl border-2 border-slate-200 hover:border-[#76A136] hover:bg-[#F0F7E8] text-slate-800 font-bold flex items-center gap-2 transition group cursor-pointer"
               >
                 <BookOpen className="w-4 h-4 text-[#76A136] shrink-0 group-hover:scale-110 transition-transform" />
-                <span>Teacher</span>
+                <div className="text-left">
+                  <div className="font-extrabold">Teacher (English)</div>
+                  <div className="text-[10px] text-slate-400 font-normal">Priya Shah</div>
+                </div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => fillDemo('teacher.anjali@apexschool.edu', 'Teacher@123')}
+                className="p-3 rounded-2xl border-2 border-slate-200 hover:border-[#76A136] hover:bg-[#F0F7E8] text-slate-800 font-bold flex items-center gap-2 transition group cursor-pointer"
+              >
+                <BookOpen className="w-4 h-4 text-[#76A136] shrink-0 group-hover:scale-110 transition-transform" />
+                <div className="text-left">
+                  <div className="font-extrabold">Teacher (Math)</div>
+                  <div className="text-[10px] text-slate-400 font-normal">Anjali Sharma</div>
+                </div>
               </button>
 
               <button
                 type="button"
                 onClick={() => fillDemo('student.aarav@apexschool.edu', 'Student@123')}
-                className="p-3 rounded-2xl border-2 border-slate-200 hover:border-[#E87722] hover:bg-[#FDF1E6] text-slate-800 font-bold flex items-center gap-2 transition group"
+                className="p-3 rounded-2xl border-2 border-slate-200 hover:border-[#E87722] hover:bg-[#FDF1E6] text-slate-800 font-bold flex items-center gap-2 transition group cursor-pointer"
               >
                 <User className="w-4 h-4 text-[#E87722] shrink-0 group-hover:scale-110 transition-transform" />
-                <span>Parent/Student</span>
+                <div className="text-left">
+                  <div className="font-extrabold">Student (Aarav)</div>
+                  <div className="text-[10px] text-slate-400 font-normal">Playhouse • Roll 01</div>
+                </div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => fillDemo('student.vanya54@apexschool.edu', 'Student@123')}
+                className="p-3 rounded-2xl border-2 border-slate-200 hover:border-[#E87722] hover:bg-[#FDF1E6] text-slate-800 font-bold flex items-center gap-2 transition group cursor-pointer"
+              >
+                <User className="w-4 h-4 text-[#E87722] shrink-0 group-hover:scale-110 transition-transform" />
+                <div className="text-left">
+                  <div className="font-extrabold">Student (Vanya)</div>
+                  <div className="text-[10px] text-slate-400 font-normal">Jr. Kg • Roll 01</div>
+                </div>
               </button>
             </div>
+          </div>
+
+          {/* Institutional Credentials Master Sheet */}
+          <div className="mt-6 pt-5 border-t border-slate-100">
+            <details className="text-xs text-slate-600 group">
+              <summary className="font-bold text-[#0D2056] cursor-pointer hover:underline flex items-center justify-between">
+                <span>📋 Official Credentials Master List</span>
+                <span className="text-[10px] text-slate-400">Click to expand</span>
+              </summary>
+              <div className="mt-3 p-3 bg-slate-50 rounded-2xl space-y-2 text-[11px] font-mono border border-slate-200">
+                <div className="font-bold text-[#0D2056] font-sans pb-1 border-b border-slate-200">
+                  Principal & Administration
+                </div>
+                <div>Principal: <span className="font-bold text-slate-800">principal@apexschool.edu</span> | Pass: <span className="text-emerald-700 font-bold">Principal@123</span></div>
+                <div>Coordinator: <span className="font-bold text-slate-800">coordinator@apexschool.edu</span> | Pass: <span className="text-emerald-700 font-bold">Coordinator@123</span></div>
+
+                <div className="font-bold text-[#0D2056] font-sans pt-2 pb-1 border-b border-slate-200">
+                  Teaching Faculty (Password: <span className="text-emerald-700 font-bold">Teacher@123</span>)
+                </div>
+                <div>English: <span className="font-bold text-slate-800">teacher.priya@apexschool.edu</span> (Priya Shah)</div>
+                <div>Math: <span className="font-bold text-slate-800">teacher.anjali@apexschool.edu</span> (Anjali Sharma)</div>
+                <div>Science: <span className="font-bold text-slate-800">teacher.kavita@apexschool.edu</span> (Kavita Mehta)</div>
+                <div>Arts: <span className="font-bold text-slate-800">teacher.rohan@apexschool.edu</span> (Rohan Verma)</div>
+                <div>Sports: <span className="font-bold text-slate-800">teacher.sunil@apexschool.edu</span> (Sunil Patel)</div>
+
+                <div className="font-bold text-[#0D2056] font-sans pt-2 pb-1 border-b border-slate-200">
+                  Enrolled Students (Password: <span className="text-emerald-700 font-bold">Student@123</span>)
+                </div>
+                <div>Playhouse A: <span className="font-bold text-slate-800">student.aarav@apexschool.edu</span></div>
+                <div>Playhouse B: <span className="font-bold text-slate-800">student.prisha16@apexschool.edu</span></div>
+                <div>Nursery A: <span className="font-bold text-slate-800">student.laksh31@apexschool.edu</span></div>
+                <div>Nursery B: <span className="font-bold text-slate-800">student.aryan43@apexschool.edu</span></div>
+                <div>Jr. Kg A: <span className="font-bold text-slate-800">student.vanya54@apexschool.edu</span></div>
+              </div>
+            </details>
           </div>
         </div>
 

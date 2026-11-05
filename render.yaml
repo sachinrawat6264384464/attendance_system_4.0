@@ -1,0 +1,38 @@
+services:
+  - type: web
+    name: om-public-school-backend
+    runtime: node
+    rootDir: backend
+    plan: free
+    buildCommand: npm install && npx prisma generate && npm run build
+    startCommand: node dist/main.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: API_PREFIX
+        value: api/v1
+      - key: APP_NAME
+        value: Om Public School Academic Platform
+      - key: DATABASE_URL
+        sync: false
+      - key: DIRECT_URL
+        sync: false
+      - key: JWT_ACCESS_SECRET
+        sync: false
+      - key: JWT_REFRESH_SECRET
+        sync: false
+      - key: FRONTEND_URL
+        value: https://attendance-system-4-0.vercel.app
+      - key: SCHOOL_NAME
+        value: Om Public School Dabra
+      - key: SCHOOL_CODE
+        value: OPS-DABRA
+      - key: SCHOOL_EMAIL
+        value: info@ompublicschool.edu.in
+      - key: SCHOOL_PHONE
+        value: +91 7999083379, +91 9516469021
+      - key: SCHOOL_ADDRESS
+        value: Deedar Colony, Dabra, District Gwalior (M.P.)
+

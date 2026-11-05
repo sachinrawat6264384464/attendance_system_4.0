@@ -98,34 +98,53 @@ export default function TeacherDashboardPage() {
     setAssignmentForm((prev) => ({ ...prev, dueDate: nextWeek }));
   }, []);
 
-  useEffect(() => {
-    async function loadMetadata() {
-      try {
-        const [classesRes, subjectsRes, yearsRes, assignmentsRes] = await Promise.all([
-          apiClient<ClassItem[]>('/academics/classes').catch(() => null),
-          apiClient<SubjectItem[]>('/academics/subjects').catch(() => null),
-          apiClient<AcademicYearItem[]>('/academics/years').catch(() => null),
-          apiClient<AssignmentItem[]>('/assignments').catch(() => null),
-        ]);
+  const [metadataLoading, setMetadataLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
-        if (classesRes?.data && Array.isArray(classesRes.data) && classesRes.data.length > 0) {
-          setClasses(classesRes.data);
-          const firstClass = classesRes.data[0];
-          setSelectedClassId(firstClass.id);
-          if (firstClass.sections && firstClass.sections.length > 0) {
-            setSelectedSectionId(firstClass.sections[0].id);
-          }
+  const loadMetadata = async () => {
+    setMetadataLoading(true);
+    setLoadError(null);
+    try {
+      const [classesRes, subjectsRes, yearsRes, assignmentsRes] = await Promise.all([
+        apiClient<ClassItem[]>('/academics/classes').catch((err) => {
+          console.error('Failed to load classes:', err);
+          return null;
+        }),
+        apiClient<SubjectItem[]>('/academics/subjects').catch(() => null),
+        apiClient<AcademicYearItem[]>('/academics/years').catch(() => null),
+        apiClient<AssignmentItem[]>('/assignments').catch(() => null),
+      ]);
+
+      if (classesRes?.data && Array.isArray(classesRes.data) && classesRes.data.length > 0) {
+        setClasses(classesRes.data);
+        // Find the first class that has students, or default to the first class
+        const classWithStudents = classesRes.data.find((c: any) =>
+          c.sections?.some((s: any) => (s._count?.studentEnrollments || 0) > 0)
+        ) || classesRes.data[0];
+
+        setSelectedClassId(classWithStudents.id);
+        const activeSec = classWithStudents.sections?.find((s: any) => (s._count?.studentEnrollments || 0) > 0) || classWithStudents.sections?.[0];
+        if (activeSec) {
+          setSelectedSectionId(activeSec.id);
         }
-        if (subjectsRes?.data && Array.isArray(subjectsRes.data) && subjectsRes.data.length > 0) {
-          setSubjects(subjectsRes.data);
-          setSelectedSubjectId(subjectsRes.data[0].id);
-        }
-        if (yearsRes?.data) setAcademicYears(yearsRes.data);
-        if (assignmentsRes?.data) setAssignments(assignmentsRes.data);
-      } catch (err) {
-        console.error(err);
+      } else {
+        setLoadError('No academic classes found. If you are Principal or Coordinator, add them in Coordinator Operations.');
       }
+      if (subjectsRes?.data && Array.isArray(subjectsRes.data) && subjectsRes.data.length > 0) {
+        setSubjects(subjectsRes.data);
+        setSelectedSubjectId(subjectsRes.data[0].id);
+      }
+      if (yearsRes?.data) setAcademicYears(yearsRes.data);
+      if (assignmentsRes?.data) setAssignments(assignmentsRes.data);
+    } catch (err: any) {
+      console.error(err);
+      setLoadError(err?.message || 'Failed to connect to backend server. Please check your connection.');
+    } finally {
+      setMetadataLoading(false);
     }
+  };
+
+  useEffect(() => {
     loadMetadata();
   }, []);
 
@@ -275,6 +294,18 @@ export default function TeacherDashboardPage() {
         </div>
       </div>
 
+      {loadError && (
+        <div className="p-4 rounded-xl bg-amber-50 border-2 border-amber-300 text-amber-900 text-xs font-bold flex items-center justify-between">
+          <span>⚠️ {loadError}</span>
+          <button
+            onClick={() => loadMetadata()}
+            className="px-3 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition"
+          >
+            Retry Loading
+          </button>
+        </div>
+      )}
+
       {attendanceStatusMsg && (
         <div className="p-4 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-semibold flex items-center justify-between">
           <span>{attendanceStatusMsg}</span>
@@ -285,71 +316,87 @@ export default function TeacherDashboardPage() {
       {/* ---------------- ATTENDANCE TAB ---------------- */}
       {activeTab === 'attendance' && (
         <div className="space-y-6">
-          {/* Controls Bar */}
-          <div className="bg-white p-6 rounded-2xl border-2 border-slate-200/90 shadow-sm grid grid-cols-1 sm:grid-cols-5 gap-4">
+          {/* Controls Bar (Paired 2-by-2 on mobile) */}
+          <div className="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200/90 shadow-xs grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-4">
             <div>
-              <label className="block text-xs font-extrabold text-slate-800 uppercase tracking-wide mb-1.5">Class</label>
+              <label className="block text-[11px] sm:text-xs font-bold text-slate-700 uppercase tracking-wide mb-1">Class</label>
               <select
                 value={selectedClassId}
                 onChange={(e) => {
-                  setSelectedClassId(e.target.value);
-                  const cls = classes.find((c) => c.id === e.target.value);
-                  if (cls?.sections?.[0]) setSelectedSectionId(cls.sections[0].id);
+                  const newClassId = e.target.value;
+                  setSelectedClassId(newClassId);
+                  const cls = classes.find((c: any) => c.id === newClassId);
+                  if (cls?.sections?.[0]) {
+                    const firstWithStudents = cls.sections.find((s: any) => (s._count?.studentEnrollments || 0) > 0) || cls.sections[0];
+                    setSelectedSectionId(firstWithStudents.id);
+                  }
                 }}
-                className="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-slate-900 font-bold text-sm shadow-sm focus:border-[#1B365D] focus:ring-4 focus:ring-[#1B365D]/10 focus:outline-none transition cursor-pointer"
+                className="w-full px-2.5 sm:px-3 py-2 rounded-xl border border-slate-300 bg-white text-slate-900 font-bold text-xs shadow-2xs focus:border-[#1B365D] focus:outline-hidden transition cursor-pointer"
               >
-                {classes.map((c) => (
-                  <option key={c.id} value={c.id} className="text-slate-900 font-semibold bg-white">{c.name}</option>
-                ))}
+                {classes.length === 0 && <option value="">No Classes Loaded</option>}
+                {classes.map((c: any) => {
+                  const totalStudents = c.sections?.reduce((sum: number, s: any) => sum + (s._count?.studentEnrollments || 0), 0) || 0;
+                  return (
+                    <option key={c.id} value={c.id} className="text-slate-900 font-bold bg-white">
+                      {c.name} {totalStudents > 0 ? `(${totalStudents})` : '(0)'}
+                    </option>
+                  );
+                })}
               </select>
             </div>
 
             <div>
-              <label className="block text-xs font-extrabold text-slate-800 uppercase tracking-wide mb-1.5">Section</label>
+              <label className="block text-[11px] sm:text-xs font-bold text-slate-700 uppercase tracking-wide mb-1">Section</label>
               <select
                 value={selectedSectionId}
                 onChange={(e) => setSelectedSectionId(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-slate-900 font-bold text-sm shadow-sm focus:border-[#1B365D] focus:ring-4 focus:ring-[#1B365D]/10 focus:outline-none transition cursor-pointer"
+                className="w-full px-2.5 sm:px-3 py-2 rounded-xl border border-slate-300 bg-white text-slate-900 font-bold text-xs shadow-2xs focus:border-[#1B365D] focus:outline-hidden transition cursor-pointer"
               >
-                {currentClassObj?.sections?.map((s) => (
-                  <option key={s.id} value={s.id} className="text-slate-900 font-semibold bg-white">Section {s.name}</option>
+                {(!currentClassObj?.sections || currentClassObj.sections.length === 0) && (
+                  <option value="">No Sections</option>
+                )}
+                {currentClassObj?.sections?.map((s: any) => (
+                  <option key={s.id} value={s.id} className="text-slate-900 font-bold bg-white">
+                    Section {s.name} {s._count?.studentEnrollments !== undefined ? `(${s._count.studentEnrollments})` : ''}
+                  </option>
                 ))}
               </select>
             </div>
 
             <div>
-              <label className="block text-xs font-extrabold text-slate-800 uppercase tracking-wide mb-1.5">Subject</label>
+              <label className="block text-[11px] sm:text-xs font-bold text-slate-700 uppercase tracking-wide mb-1">Subject</label>
               <select
                 value={selectedSubjectId}
                 onChange={(e) => setSelectedSubjectId(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-slate-900 font-bold text-sm shadow-sm focus:border-[#1B365D] focus:ring-4 focus:ring-[#1B365D]/10 focus:outline-none transition cursor-pointer"
+                className="w-full px-2.5 sm:px-3 py-2 rounded-xl border border-slate-300 bg-white text-slate-900 font-bold text-xs shadow-2xs focus:border-[#1B365D] focus:outline-hidden transition cursor-pointer"
               >
+                {subjects.length === 0 && <option value="">No Subjects</option>}
                 {subjects.map((sub) => (
-                  <option key={sub.id} value={sub.id} className="text-slate-900 font-semibold bg-white">{sub.name} ({sub.code})</option>
+                  <option key={sub.id} value={sub.id} className="text-slate-900 font-bold bg-white">{sub.name} ({sub.code})</option>
                 ))}
               </select>
             </div>
 
             <div>
-              <label className="block text-xs font-extrabold text-slate-800 uppercase tracking-wide mb-1.5">Period</label>
+              <label className="block text-[11px] sm:text-xs font-bold text-slate-700 uppercase tracking-wide mb-1">Period</label>
               <select
                 value={selectedPeriod}
                 onChange={(e) => setSelectedPeriod(Number(e.target.value))}
-                className="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-slate-900 font-bold text-sm shadow-sm focus:border-[#1B365D] focus:ring-4 focus:ring-[#1B365D]/10 focus:outline-none transition cursor-pointer"
+                className="w-full px-2.5 sm:px-3 py-2 rounded-xl border border-slate-300 bg-white text-slate-900 font-bold text-xs shadow-2xs focus:border-[#1B365D] focus:outline-hidden transition cursor-pointer"
               >
                 {[1, 2, 3, 4, 5, 6, 7, 8].map((p) => (
-                  <option key={p} value={p} className="text-slate-900 font-semibold bg-white">Period {p}</option>
+                  <option key={p} value={p} className="text-slate-900 font-bold bg-white">Period {p}</option>
                 ))}
               </select>
             </div>
 
-            <div>
-              <label className="block text-xs font-extrabold text-slate-800 uppercase tracking-wide mb-1.5">Date</label>
+            <div className="col-span-2 sm:col-span-1">
+              <label className="block text-[11px] sm:text-xs font-bold text-slate-700 uppercase tracking-wide mb-1">Date</label>
               <input
                 type="date"
                 value={attendanceDate}
                 onChange={(e) => setAttendanceDate(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-slate-900 font-bold text-sm shadow-sm focus:border-[#1B365D] focus:ring-4 focus:ring-[#1B365D]/10 focus:outline-none transition cursor-pointer"
+                className="w-full px-2.5 sm:px-3 py-2 rounded-xl border border-slate-300 bg-white text-slate-900 font-bold text-xs shadow-2xs focus:border-[#1B365D] focus:outline-hidden transition cursor-pointer"
               />
             </div>
           </div>
@@ -395,8 +442,33 @@ export default function TeacherDashboardPage() {
                 <tbody className="divide-y divide-slate-100 font-medium">
                   {roster.length === 0 ? (
                     <tr>
-                      <td colSpan={4} className="px-6 py-10 text-center text-slate-400">
-                        No students enrolled in this section. Enroll students via the Coordinator portal.
+                      <td colSpan={4} className="px-6 py-12 text-center">
+                        <div className="max-w-md mx-auto space-y-3">
+                          <p className="text-sm font-bold text-slate-700">
+                            No students enrolled in {currentClassObj?.name || 'this class'} (Section {currentClassObj?.sections?.find(s => s.id === selectedSectionId)?.name || 'A'}).
+                          </p>
+                          <p className="text-xs text-slate-500">
+                            Switch to a class with active enrollments:
+                          </p>
+                          <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
+                            {classes
+                              .filter((c: any) => c.sections?.some((s: any) => (s._count?.studentEnrollments || 0) > 0))
+                              .map((c: any) => (
+                                <button
+                                  key={c.id}
+                                  type="button"
+                                  onClick={() => {
+                                    setSelectedClassId(c.id);
+                                    const sec = c.sections?.find((s: any) => (s._count?.studentEnrollments || 0) > 0) || c.sections?.[0];
+                                    if (sec) setSelectedSectionId(sec.id);
+                                  }}
+                                  className="px-3 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-[#1B365D] text-xs font-bold border border-indigo-200 transition"
+                                >
+                                  Switch to {c.name}
+                                </button>
+                              ))}
+                          </div>
+                        </div>
                       </td>
                     </tr>
                   ) : (
