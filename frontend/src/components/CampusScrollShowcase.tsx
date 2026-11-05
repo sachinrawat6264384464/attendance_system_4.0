@@ -8,80 +8,101 @@ interface ShowcasePhotoItem {
   id: string;
   title: string;
   image: string;
-  shapeClasses?: string;
+  cardClasses: string;
+  shapeClasses: string;
 }
 
-const DEFAULT_SHOWCASE_PHOTOS: ShowcasePhotoItem[] = [
+// Varied Bento / Mosaic Layout:
+// Some images are WIDER (col-span-2 landscape), some are TALLER (aspect-[3/4] portrait height), and some are compact!
+const SHOWCASE_PHOTOS: ShowcasePhotoItem[] = [
   {
     id: 'smart-class',
     title: 'Smart Digital Classroom',
     image: '/images/om-smart-classroom.jpg',
+    // WIDE WIDTH: spans 2 columns in landscape
+    cardClasses: 'col-span-2 sm:col-span-2 lg:col-span-2 aspect-[16/10] sm:aspect-[16/9]',
     shapeClasses: 'rounded-2xl sm:rounded-3xl',
   },
   {
     id: 'computer-lab',
     title: 'Computer Science & Coding Lab',
     image: '/images/om-computer-lab.jpg',
-    shapeClasses: 'rounded-t-[2.5rem] sm:rounded-t-[3rem] rounded-b-2xl',
+    // TALL HEIGHT: portrait archway
+    cardClasses: 'col-span-1 aspect-[3/4] sm:aspect-[2/3]',
+    shapeClasses: 'rounded-t-[2.5rem] sm:rounded-t-[3.5rem] rounded-b-2xl',
   },
   {
     id: 'sports-ground',
     title: 'Athletic Sports Field & Tracks',
     image: '/images/om-sports-ground.jpg',
-    shapeClasses: 'rounded-[2rem] sm:rounded-[2.6rem]',
+    cardClasses: 'col-span-1 aspect-square sm:aspect-[4/3]',
+    shapeClasses: 'rounded-[2rem] sm:rounded-[2.8rem]',
   },
   {
     id: 'library',
     title: 'Children Reading Library',
     image: '/images/om-library.jpg',
-    shapeClasses: 'rounded-2xl sm:rounded-3xl border border-amber-300/40',
+    cardClasses: 'col-span-1 aspect-square',
+    shapeClasses: 'rounded-2xl sm:rounded-3xl border-2 border-amber-300/40',
   },
   {
     id: 'science-lab',
     title: 'Science Practical Laboratory',
     image: '/images/om-science-lab.jpg',
+    // TALL HEIGHT: asymmetric portrait
+    cardClasses: 'col-span-1 aspect-[3/4] sm:aspect-[2/3]',
     shapeClasses: 'rounded-tl-3xl rounded-br-3xl rounded-tr-xl rounded-bl-xl',
   },
   {
     id: 'cultural-celebration',
     title: 'Annual Day Stage Performance',
     image: '/images/om-cultural-celebration.jpg',
+    // WIDE WIDTH: panoramic stage
+    cardClasses: 'col-span-2 sm:col-span-2 lg:col-span-2 aspect-[16/9] sm:aspect-[21/9]',
     shapeClasses: 'rounded-2xl sm:rounded-3xl',
   },
   {
     id: 'campus-facade',
     title: 'School Campus Front Entrance',
     image: '/images/om-school-building.jpg',
+    cardClasses: 'col-span-1 aspect-[4/3]',
     shapeClasses: 'rounded-t-2xl rounded-b-[2.5rem]',
   },
   {
     id: 'campus-aerial',
     title: 'Om Public School Dabra Campus',
     image: '/images/om-hero-campus-hd.jpg',
+    // WIDE WIDTH: sprawling campus view
+    cardClasses: 'col-span-2 sm:col-span-2 lg:col-span-2 aspect-[16/10]',
     shapeClasses: 'rounded-2xl sm:rounded-3xl',
   },
   {
     id: 'kindergarten-play',
-    title: 'Kindergarten Activity Playroom',
+    title: 'Kindergarten Montessori Activity Room',
     image: '/images/om-kindergarten-play.jpg',
+    cardClasses: 'col-span-1 aspect-[4/3] sm:aspect-square',
     shapeClasses: 'rounded-[2rem] sm:rounded-[2.5rem]',
   },
   {
     id: 'yoga-assembly',
     title: 'Morning Assembly & Yoga Courtyard',
     image: '/images/om-yoga-assembly.jpg',
+    // TALL HEIGHT: vertical assembly posture
+    cardClasses: 'col-span-1 aspect-[3/4] sm:aspect-[2/3]',
     shapeClasses: 'rounded-2xl sm:rounded-3xl',
   },
   {
     id: 'learning-corner',
     title: 'Classroom Activity & Discovery',
     image: '/images/gallery-1.jpg',
+    cardClasses: 'col-span-1 aspect-square',
     shapeClasses: 'rounded-tr-[2.5rem] rounded-bl-[2.5rem] rounded-tl-xl rounded-br-xl',
   },
   {
     id: 'creative-arts',
     title: 'Creative Arts & Music Session',
     image: '/images/gallery-2.jpg',
+    cardClasses: 'col-span-1 aspect-[4/3]',
     shapeClasses: 'rounded-2xl sm:rounded-3xl',
   },
 ];
@@ -111,8 +132,9 @@ export default function CampusScrollShowcase() {
           const cardCenter = rect.top + rect.height / 2;
           const dist = Math.abs(cardCenter - viewportCenter);
 
-          // Focus window: center 46% of viewport triggers full clean brightness
-          const maxDist = viewportHeight * 0.46;
+          // Focus zone: within center 48% of screen, factor drops to 0 (clean & bright)
+          // Near top/bottom edges of screen, factor approaches 1 (dark form)
+          const maxDist = viewportHeight * 0.48;
           const factor = Math.min(1, Math.max(0, dist / maxDist));
           newFactors[idx] = factor;
         });
@@ -139,10 +161,10 @@ export default function CampusScrollShowcase() {
 
   return (
     <div ref={containerRef} className="relative">
-      {/* Grid of Compact Images: Paired 2-by-2 on mobile (grid-cols-2), 3 on tablet, 4 on desktop */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4 lg:gap-5">
-        {DEFAULT_SHOWCASE_PHOTOS.map((item, idx) => {
-          // Direction: left columns shift left (-1), right columns shift right (+1)
+      {/* Dynamic Bento Grid: Varied Widths (col-span-2) and Heights (aspect-[3/4]) */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 items-center">
+        {SHOWCASE_PHOTOS.map((item, idx) => {
+          // Direction of entry: left columns shift left (-1), right columns shift right (+1)
           let dir = -1;
           if (windowWidth >= 1024) {
             dir = idx % 4 < 2 ? -1 : 1;
@@ -153,22 +175,22 @@ export default function CampusScrollShowcase() {
             dir = idx % 2 === 0 ? -1 : 1;
           }
 
-          // factor: 0 at screen center, 1 at screen top/bottom
+          // factor: 0 at center of screen, 1 at screen top/bottom
           const factor = cardFactors[idx] !== undefined ? cardFactors[idx] : 0.8;
 
-          // Transition calculations:
-          // Center (factor = 0):
-          //   translateX = 0, brightness = 1.0, contrast = 1.05, grayscale = 0%, opacity = 1
+          // Scroll Transition:
+          // In center (factor = 0):
+          //   translateX = 0, brightness = 1.0, dark overlay = 0%, clean & bright!
           // Outside (factor = 1):
-          //   translateX = dir * 28px (emerges from left/right)
-          //   brightness = 0.35 (dark form)
-          //   opacity = 0.65
-          const translateX = dir * factor * 26;
-          const brightness = Math.max(0.32, 1 - factor * 0.68);
+          //   translateX = dir * 28px (slides from left/right)
+          //   brightness = 0.32 (dark form)
+          //   dark overlay = 55%
+          const translateX = dir * factor * 28;
+          const brightness = Math.max(0.3, 1 - factor * 0.7);
           const contrast = 1.05 - factor * 0.15;
-          const grayscale = factor * 0.3;
+          const grayscale = factor * 0.35;
           const scale = 1 - factor * 0.05;
-          const opacity = Math.max(0.6, 1 - factor * 0.4);
+          const opacity = Math.max(0.65, 1 - factor * 0.35);
 
           return (
             <div
@@ -184,17 +206,23 @@ export default function CampusScrollShowcase() {
                 transition: 'transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), filter 0.45s ease, opacity 0.45s ease',
                 willChange: 'transform, filter, opacity',
               }}
-              className={`group relative overflow-hidden bg-slate-900 border-2 border-slate-200/90 shadow-xs hover:!brightness-100 hover:!contrast-105 hover:!grayscale-0 hover:!scale-105 hover:!translate-x-0 hover:!opacity-100 hover:shadow-2xl transition-all duration-300 cursor-pointer aspect-[4/3] ${
-                item.shapeClasses || 'rounded-2xl sm:rounded-3xl'
-              }`}
+              className={`group relative overflow-hidden bg-slate-900 border-2 border-slate-200/90 shadow-md hover:!brightness-100 hover:!contrast-105 hover:!grayscale-0 hover:!scale-105 hover:!translate-x-0 hover:!opacity-100 hover:shadow-2xl transition-all duration-300 cursor-pointer ${
+                item.cardClasses
+              } ${item.shapeClasses || 'rounded-2xl sm:rounded-3xl'}`}
             >
               {/* Pure High-Definition Image - 100% Clean, NO Text, NO Badges */}
               <Image
                 src={item.image}
                 alt={item.title}
                 fill
-                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 className="object-cover group-hover:scale-110 transition-transform duration-500"
+              />
+
+              {/* Dynamic Dark Form Overlay that Fades Away When Centered */}
+              <div
+                style={{ opacity: factor * 0.55 }}
+                className="absolute inset-0 bg-black pointer-events-none transition-opacity duration-300 group-hover:!opacity-0"
               />
             </div>
           );
