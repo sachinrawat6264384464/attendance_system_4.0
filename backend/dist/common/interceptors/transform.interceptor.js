@@ -1,0 +1,36 @@
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+import { Injectable, } from '@nestjs/common';
+import { map } from 'rxjs/operators';
+let TransformInterceptor = class TransformInterceptor {
+    intercept(context, next) {
+        const response = context.switchToHttp().getResponse();
+        const statusCode = response.statusCode;
+        return next.handle().pipe(map((result) => {
+            if (result && typeof result === 'object' && 'data' in result && 'meta' in result) {
+                return {
+                    success: true,
+                    statusCode,
+                    message: result.message ?? 'Success',
+                    data: result.data,
+                    meta: result.meta,
+                };
+            }
+            return {
+                success: true,
+                statusCode,
+                message: result?.message ?? 'Success',
+                data: result?.data !== undefined ? result.data : result,
+            };
+        }));
+    }
+};
+TransformInterceptor = __decorate([
+    Injectable()
+], TransformInterceptor);
+export { TransformInterceptor };
+//# sourceMappingURL=transform.interceptor.js.map

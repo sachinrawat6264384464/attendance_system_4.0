@@ -15,7 +15,8 @@ lerna-debug.log*
 
 # NestJS build output
 dist/
-backend/dist/
+!backend/dist/
+!backend/dist/**
 
 # Next.js build output
 .next/
