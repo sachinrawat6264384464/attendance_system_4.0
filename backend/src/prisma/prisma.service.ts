@@ -4,7 +4,32 @@ import fs from 'fs';
 import path from 'path';
 
 const NEON_DIRECT_URL =
-  'postgresql://neondb_owner:npg_BVX8kIyUqlO0@ep-cold-sky-b53itt32.c-7.us-east-2.aws.neon.tech/neondb?sslmode=require&connect_timeout=20';
+  'postgresql://neondb_owner:npg_BVX8kIyUqlO0@ep-cold-sky-b53itt32.c-7.us-east-2.aws.neon.tech/neondb?sslmode=require&connect_timeout=30&pool_timeout=60&connection_limit=20';
+
+function formatDatabaseUrl(rawUrl: string, isCloud: boolean): string {
+  let url = rawUrl.trim();
+  // Strip -pooler on local dev to prevent ISP packet drops
+  if (!isCloud && url.includes('-pooler')) {
+    url = url.replace('-pooler', '');
+    url = url.replace('&pgbouncer=true', '');
+    url = url.replace('&statement_cache_size=0', '');
+  }
+  // Enforce pool timeouts so Neon compute cold-starts never fail at 10 seconds
+  if (!url.includes('pool_timeout=')) {
+    url += '&pool_timeout=60';
+  } else {
+    url = url.replace(/pool_timeout=\d+/, 'pool_timeout=60');
+  }
+  if (!url.includes('connection_limit=')) {
+    url += '&connection_limit=20';
+  } else {
+    url = url.replace(/connection_limit=\d+/, 'connection_limit=20');
+  }
+  if (!url.includes('connect_timeout=')) {
+    url += '&connect_timeout=30';
+  }
+  return url;
+}
 
 function resolveDatabaseUrl(): string {
   const isCloud = Boolean(
@@ -26,17 +51,7 @@ function resolveDatabaseUrl(): string {
         const content = fs.readFileSync(envPath, 'utf-8');
         const match = content.match(/DATABASE_URL=["']?([^"'\r\n]+)["']?/);
         if (match && match[1] && !match[1].includes('prisma.io')) {
-          let resolved = match[1].trim();
-          // On local dev, remove -pooler to connect reliably to Neon compute
-          if (!isCloud && resolved.includes('-pooler')) {
-            resolved = resolved.replace('-pooler', '');
-            resolved = resolved.replace('&pgbouncer=true', '');
-            resolved = resolved.replace('&statement_cache_size=0', '');
-          }
-          if (resolved.includes('connection_limit=5')) {
-            resolved = resolved.replace('connection_limit=5', 'connection_limit=20');
-          }
-          return resolved;
+          return formatDatabaseUrl(match[1], isCloud);
         }
       }
     } catch {
@@ -47,13 +62,7 @@ function resolveDatabaseUrl(): string {
   // 2. Check process.env.DATABASE_URL if valid and not corrupted by prisma.io
   const envUrl = process.env.DATABASE_URL;
   if (envUrl && !envUrl.includes('prisma.io')) {
-    let resolved = envUrl.trim();
-    if (!isCloud && resolved.includes('-pooler')) {
-      resolved = resolved.replace('-pooler', '');
-      resolved = resolved.replace('&pgbouncer=true', '');
-      resolved = resolved.replace('&statement_cache_size=0', '');
-    }
-    return resolved;
+    return formatDatabaseUrl(envUrl, isCloud);
   }
 
   // 3. Authoritative fallback to verified Neon PostgreSQL direct credentials
@@ -95,8 +104,27 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
         this.logger.warn(String(e?.message || ''));
       });
 
-      await this.$connect();
-      this.logger.log('Successfully connected to Neon PostgreSQL database.');
+      // Connect with automatic retry for Neon serverless cold-starts
+      let connected = false;
+      let attempts = 0;
+      const maxAttempts = 3;
+
+      while (!connected && attempts < maxAttempts) {
+        attempts++;
+        try {
+          await this.$connect();
+          connected = true;
+          this.logger.log('Successfully connected to Neon PostgreSQL database.');
+        } catch (err: any) {
+          if (attempts >= maxAttempts) {
+            throw err;
+          }
+          this.logger.warn(
+            `Neon database compute cold-start in progress (attempt ${attempts}/${maxAttempts}). Retrying in 2 seconds...`,
+          );
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+        }
+      }
 
       // Heartbeat ping every 20 seconds to prevent Neon serverless PgBouncer from dropping idle TCP sockets
       this.keepAliveTimer = setInterval(async () => {
