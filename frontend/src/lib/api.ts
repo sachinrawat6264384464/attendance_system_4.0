@@ -2,9 +2,6 @@ export const getApiUrl = (): string => {
   if (process.env.NEXT_PUBLIC_API_URL) {
     return process.env.NEXT_PUBLIC_API_URL;
   }
-  if (typeof window !== 'undefined' && window.location.hostname.includes('vercel.app')) {
-    return 'https://attendance-system-4-0-15mw.vercel.app/api/v1';
-  }
   return 'http://localhost:5000/api/v1';
 };
 
@@ -57,10 +54,56 @@ export async function apiClient<T = any>(
 
     if (isNetworkError) {
       throw new Error(
-        `Unable to connect to school server (${baseUrl}). Please check if the backend service is deployed and active.`,
+        `Unable to reach school server (${baseUrl}). Please ensure backend is running or reachable.`,
       );
     }
     throw err;
+  }
+
+  // Handle Token Expiration (401 Unauthorized) with Auto-Refresh
+  if (response.status === 401 && !cleanEndpoint.includes('/auth/login') && !cleanEndpoint.includes('/auth/refresh')) {
+    try {
+      const refreshRes = await fetch(`${baseUrl}/auth/refresh`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+      });
+
+      if (refreshRes.ok) {
+        const refreshData = await refreshRes.json();
+        const newAccessToken = refreshData?.accessToken || refreshData?.data?.accessToken;
+
+        if (newAccessToken && typeof window !== 'undefined') {
+          localStorage.setItem('apex_token', newAccessToken);
+
+          // Retry the original request with the renewed access token
+          headers['Authorization'] = `Bearer ${newAccessToken}`;
+          const retryRes = await fetch(url, {
+            ...options,
+            headers,
+            credentials: 'include',
+          });
+
+          const retryData = await retryRes.json().catch(() => ({}));
+          if (retryRes.ok) {
+            return retryData;
+          }
+        }
+      }
+    } catch {
+      // Refresh failed; fall through to clear tokens and notify
+    }
+
+    // If refresh failed or was invalid, clean up stale credentials
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('apex_token');
+      localStorage.removeItem('apex_user');
+
+      // If user is currently in dashboard, redirect to login
+      if (window.location.pathname.startsWith('/dashboard')) {
+        window.location.href = '/login?expired=true';
+      }
+    }
   }
 
   const data = await response.json().catch(() => ({}));

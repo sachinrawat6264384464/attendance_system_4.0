@@ -20,95 +20,95 @@ interface ShowcasePhotoItem {
 // Row 4: 2 + 1 + 1 = 4 cols
 // Every row is 100% flush and even with ZERO bottom gap or empty space!
 const SHOWCASE_PHOTOS: ShowcasePhotoItem[] = [
-  // --- ROW 1 (2 + 1 + 1 = 4 cols) ---
+  // --- ROW 1 (On mobile: 1+1, Desktop: 2+1+1 = 4 cols) ---
   {
     id: 'smart-class',
     title: 'Smart Digital Classroom',
     image: '/images/om-smart-classroom.jpg',
-    cardClasses: 'col-span-2',
+    cardClasses: 'col-span-1 lg:col-span-2',
     shapeClasses: 'rounded-2xl sm:rounded-3xl',
   },
   {
     id: 'computer-lab',
     title: 'Computer Science & Coding Lab',
     image: '/images/om-computer-lab.jpg',
-    cardClasses: 'col-span-1',
+    cardClasses: 'col-span-1 lg:col-span-1',
     shapeClasses: 'rounded-t-[2.5rem] sm:rounded-t-[3rem] rounded-b-2xl',
   },
   {
     id: 'sports-ground',
     title: 'Athletic Sports Field & Tracks',
     image: '/images/om-sports-ground.jpg',
-    cardClasses: 'col-span-1',
+    cardClasses: 'col-span-1 lg:col-span-1',
     shapeClasses: 'rounded-[2rem] sm:rounded-[2.8rem]',
   },
 
-  // --- ROW 2 (1 + 1 + 2 = 4 cols) ---
+  // --- ROW 2 (On mobile: 1+1, Desktop: 1+1+2 = 4 cols) ---
   {
     id: 'library',
     title: 'Children Reading Library',
     image: '/images/om-library.jpg',
-    cardClasses: 'col-span-1',
+    cardClasses: 'col-span-1 lg:col-span-1',
     shapeClasses: 'rounded-2xl sm:rounded-3xl border-2 border-amber-300/40',
   },
   {
     id: 'science-lab',
     title: 'Science Practical Laboratory',
     image: '/images/om-science-lab.jpg',
-    cardClasses: 'col-span-1',
+    cardClasses: 'col-span-1 lg:col-span-1',
     shapeClasses: 'rounded-tl-3xl rounded-br-3xl rounded-tr-xl rounded-bl-xl',
   },
   {
     id: 'cultural-celebration',
     title: 'Annual Day Stage Performance',
     image: '/images/om-cultural-celebration.jpg',
-    cardClasses: 'col-span-2',
+    cardClasses: 'col-span-1 lg:col-span-2',
     shapeClasses: 'rounded-2xl sm:rounded-3xl',
   },
 
-  // --- ROW 3 (1 + 2 + 1 = 4 cols) ---
+  // --- ROW 3 (On mobile: 1+1, Desktop: 1+2+1 = 4 cols) ---
   {
     id: 'campus-facade',
     title: 'School Campus Front Entrance',
     image: '/images/om-school-building.jpg',
-    cardClasses: 'col-span-1',
+    cardClasses: 'col-span-1 lg:col-span-1',
     shapeClasses: 'rounded-t-2xl rounded-b-[2.5rem]',
   },
   {
     id: 'campus-aerial',
     title: 'Om Public School Dabra Campus',
     image: '/images/om-hero-campus-hd.jpg',
-    cardClasses: 'col-span-2',
+    cardClasses: 'col-span-1 lg:col-span-2',
     shapeClasses: 'rounded-2xl sm:rounded-3xl',
   },
   {
     id: 'kindergarten-play',
     title: 'Kindergarten Montessori Activity Room',
     image: '/images/om-kindergarten-play.jpg',
-    cardClasses: 'col-span-1',
+    cardClasses: 'col-span-1 lg:col-span-1',
     shapeClasses: 'rounded-[2rem] sm:rounded-[2.5rem]',
   },
 
-  // --- ROW 4 (2 + 1 + 1 = 4 cols) ---
+  // --- ROW 4 (On mobile: 1+1, Desktop: 2+1+1 = 4 cols) ---
   {
     id: 'yoga-assembly',
     title: 'Morning Assembly & Yoga Courtyard',
     image: '/images/om-yoga-assembly.jpg',
-    cardClasses: 'col-span-2',
+    cardClasses: 'col-span-1 lg:col-span-2',
     shapeClasses: 'rounded-2xl sm:rounded-3xl',
   },
   {
     id: 'learning-corner',
     title: 'Classroom Activity & Discovery',
     image: '/images/gallery-1.jpg',
-    cardClasses: 'col-span-1',
+    cardClasses: 'col-span-1 lg:col-span-1',
     shapeClasses: 'rounded-tr-[2.5rem] rounded-bl-[2.5rem] rounded-tl-xl rounded-br-xl',
   },
   {
     id: 'creative-arts',
     title: 'Creative Arts & Music Session',
     image: '/images/gallery-2.jpg',
-    cardClasses: 'col-span-1',
+    cardClasses: 'col-span-1 lg:col-span-1',
     shapeClasses: 'rounded-2xl sm:rounded-3xl',
   },
 ];

@@ -3,7 +3,8 @@ process.env.DISABLE_HEARTBEAT = 'true';
 import { PrismaService } from '../dist/prisma/prisma.service.js';
 import argon2 from 'argon2';
 import dotenv from 'dotenv';
-dotenv.config();
+dotenv.config({ path: '.env', override: true });
+dotenv.config({ path: '../.env', override: true });
 
 const prisma = new PrismaService();
 

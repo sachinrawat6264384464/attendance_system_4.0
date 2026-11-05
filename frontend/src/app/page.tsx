@@ -35,41 +35,49 @@ export default function HomePage() {
       title: 'English Medium Education',
       description: 'Comprehensive English medium curriculum focusing on strong foundational literacy, numeracy, and fluent communication.',
       icon: BookOpen,
+      image: '/images/om-library.jpg',
     },
     {
       title: 'Qualified & Experienced Teachers',
       description: 'Dedicated faculty committed to patient mentorship, conceptual clarity, and personal attention for every learner.',
       icon: Users,
+      image: '/images/om-science-lab.jpg',
     },
     {
       title: 'Smart Classes & Modern Teaching',
       description: 'Interactive audio-visual smart classroom technology making complex concepts easy, engaging, and memorable.',
       icon: Sparkles,
+      image: '/images/om-smart-classroom.jpg',
     },
     {
       title: 'Special Focus on English Speaking',
       description: 'Daily phonics, conversation drills, storytelling, and public speaking clubs to build lifelong confidence in English.',
       icon: Compass,
+      image: '/images/om-computer-lab.jpg',
     },
     {
       title: 'Sports & Cultural Activities',
       description: 'Robust sports programs, annual sports day, dance, drama, art, and music nurturing both physical stamina and creative expression.',
       icon: Trophy,
+      image: '/images/om-sports-ground.jpg',
     },
     {
       title: 'Discipline & Moral Values',
       description: 'Inculcating Indian cultural ethos, mutual respect, civic sense, and ethical integrity as core building blocks of character.',
       icon: Award,
+      image: '/images/om-yoga-assembly.jpg',
     },
     {
       title: 'Safe and Friendly Environment',
       description: 'CCTV monitored campus, child-safe infrastructure, loving caretakers, and high sanitation standards providing complete peace of mind.',
       icon: ShieldCheck,
+      image: '/images/om-school-building.jpg',
     },
     {
       title: 'Quality Education for a Better Tomorrow',
       description: 'Holistic growth from Playgroup to 8th class, empowering students to lead, innovate, and succeed in higher secondary pursuits.',
       icon: GraduationCap,
+      image: '/images/om-cultural-celebration.jpg',
     },
   ];
 
@@ -221,21 +229,34 @@ export default function HomePage() {
               return (
                 <div
                   key={idx}
-                  className="p-3.5 sm:p-5 lg:p-6 rounded-2xl sm:rounded-3xl bg-white border-2 border-slate-300 hover:border-black shadow-xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between"
+                  className="group relative overflow-hidden p-3.5 sm:p-5 lg:p-6 rounded-2xl sm:rounded-3xl bg-white border-2 border-slate-300 hover:border-black shadow-xs hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between min-h-[230px] sm:min-h-[270px] cursor-pointer"
                 >
-                  <div className="space-y-2 sm:space-y-3">
-                    <div className="w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-black text-white flex items-center justify-center shadow-xs">
-                      <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
+                  {/* Sliding image overlay on hover from top */}
+                  <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none transform -translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out">
+                    <Image
+                      src={item.image}
+                      alt={item.title}
+                      fill
+                      sizes="(max-width: 768px) 50vw, 25vw"
+                      className="object-cover object-center transform group-hover:scale-105 transition-transform duration-700"
+                    />
+                    {/* Dark gradient overlay so text remains razor sharp and readable */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/80 to-black/60" />
+                  </div>
+
+                  <div className="relative z-10 space-y-2 sm:space-y-3">
+                    <div className="w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-black group-hover:bg-[#D32F2F] text-white flex items-center justify-center shadow-xs transition-colors duration-300">
+                      <Icon className="w-4 h-4 sm:w-5 sm:h-5 group-hover:scale-110 transition-transform duration-300" />
                     </div>
-                    <h3 className="text-[12px] sm:text-base font-black text-black leading-snug">
+                    <h3 className="text-[12px] sm:text-base font-black text-black group-hover:text-white leading-snug transition-colors duration-300">
                       {item.title}
                     </h3>
-                    <p className="text-[10px] sm:text-xs text-black font-medium leading-relaxed line-clamp-3 sm:line-clamp-none">
+                    <p className="text-[10px] sm:text-xs text-black group-hover:text-slate-100 font-medium leading-relaxed line-clamp-4 sm:line-clamp-none transition-colors duration-300">
                       {item.description}
                     </p>
                   </div>
-                  <div className="pt-2 sm:pt-4 mt-2 sm:mt-3 border-t border-slate-200 flex items-center gap-1 sm:gap-1.5 text-black text-[9px] sm:text-xs font-black">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-black shrink-0" />
+                  <div className="relative z-10 pt-2 sm:pt-4 mt-2 sm:mt-3 border-t border-slate-200 group-hover:border-white/20 flex items-center gap-1 sm:gap-1.5 text-black group-hover:text-[#FFD600] text-[9px] sm:text-xs font-black transition-colors duration-300">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-black group-hover:text-[#FFD600] shrink-0 transition-colors duration-300" />
                     <span>Verified Standard</span>
                   </div>
                 </div>
@@ -454,6 +475,40 @@ export default function HomePage() {
                   Proceed to Full Admission Application →
                 </button>
               </form>
+            </div>
+          </div>
+
+          {/* Interactive Google Map for Om Public School, Deedar Colony, Dabra */}
+          <div className="mt-8 sm:mt-12 rounded-2xl sm:rounded-3xl overflow-hidden border-2 border-slate-300 shadow-xl bg-slate-100">
+            <div className="p-3 sm:p-4 bg-[#0D2056] text-white flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-[#FF5252] shrink-0" />
+                <span className="text-xs sm:text-sm font-black">
+                  Interactive Campus Map: Om Public School • Deedar Colony, Dabra, Dist. Gwalior (M.P.)
+                </span>
+              </div>
+              <a
+                href="https://maps.google.com/?q=Om+Public+School+Deedar+Colony+Dabra+Gwalior"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 text-[10px] sm:text-xs font-bold text-amber-300 hover:text-white transition"
+              >
+                <span>Open in Google Maps App</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            </div>
+            <div className="w-full h-64 sm:h-96 relative">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14352.485129657788!2d78.3242137!3d25.8890786!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39775a967f47e6bb%3A0xb3e1c667bc944ca5!2sDabra%2C%20Madhya%20Pradesh!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Om Public School Dabra Campus Google Map"
+                className="w-full h-full"
+              />
             </div>
           </div>
         </div>

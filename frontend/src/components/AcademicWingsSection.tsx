@@ -149,16 +149,16 @@ export default function AcademicWingsSection() {
                     {wing.features.map((feat, fi) => (
                       <div
                         key={fi}
-                        className={`flex items-center gap-1.5 text-[9px] sm:text-xs font-bold ${
+                        className={`flex items-start gap-1.5 text-[9.5px] sm:text-xs font-bold leading-snug ${
                           isFourthBox ? 'text-white' : 'text-black'
                         }`}
                       >
                         <div
-                          className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                          className={`w-1.5 h-1.5 rounded-full shrink-0 mt-1 ${
                             isFourthBox ? 'bg-white' : 'bg-black'
                           }`}
                         />
-                        <span className="truncate">{feat}</span>
+                        <span>{feat}</span>
                       </div>
                     ))}
                   </div>

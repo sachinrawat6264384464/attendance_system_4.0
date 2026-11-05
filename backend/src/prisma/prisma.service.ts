@@ -93,8 +93,14 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
       // Intercept and handle socket reset events cleanly so remote serverless idle drops don't print raw errors
       (this as any).$on('error', (e: any) => {
         const msg = String(e?.message || '');
-        if (msg.includes('10054') || msg.includes('ConnectionReset') || msg.includes('forcibly closed')) {
-          this.logger.debug('Neon serverless idle connection reset by remote host; connection pool auto-recovered.');
+        if (
+          msg.includes('10054') ||
+          msg.includes('ConnectionReset') ||
+          msg.includes('forcibly closed') ||
+          msg.includes("Can't reach database server") ||
+          msg.includes('Timed out fetching a new connection')
+        ) {
+          this.logger.debug('Neon serverless idle reconnect / cold-start auto-recovering.');
           return;
         }
         this.logger.error(msg);

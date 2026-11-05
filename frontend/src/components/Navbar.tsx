@@ -4,11 +4,11 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
 import DandelionLogo from './DandelionLogo';
-import { LogIn, LayoutDashboard, Menu, X, Phone, MapPin, Sparkles, ChevronRight } from 'lucide-react';
+import { LogIn, LayoutDashboard, Menu, X, Phone, MapPin, Sparkles, ChevronRight, LogOut, User as UserIcon } from 'lucide-react';
 import { useState } from 'react';
 
 export default function Navbar() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -24,7 +24,6 @@ export default function Navbar() {
   const navLinks = [
     { title: 'Home', href: '/' },
     { title: 'About School', href: '/academics' },
-    { title: 'Why Choose Us?', href: '/#why-us' },
     { title: 'Facilities', href: '/facilities' },
     { title: 'Faculty', href: '/faculty' },
     { title: 'Gallery', href: '/gallery' },
@@ -119,30 +118,61 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* Mobile / Tablet Controls (Below LG < 1024px) */}
+          {/* Mobile / Tablet Controls (Below LG < 1024px) - ALWAYS VISIBLE */}
           <div className="flex lg:hidden items-center gap-1.5 sm:gap-2 shrink-0">
             <Link
               href={getDashboardLink()}
-              className="inline-flex items-center gap-1 px-2.5 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-xs font-bold text-[#0D2056] bg-blue-50 border border-blue-200 rounded-full"
+              className="inline-flex items-center gap-1 px-2.5 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-xs font-black text-[#0D2056] bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-full transition shrink-0"
             >
               {user ? 'Dashboard' : 'Login'}
             </Link>
 
             {/* Mobile / Tablet Hamburger Toggle */}
             <button
+              type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-1.5 sm:p-2 rounded-xl text-slate-700 hover:text-[#0D2056] hover:bg-slate-100 transition focus:outline-hidden"
+              className="p-1.5 sm:p-2 rounded-xl text-slate-800 bg-slate-100 hover:bg-slate-200 border border-slate-300 transition shrink-0 flex items-center justify-center cursor-pointer"
               aria-label="Toggle Navigation Menu"
             >
-              {mobileMenuOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6 text-[#D32F2F]" /> : <Menu className="w-5 h-5 sm:w-6 sm:h-6" />}
+              {mobileMenuOpen ? (
+                <X className="w-5 h-5 text-[#D32F2F]" />
+              ) : (
+                <Menu className="w-5 h-5 text-slate-900" />
+              )}
             </button>
           </div>
         </div>
       </div>
 
-      {/* 3. Responsive Mobile / Tablet Drawer */}
+      {/* 3. Responsive Mobile / Tablet Drawer (Accessible before & after login!) */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-white border-b border-slate-200 px-5 pt-3 pb-6 shadow-xl animate-in slide-in-from-top-2 duration-200">
+        <div className="lg:hidden bg-white border-b border-slate-200 px-4 sm:px-6 pt-3 pb-6 shadow-xl animate-in slide-in-from-top-2 duration-200">
+          {/* User Session Banner if logged in */}
+          {user && (
+            <div className="p-3 mb-2 rounded-2xl bg-blue-50/80 border border-blue-200 flex items-center justify-between">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-8 h-8 rounded-full bg-[#0D2056] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
+                  {user.firstName?.[0] || 'U'}
+                </div>
+                <div className="min-w-0">
+                  <div className="text-xs font-black text-[#0D2056] truncate">
+                    {user.firstName} {user.lastName}
+                  </div>
+                  <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">
+                    {user.roles[0] || 'Active User'}
+                  </div>
+                </div>
+              </div>
+              <Link
+                href={getDashboardLink()}
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-2.5 py-1 bg-[#0D2056] hover:bg-[#D32F2F] text-white text-[10px] font-black uppercase rounded-lg shadow-xs transition shrink-0"
+              >
+                Dashboard →
+              </Link>
+            </div>
+          )}
+
           <div className="divide-y divide-slate-100">
             <div className="py-2 space-y-1">
               {navLinks.map((item) => {
@@ -169,7 +199,7 @@ export default function Navbar() {
               <Link
                 href="/admissions"
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-full flex items-center justify-center gap-2 py-3 text-xs font-black text-white bg-[#D32F2F] hover:bg-[#b71c1c] rounded-xl uppercase tracking-wider shadow-md"
+                className="w-full flex items-center justify-center gap-2 py-3 text-xs font-black text-white bg-[#D32F2F] hover:bg-[#b71c1c] rounded-xl uppercase tracking-wider shadow-md transition"
               >
                 <Sparkles className="w-3.5 h-3.5 text-amber-300" />
                 <span>Apply for Admission</span>
@@ -192,6 +222,21 @@ export default function Navbar() {
                   </>
                 )}
               </Link>
+
+              {/* Log Out Option if logged in */}
+              {user && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    logout();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="w-full flex items-center justify-center gap-2 py-2.5 text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 rounded-xl transition cursor-pointer"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span>Log Out of Session</span>
+                </button>
+              )}
             </div>
 
             {/* School Contact Footer in Drawer */}
