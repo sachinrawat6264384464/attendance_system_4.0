@@ -110,7 +110,7 @@ export default function AcademicWingsSection() {
                 key={i}
                 className={`transition-all duration-700 ease-out transform ${delayClass} ${transformClass} rounded-2xl sm:rounded-3xl p-3.5 sm:p-6 flex flex-col justify-between ${
                   isFourthBox
-                    ? 'bg-[#D32F2F] border-2 border-red-600 text-black shadow-2xl'
+                    ? 'bg-[#D32F2F] border-2 border-red-500 text-white shadow-2xl'
                     : 'bg-white border-2 border-white text-black shadow-xl hover:shadow-2xl'
                 }`}
               >
@@ -119,41 +119,43 @@ export default function AcademicWingsSection() {
                   <div
                     className={`inline-block px-2 sm:px-2.5 py-0.5 rounded-full font-black text-[8px] sm:text-[10px] uppercase tracking-wider mb-2 ${
                       isFourthBox
-                        ? 'bg-white/90 text-black border border-black/20'
+                        ? 'bg-white text-[#D32F2F] border border-white'
                         : 'bg-slate-100 text-black border border-slate-200'
                     }`}
                   >
                     {wing.badge}
                   </div>
 
-                  {/* Title in Black */}
-                  <h3 className="text-xs sm:text-lg font-black text-black leading-tight">
+                  {/* Title */}
+                  <h3 className={`text-xs sm:text-lg font-black leading-tight ${isFourthBox ? 'text-white' : 'text-black'}`}>
                     {wing.wing}
                   </h3>
 
-                  {/* Classes in Black */}
+                  {/* Classes */}
                   <div
                     className={`text-[11px] sm:text-sm font-black mt-0.5 sm:mt-1 mb-2.5 sm:mb-3 ${
-                      isFourthBox ? 'text-black' : 'text-black font-extrabold'
+                      isFourthBox ? 'text-white/95' : 'text-black font-extrabold'
                     }`}
                   >
                     {wing.classes}
                   </div>
 
-                  {/* Features list in Black */}
+                  {/* Features list */}
                   <div
                     className={`space-y-1.5 sm:space-y-2 pt-2 border-t ${
-                      isFourthBox ? 'border-black/20' : 'border-slate-100'
+                      isFourthBox ? 'border-white/20' : 'border-slate-100'
                     }`}
                   >
                     {wing.features.map((feat, fi) => (
                       <div
                         key={fi}
-                        className="flex items-center gap-1.5 text-[9px] sm:text-xs text-black font-bold"
+                        className={`flex items-center gap-1.5 text-[9px] sm:text-xs font-bold ${
+                          isFourthBox ? 'text-white' : 'text-black'
+                        }`}
                       >
                         <div
                           className={`w-1.5 h-1.5 rounded-full shrink-0 ${
-                            isFourthBox ? 'bg-black' : 'bg-black'
+                            isFourthBox ? 'bg-white' : 'bg-black'
                           }`}
                         />
                         <span className="truncate">{feat}</span>
@@ -168,7 +170,7 @@ export default function AcademicWingsSection() {
                     href="/admissions"
                     className={`w-full inline-block text-center py-2 sm:py-2.5 px-2 rounded-xl font-black text-[9px] sm:text-xs uppercase tracking-wider transition shadow-sm ${
                       isFourthBox
-                        ? 'bg-black hover:bg-slate-900 text-white'
+                        ? 'bg-white hover:bg-slate-100 text-[#D32F2F] shadow-md font-black'
                         : 'bg-[#0D2056] hover:bg-black text-white'
                     }`}
                   >

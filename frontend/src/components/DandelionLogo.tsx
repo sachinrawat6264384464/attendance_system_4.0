@@ -10,15 +10,14 @@ interface LogoProps {
 
 export default function DandelionLogo({
   className = '',
-  showSubtitle = true,
   variant = 'dark',
 }: LogoProps) {
   const isLight = variant === 'light';
 
   return (
-    <div className={`flex items-center gap-2 sm:gap-3 select-none ${className}`}>
+    <div className={`flex flex-col items-center justify-center text-center select-none ${className}`}>
       {/* Official Emblem */}
-      <div className="relative w-9 h-9 sm:w-11 sm:h-11 md:w-12 md:h-12 shrink-0 flex items-center justify-center drop-shadow-sm">
+      <div className="relative w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 shrink-0 flex items-center justify-center drop-shadow-xs">
         <svg viewBox="0 0 120 120" className="w-full h-full">
           {/* Outer Golden Sunburst Ring */}
           <circle cx="60" cy="60" r="56" fill="#FBC02D" stroke="#D32F2F" strokeWidth="3" />
@@ -57,29 +56,15 @@ export default function DandelionLogo({
         </svg>
       </div>
 
-      {/* Official Typography */}
-      <div className="leading-tight">
-        <div className="flex items-center gap-1 sm:gap-1.5 flex-nowrap">
-          <span
-            className={`font-black text-xs sm:text-base md:text-xl tracking-tight block uppercase whitespace-nowrap ${
-              isLight ? 'text-white' : 'text-[#0D2056]'
-            }`}
-          >
-            OM PUBLIC <span className="text-[#D32F2F]">SCHOOL</span>
-          </span>
-          <span className="px-1.5 sm:px-2 py-0.5 rounded-md bg-[#D32F2F] text-white text-[8px] sm:text-[10px] font-black uppercase tracking-wider shadow-xs shrink-0">
-            DABRA
-          </span>
-        </div>
-        {showSubtitle && (
-          <span
-            className={`text-[9px] sm:text-[11px] font-bold tracking-wide block italic font-serif mt-0.2 sm:mt-0.5 whitespace-nowrap ${
-              isLight ? 'text-amber-300' : 'text-[#D32F2F]'
-            }`}
-          >
-            Learn... Grow... Achieve...
-          </span>
-        )}
+      {/* Official Typography placed cleanly under the logo emblem */}
+      <div className="mt-1 leading-none">
+        <span
+          className={`font-black text-[10px] sm:text-xs md:text-sm tracking-tight block uppercase whitespace-nowrap ${
+            isLight ? 'text-white' : 'text-[#0D2056]'
+          }`}
+        >
+          OM PUBLIC <span className="text-[#D32F2F]">SCHOOL</span>
+        </span>
       </div>
     </div>
   );

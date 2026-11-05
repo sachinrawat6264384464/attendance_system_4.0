@@ -284,24 +284,20 @@ export default function HomePage() {
       </section>
 
       {/* ---------------- 4. ADMISSION OPEN 2027-28 CALLOUT BANNER ---------------- */}
-      <section className="py-12 sm:py-16 bg-[#0D2056] text-white relative overflow-hidden">
-        {/* Background Decorative Rings */}
-        <div className="absolute -left-20 -bottom-20 w-80 h-80 rounded-full border-8 border-white/5 pointer-events-none" />
-        <div className="absolute -right-20 -top-20 w-80 h-80 rounded-full border-8 border-white/5 pointer-events-none" />
-
-        <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 relative z-10">
-          <div className="bg-gradient-to-r from-[#D32F2F] via-[#b71c1c] to-[#0D2056] rounded-2xl sm:rounded-3xl p-6 sm:p-12 shadow-2xl border-4 border-amber-300 flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-8">
+      <section className="py-12 sm:py-16 bg-white border-y border-slate-200">
+        <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8">
+          <div className="bg-slate-50 border-2 border-slate-200 rounded-2xl sm:rounded-3xl p-6 sm:p-10 lg:p-12 shadow-sm hover:shadow-md transition flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-8">
             <div className="space-y-2 sm:space-y-3 text-center lg:text-left">
-              <span className="px-3 py-1 rounded-full bg-[#FFD600] text-[#0D2056] text-[10px] sm:text-xs font-black uppercase tracking-wider inline-block shadow-xs">
+              <span className="px-3 py-1 rounded-full bg-red-100 text-[#D32F2F] text-[10px] sm:text-xs font-black uppercase tracking-wider inline-block">
                 Limited Seats Available!
               </span>
-              <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight">
-                ADMISSION OPEN <span className="text-[#FFD600]">SESSION 2027–28</span>
+              <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-[#0D2056] tracking-tight">
+                ADMISSION OPEN <span className="text-[#D32F2F]">SESSION 2027–28</span>
               </h2>
-              <p className="text-xs sm:text-base text-white/90 max-w-xl font-medium">
-                Enroll your child today at <strong>Om Public School, Dabra</strong>. Secure a bright, disciplined, and successful future with our smart classrooms and caring teachers.
+              <p className="text-xs sm:text-base text-slate-600 max-w-xl font-medium">
+                Enroll your child today at <strong className="text-slate-900">Om Public School, Dabra</strong>. Secure a bright, disciplined, and successful future with our smart classrooms and caring teachers.
               </p>
-              <div className="pt-1 flex flex-wrap items-center justify-center lg:justify-start gap-2 sm:gap-4 text-[10px] sm:text-xs font-bold text-amber-200">
+              <div className="pt-1 flex flex-wrap items-center justify-center lg:justify-start gap-2 sm:gap-4 text-[10px] sm:text-xs font-bold text-slate-700">
                 <span>✓ Classes: PG to 8th</span>
                 <span>•</span>
                 <span>✓ English Medium</span>
@@ -313,15 +309,15 @@ export default function HomePage() {
             <div className="shrink-0 flex flex-col sm:flex-row items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
               <Link
                 href="/admissions"
-                className="w-full sm:w-auto text-center px-6 sm:px-8 py-3.5 sm:py-4 bg-[#FFD600] hover:bg-[#ffca28] text-[#0D2056] font-black text-xs sm:text-sm uppercase tracking-wider rounded-full shadow-xl transition transform hover:scale-105"
+                className="w-full sm:w-auto text-center px-6 sm:px-8 py-3.5 sm:py-4 bg-[#D32F2F] hover:bg-[#b71c1c] text-white font-black text-xs sm:text-sm uppercase tracking-wider rounded-full shadow-md hover:shadow-lg transition transform hover:scale-105"
               >
                 Apply Online Now
               </Link>
               <a
                 href="tel:+917999083379"
-                className="w-full sm:w-auto text-center px-5 sm:px-6 py-3.5 sm:py-4 bg-white/10 hover:bg-white/20 text-white border-2 border-white/40 font-bold text-xs uppercase tracking-wider rounded-full transition flex items-center justify-center gap-2"
+                className="w-full sm:w-auto text-center px-5 sm:px-6 py-3.5 sm:py-4 bg-white hover:bg-slate-100 text-[#0D2056] border-2 border-slate-300 font-extrabold text-xs uppercase tracking-wider rounded-full transition flex items-center justify-center gap-2"
               >
-                <Phone className="w-4 h-4 text-[#FFD600]" />
+                <Phone className="w-4 h-4 text-[#D32F2F]" />
                 <span>Call: 7999083379</span>
               </a>
             </div>

@@ -65,30 +65,26 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16 sm:h-20">
           {/* Official Emblem Logo */}
           <Link href="/" className="flex items-center shrink-0">
-            <div className="bg-white py-1 px-1.5 sm:px-2.5 rounded-2xl shadow-2xs border border-slate-100 hover:shadow-sm transition">
-              <DandelionLogo className="h-10 sm:h-12" />
+            <div className="py-1 px-1.5 sm:px-2 hover:opacity-90 transition">
+              <DandelionLogo />
             </div>
           </Link>
 
           {/* Desktop Navigation Links (Visible on LG screens 1024px+) */}
-          <nav className="hidden lg:flex items-center gap-2 xl:gap-5 2xl:gap-7">
+          <nav className="hidden lg:flex items-center justify-center gap-2 xl:gap-4 2xl:gap-6 flex-1 mx-2 xl:mx-6">
             {navLinks.map((item) => {
               const isActive = pathname === item.href;
               return (
                 <Link
                   key={item.title}
                   href={item.href}
-                  className={`text-xs xl:text-sm font-bold transition-colors relative py-1 px-1.5 xl:px-2 ${
-                    isActive ? 'text-[#0D2056]' : 'text-slate-600 hover:text-[#D32F2F]'
+                  className={`text-xs xl:text-sm font-bold whitespace-nowrap transition-colors relative py-2 px-2 xl:px-3 ${
+                    isActive ? 'text-[#0D2056] font-black' : 'text-slate-700 hover:text-[#D32F2F]'
                   }`}
                 >
                   {item.title}
                   {isActive && (
-                    <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 flex gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#0D2056]" />
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#D32F2F]" />
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#FFD600]" />
-                    </div>
+                    <span className="absolute bottom-0 left-2 right-2 h-0.5 bg-[#D32F2F] rounded-full" />
                   )}
                 </Link>
               );
