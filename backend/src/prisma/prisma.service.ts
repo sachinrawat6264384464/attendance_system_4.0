@@ -126,19 +126,19 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
         }
       }
 
-      // Heartbeat ping every 20 seconds to prevent Neon serverless PgBouncer from dropping idle TCP sockets
-      this.keepAliveTimer = setInterval(async () => {
-        try {
-          await this.$queryRaw`SELECT 1`;
-        } catch {
-          this.logger.debug('Neon heartbeat refreshing pool connection...');
-          await this.$connect().catch(() => {});
-        }
-      }, 20000);
+      // Heartbeat ping every 30 seconds to prevent Neon serverless from dropping idle TCP sockets
+      if (process.env.DISABLE_HEARTBEAT !== 'true') {
+        this.keepAliveTimer = setInterval(async () => {
+          try {
+            await this.$queryRaw`SELECT 1`;
+          } catch {
+            await this.$connect().catch(() => {});
+          }
+        }, 30000);
 
-      // Allow node process to exit cleanly without waiting on interval
-      if (this.keepAliveTimer.unref) {
-        this.keepAliveTimer.unref();
+        if (this.keepAliveTimer.unref) {
+          this.keepAliveTimer.unref();
+        }
       }
     } catch (error) {
       this.logger.error('Failed to connect to database during initialization:', error);

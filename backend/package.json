@@ -8,6 +8,7 @@
   "type": "module",
   "scripts": {
     "build": "nest build",
+    "seed:complete": "node prisma/seed-complete.mjs",
     "vercel-build": "prisma generate && nest build",
     "postinstall": "prisma generate",
     "deploy": "nest deploy",
