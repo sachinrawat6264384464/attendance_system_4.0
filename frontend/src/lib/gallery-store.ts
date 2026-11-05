@@ -54,13 +54,22 @@ export const DEFAULT_GALLERY_ITEMS: GalleryItem[] = [
     tagColor: 'bg-[#E87722]',
   },
   {
-    id: 'om-poster-official',
-    title: 'Official Admission Open Campaign Session 2027–28',
-    category: 'Events & Celebrations',
-    image: '/images/om-public-school-poster.jpg',
+    id: 'om-science-lab-hd',
+    title: 'Advanced Science Exploration & Experimentation Lab',
+    category: 'Computer & STEM Lab',
+    image: '/images/om-science-lab.jpg',
     description:
-      'Official admission announcement for Playgroup to 8th Standard highlighting English Medium education and experienced faculty.',
-    tagColor: 'bg-[#D32F2F]',
+      'Fully equipped physics, chemistry, and biology laboratory where students explore scientific principles hands-on under expert teacher mentorship.',
+    tagColor: 'bg-[#00897B]',
+  },
+  {
+    id: 'om-cultural-celebration-hd',
+    title: 'Annual Cultural Day Celebrations & Stage Theatre',
+    category: 'Events & Celebrations',
+    image: '/images/om-cultural-celebration.jpg',
+    description:
+      'Vibrant music, classical Indian folk dance, drama, and youth talent showcase celebrated annually at Om Public School auditorium.',
+    tagColor: 'bg-[#C2185B]',
   },
   {
     id: 'om-building-modern',
@@ -73,7 +82,7 @@ export const DEFAULT_GALLERY_ITEMS: GalleryItem[] = [
   },
 ];
 
-const STORAGE_KEY = 'om_public_school_gallery_items_v2';
+const STORAGE_KEY = 'om_public_school_gallery_items_v4';
 
 export function getStoredGalleryItems(): GalleryItem[] {
   if (typeof window === 'undefined') return DEFAULT_GALLERY_ITEMS;

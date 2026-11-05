@@ -20,6 +20,8 @@ import {
   PlusCircle,
   School,
   Check,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 
 interface StudentItem {
@@ -242,6 +244,22 @@ export default function CoordinatorDashboardPage() {
       return true;
     });
   }, [students, selectedClassFilter, selectedSectionFilter, search]);
+
+  // Student Pagination
+  const [studentCurrentPage, setStudentCurrentPage] = useState(1);
+  const studentPageSize = 10;
+  const totalStudentPages = Math.ceil(filteredStudents.length / studentPageSize) || 1;
+  const paginatedStudents = useMemo(() => {
+    return filteredStudents.slice(
+      (studentCurrentPage - 1) * studentPageSize,
+      studentCurrentPage * studentPageSize,
+    );
+  }, [filteredStudents, studentCurrentPage]);
+
+  // Reset page when filters change
+  useEffect(() => {
+    setStudentCurrentPage(1);
+  }, [selectedClassFilter, selectedSectionFilter, search]);
 
   // Handle Create Student
   const handleCreateStudent = async (e: React.FormEvent) => {
@@ -846,7 +864,7 @@ export default function CoordinatorDashboardPage() {
                       </td>
                     </tr>
                   ) : (
-                    filteredStudents.map((enr) => (
+                    paginatedStudents.map((enr) => (
                       <tr key={enr.id} className="hover:bg-slate-50/70 transition">
                         <td className="px-6 py-3.5 font-bold text-[#1B365D]">
                           {enr.student.admissionNumber}
@@ -883,6 +901,60 @@ export default function CoordinatorDashboardPage() {
                 </tbody>
               </table>
             </div>
+
+            {/* Pagination Controls */}
+            {filteredStudents.length > 0 && (
+              <div className="p-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-50/50">
+                <div className="text-xs text-slate-500 font-semibold">
+                  Showing{' '}
+                  <strong className="text-slate-800">
+                    {(studentCurrentPage - 1) * studentPageSize + 1}
+                  </strong>{' '}
+                  to{' '}
+                  <strong className="text-slate-800">
+                    {Math.min(studentCurrentPage * studentPageSize, filteredStudents.length)}
+                  </strong>{' '}
+                  of <strong className="text-slate-800">{filteredStudents.length}</strong> Students
+                </div>
+
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    disabled={studentCurrentPage <= 1}
+                    onClick={() => setStudentCurrentPage((p) => Math.max(1, p - 1))}
+                    className="px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-700 text-xs font-bold hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition flex items-center gap-1"
+                  >
+                    <ChevronLeft className="w-3.5 h-3.5" />
+                    <span>Prev</span>
+                  </button>
+
+                  {Array.from({ length: totalStudentPages }, (_, i) => i + 1).map((pg) => (
+                    <button
+                      key={pg}
+                      type="button"
+                      onClick={() => setStudentCurrentPage(pg)}
+                      className={`w-8 h-8 rounded-xl text-xs font-black transition ${
+                        studentCurrentPage === pg
+                          ? 'bg-[#1B365D] text-white shadow-xs'
+                          : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+                      }`}
+                    >
+                      {pg}
+                    </button>
+                  ))}
+
+                  <button
+                    type="button"
+                    disabled={studentCurrentPage >= totalStudentPages}
+                    onClick={() => setStudentCurrentPage((p) => Math.min(totalStudentPages, p + 1))}
+                    className="px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-700 text-xs font-bold hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition flex items-center gap-1"
+                  >
+                    <span>Next</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

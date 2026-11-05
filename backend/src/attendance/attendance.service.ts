@@ -152,11 +152,24 @@ export class AttendanceService {
         class: true,
         section: true,
         subject: true,
-        teacher: { include: { user: { select: { firstName: true, lastName: true } } } },
+        teacher: { include: { user: { select: { firstName: true, lastName: true, email: true } } } },
+        records: {
+          select: {
+            id: true,
+            status: true,
+            student: {
+              select: {
+                id: true,
+                rollNumber: true,
+                user: { select: { firstName: true, lastName: true } },
+              },
+            },
+          },
+        },
         _count: { select: { records: true } },
       },
       orderBy: [{ date: 'desc' }, { periodNumber: 'asc' }],
-      take: 50,
+      take: 100,
     });
   }
 

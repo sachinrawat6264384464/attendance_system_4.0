@@ -11,6 +11,8 @@ import {
   LogOut,
   Shield,
   BookOpen,
+  ClipboardList,
+  FileText,
 } from 'lucide-react';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -51,10 +53,22 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       visible: user.roles.includes('COORDINATOR') || user.roles.includes('PRINCIPAL'),
     },
     {
-      title: 'Teacher Attendance & Tasks',
+      title: 'Attendance Marking Pad',
       href: '/dashboard/teacher',
       icon: CalendarCheck,
       visible: user.roles.includes('TEACHER') || user.roles.includes('PRINCIPAL') || user.roles.includes('COORDINATOR'),
+    },
+    {
+      title: 'Attendance History & Logs',
+      href: '/dashboard/attendance-logs',
+      icon: ClipboardList,
+      visible: user.roles.includes('TEACHER') || user.roles.includes('PRINCIPAL') || user.roles.includes('COORDINATOR'),
+    },
+    {
+      title: 'Assignments & Coursework',
+      href: '/dashboard/assignments',
+      icon: FileText,
+      visible: user.roles.includes('TEACHER') || user.roles.includes('PRINCIPAL') || user.roles.includes('COORDINATOR') || user.roles.includes('STUDENT'),
     },
     {
       title: 'Student & Parent Portal',
