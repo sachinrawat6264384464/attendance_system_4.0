@@ -28,7 +28,7 @@ let FilesService = FilesService_1 = class FilesService {
         if (!file) {
             throw new BadRequestException('No file provided for upload.');
         }
-        const baseFolder = this.configService.get('CLOUDINARY_FOLDER') || 'apex_school_system';
+        const baseFolder = this.configService.get('CLOUDINARY_FOLDER') || 'om_public_school_dabra';
         const targetFolder = `${baseFolder}/${subfolder}`;
         const isImage = file.mimetype.startsWith('image/');
         const resourceType = isImage ? 'image' : 'auto';

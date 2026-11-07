@@ -40,7 +40,7 @@ export class FilesService {
       throw new BadRequestException('No file provided for upload.');
     }
 
-    const baseFolder = this.configService.get<string>('CLOUDINARY_FOLDER') || 'apex_school_system';
+    const baseFolder = this.configService.get<string>('CLOUDINARY_FOLDER') || 'om_public_school_dabra';
     const targetFolder = `${baseFolder}/${subfolder}`;
 
     // Explicit resource_type: non-images and PDFs must use 'auto' or 'raw'
